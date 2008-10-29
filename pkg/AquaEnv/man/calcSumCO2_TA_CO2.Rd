@@ -2,7 +2,7 @@
 \alias{calcSumCO2_TA_CO2}
 \title{calcSumCO2\_TA\_CO2}
 \description{PRIVATE function: calculates [SumCO2] from an object of class aquanenv, a given [TA], and a given [CO2]: by analytically solving the resulting quadratic equation}
-\usage{calcSumCO2\_TA\_CO2(aquaenv, TA, CO2)}
+\usage{calcSumCO2_TA_CO2(aquaenv, TA, CO2)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}
   \item{TA }{given [TA] in mol/kg-solution}

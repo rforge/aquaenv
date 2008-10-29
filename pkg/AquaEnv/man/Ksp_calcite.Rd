@@ -2,7 +2,7 @@
 \alias{Ksp_calcite}
 \title{Ksp\_calcite}
 \description{PUBLIC function: calculates the solubility product for aragonite}
-\usage{Ksp\_calcite(Tc, S, d=0)}
+\usage{Ksp_calcite(Tc, S, d=0)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}

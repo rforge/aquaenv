@@ -2,7 +2,7 @@
 \alias{K0_CO2}
 \title{K0\_CO2}
 \description{PUBLIC function: calculates the Henry's constant (solubility) for CO2}
-\usage{K0\_CO2(Tc, S)}
+\usage{K0_CO2(Tc, S)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}

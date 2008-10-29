@@ -2,7 +2,7 @@
 \alias{K_H2S}
 \title{K\_H2S}
 \description{PUBLIC function: calculates the dissociation constant of H2S}
-\usage{K\_H2S(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
+\usage{K_H2S(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}

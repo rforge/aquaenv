@@ -2,7 +2,7 @@
 \alias{K_NH4}
 \title{K\_NH4}
 \description{PUBLIC function: calculates the dissociation constant of NH4}
-\usage{K\_NH4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
+\usage{K_NH4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}

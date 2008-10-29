@@ -2,7 +2,7 @@
 \alias{K_W}
 \title{K\_W}
 \description{PUBLIC function: calculates the ion product of H2O}
-\usage{K\_W(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
+\usage{K_W(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}

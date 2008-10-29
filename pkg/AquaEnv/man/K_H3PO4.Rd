@@ -2,7 +2,7 @@
 \alias{K_H3PO4}
 \title{K\_H3PO4}
 \description{PUBLIC function: calculates the dissociation constant of H3PO4}
-\usage{K\_H3PO4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
+\usage{K_H3PO4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}

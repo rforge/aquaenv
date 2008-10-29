@@ -2,7 +2,7 @@
 \alias{dH2AdH_tri}
 \title{dH2AdH\_tri}
 \description{PRIVATE function: calculates the derivative of [H2A(-)] of a trivalent acid with respect to [H+]}
-\usage{dH2AdH\_tri(H, SumA, K1, K2, K3)}
+\usage{dH2AdH_tri(H, SumA, K1, K2, K3)}
 \arguments{
   \item{H }{the proton concentration in a unit consistent with all other input variables (e.g. mol/kg-solution)}
   \item{SumA }{the total concentration of the acid in question in a unit consistent with all other input variables (e.g. mol/kg-solution)}

@@ -2,7 +2,7 @@
 \alias{K_HF}
 \title{K\_HF}
 \description{PUBLIC function: calculates the dissociation constant of HF}
-\usage{K\_HF(Tc, S, d=0)}
+\usage{K_HF(Tc, S, d=0)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}

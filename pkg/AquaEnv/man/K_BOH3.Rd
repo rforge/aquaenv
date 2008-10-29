@@ -2,7 +2,7 @@
 \alias{K_BOH3}
 \title{K\_BOH3}
 \description{PUBLIC function: calculates the dissociation constant of B(OH)3}
-\usage{K\_BOH3(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
+\usage{K_BOH3(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}
