@@ -1,5 +1,5 @@
 <general>
-	<Version>0.1</Version>
+	<Version>0.2</Version>
 	<Date>2008-10-27</Date>
 	<Title>AquaEnv - an integrated development toolbox for aquatic chemical model generation</Title>
 	<Author>Andreas F. Hofmann</Author>
@@ -60,7 +60,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <calcH_CO2>
 	<title>calcH\_CO2</title>
 	<description>PRIVATE function: calculates [H+]  from an object of class aquanenv and a given [CO2]: by analytically solving the resulting quadratic equation</description>
-	<usage>calcH\_CO2(aquaenv, CO2)</usage>
+	<usage>calcH_CO2(aquaenv, CO2)</usage>
 	<arguments>
 		<aquaenv>object of class aquaenv</aquaenv>
 		<CO2>given [CO2] in mol/kg-solution</CO2>
@@ -74,8 +74,8 @@ Additionally, the sensitivity of the system to variations in the input variables
 
 <calcH_TA>
 	<title>calcH\_TA</title>
-	<description>PRIVATE function: calculates [H+]  from an object of class aquanenv and a given [TA]: first according to Follows2006, if no solution is found after Technicals$maxiter iterations, uniroot is applied</description>
-	<usage>calcH\_TA(aquaenv, TA)</usage>
+	<description>PRIVATE function: calculates [H+]  from an object of class aquanenv and a given [TA]: first according to Follows2006, if no solution is found after Technicals\$maxiter iterations, uniroot is applied</description>
+	<usage>calcH_TA(aquaenv, TA)</usage>
 	<arguments>
 		<aquaenv>object of class aquaenv</aquaenv>
 		<TA>given [TA] in mol/kg-solution</TA>
@@ -90,7 +90,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <calcSumCO2_pH_CO2>
 	<title>calcSumCO2\_pH\_CO2</title>
 	<description>PRIVATE function: calculates [SumCO2]  from an object of class aquanenv, a given pH, and a given [CO2]: by analytically solving the resulting equation</description>
-	<usage>calcSumCO2\_pH\_CO2(aquaenv, pH, CO2)</usage>
+	<usage>calcSumCO2_pH_CO2(aquaenv, pH, CO2)</usage>
 	<arguments>
 		<aquaenv>object of class aquaenv</aquaenv>
 		<pH>given pH on the free proton scale</pH>
@@ -106,7 +106,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <calcSumCO2_pH_TA>
 	<title>calcSumCO2\_pH\_TA</title>
 	<description>PRIVATE function: calculates [SumCO2]  from an object of class aquanenv, a given pH, and a given [TA]: by analytically solving the resulting quadratic equation</description>
-	<usage>calcSumCO2\_pH\_TA(aquaenv, pH, TA)</usage>
+	<usage>calcSumCO2_pH_TA(aquaenv, pH, TA)</usage>
 	<arguments>
 		<aquaenv>object of class aquaenv</aquaenv>
 		<pH>given pH on the free proton scale</pH>
@@ -122,7 +122,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <calcSumCO2_TA_CO2>
 	<title>calcSumCO2\_TA\_CO2</title>
 	<description>PRIVATE function: calculates [SumCO2] from an object of class aquanenv, a given [TA], and a given [CO2]: by analytically solving the resulting quadratic equation</description>
-	<usage>calcSumCO2\_TA\_CO2(aquaenv, TA, CO2)</usage>
+	<usage>calcSumCO2_TA_CO2(aquaenv, TA, CO2)</usage>
 	<arguments>
 		<aquaenv>object of class aquaenv</aquaenv>
 		<TA>given [TA] in mol/kg-solution</TA>

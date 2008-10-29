@@ -1,5 +1,5 @@
 <general>
-	<Version>0.1</Version>
+	<Version>0.2</Version>
 	<Date>2008-10-27</Date>
 	<Title>AquaEnv - an integrated development toolbox for aquatic chemical model generation</Title>
 	<Author>Andreas F. Hofmann</Author>
@@ -61,7 +61,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_BOH3>
 	<title>K\_BOH3</title>
 	<description>PUBLIC function: calculates the dissociation constant of B(OH)3</description>
-	<usage>K\_BOH3(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_BOH3(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -80,7 +80,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_CO2>
 	<title>K\_CO2</title>
 	<description>PUBLIC function: calculates the dissociation constant of CO2</description>
-	<usage>K\_CO2(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_CO2(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -99,7 +99,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_H2PO4>
 	<title>K\_H2PO4</title>
 	<description>PUBLIC function: calculates the dissociation constant of H2PO4</description>
-	<usage>K\_H2PO4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_H2PO4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -118,7 +118,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_H2S>
 	<title>K\_H2S</title>
 	<description>PUBLIC function: calculates the dissociation constant of H2S</description>
-	<usage>K\_H2S(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_H2S(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -137,7 +137,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_H3PO4>
 	<title>K\_H3PO4</title>
 	<description>PUBLIC function: calculates the dissociation constant of H3PO4</description>
-	<usage>K\_H3PO4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_H3PO4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -156,7 +156,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_HCO3>
 	<title>K\_HCO3</title>
 	<description>PUBLIC function: calculates the dissociation constant of HCO3</description>
-	<usage>K\_HCO3(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_HCO3(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -175,7 +175,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_HF>
 	<title>K\_HF</title>
 	<description>PUBLIC function: calculates the dissociation constant of HF</description>
-	<usage>K\_HF(Tc, S, d=0)</usage>
+	<usage>K_HF(Tc, S, d=0)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -192,7 +192,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_HPO4>
 	<title>K\_HPO4</title>
 	<description>PUBLIC function: calculates the dissociation constant of HPO4</description>
-	<usage>K\_HPO4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_HPO4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -211,7 +211,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_HSO4>
 	<title>K\_HSO4</title>
 	<description>PUBLIC function: calculates the dissociation constant of HSO4</description>
-	<usage>K\_HSO4(Tc, S, d=0)</usage>
+	<usage>K_HSO4(Tc, S, d=0)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -228,7 +228,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_NH4>
 	<title>K\_NH4</title>
 	<description>PUBLIC function: calculates the dissociation constant of NH4</description>
-	<usage>K\_NH4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_NH4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -247,7 +247,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_SiOH4>
 	<title>K\_SiOH4</title>
 	<description>PUBLIC function: calculates the dissociation constant of SiOH4</description>
-	<usage>K\_SiOH4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_SiOH4(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -266,7 +266,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_SiOOH3>
 	<title>K\_SiOOH3</title>
 	<description>PUBLIC function: calculates the dissociation constant of SiOOH3</description>
-	<usage>K\_SiOOH3(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_SiOOH3(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -285,7 +285,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K_W>
 	<title>K\_W</title>
 	<description>PUBLIC function: calculates the ion product of H2O</description>
-	<usage>K\_W(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
+	<usage>K_W(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -304,7 +304,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K0_CO2>
 	<title>K0\_CO2</title>
 	<description>PUBLIC function: calculates the Henry's constant (solubility) for CO2</description>
-	<usage>K0\_CO2(Tc, S)</usage>
+	<usage>K0_CO2(Tc, S)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -320,7 +320,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <K0_O2>
 	<title>K0\_O2</title>
 	<description>PUBLIC function: calculates the Henry's constant (solubility) for O2</description>
-	<usage>K0\_O2(Tc, S)</usage>
+	<usage>K0_O2(Tc, S)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -336,7 +336,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <Ksp_aragonite>
 	<title>Ksp\_aragonite</title>
 	<description>PUBLIC function: calculates the solubility product for aragonite</description>
-	<usage>Ksp\_aragonite(Tc, S, d=0)</usage>
+	<usage>Ksp_aragonite(Tc, S, d=0)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -353,7 +353,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <Ksp_calcite>
 	<title>Ksp\_calcite</title>
 	<description>PUBLIC function: calculates the solubility product for aragonite</description>
-	<usage>Ksp\_calcite(Tc, S, d=0)</usage>
+	<usage>Ksp_calcite(Tc, S, d=0)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -408,7 +408,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <splitS_K_CO2>
 	<title>splitS\_K\_CO2</title>
 	<description>PRIVATE function: returns the intersection of the formulae for K\_CO2 for S < 5 and S >= 5</description>
-	<usage>splitS\_K\_CO2(Tk)</usage>
+	<usage>splitS_K_CO2(Tk)</usage>
 	<arguments>
 		<Tk>temperature in Kelvin</Tk>
 	</arguments>
@@ -422,7 +422,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <splitS_K_HCO3>
 	<title>splitS\_K\_HCO3</title>
 	<description>PRIVATE function: returns the intersection of the formulae for K\_HCO3 for S < 5 and S >= 5</description>
-	<usage>splitS\_K\_HCO3(Tk)</usage>
+	<usage>splitS_K_HCO3(Tk)</usage>
 	<arguments>
 		<Tk>temperature in Kelvin</Tk>
 	</arguments>

@@ -1,5 +1,5 @@
 <general>
-	<Version>0.1</Version>
+	<Version>0.2</Version>
 	<Date>2008-10-27</Date>
 	<Title>AquaEnv - an integrated development toolbox for aquatic chemical model generation</Title>
 	<Author>Andreas F. Hofmann</Author>
