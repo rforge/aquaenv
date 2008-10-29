@@ -2,7 +2,7 @@
 \alias{as.data.frame.aquaenv}
 \title{as.data.frame.aquaenv}
 \description{PUBLIC function: converts an object of class aquaenv to a standard R data frame}
-\usage{as.data.frame.aquaenv(aquaenv, ...)}
+\usage{as.data.frame(aquaenv, ...)}
 \arguments{
   \item{aquaenv }{object of type aquaenv}
   \item{... }{further arguments are passed on}

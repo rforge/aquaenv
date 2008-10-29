@@ -1,7 +1,7 @@
 \name{basicplot}
 \alias{basicplot}
 \title{basicplot}
-\description{PRIVATE function: bbasic wrapper for the R plot function for plotting objects of class aquaenv; no return value, just side-effect}
+\description{PRIVATE function: basic wrapper for the R plot function for plotting objects of class aquaenv; no return value, just side-effect}
 \usage{basicplot(aquaenv, xval, type="l", mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0), size=c(15,13), mfrow=c(11,10), device="x11", filename="aquaenv", ...)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}

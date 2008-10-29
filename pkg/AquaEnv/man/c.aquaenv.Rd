@@ -2,7 +2,7 @@
 \alias{c.aquaenv}
 \title{c.aquaenv}
 \description{PRIVATE function: adds an element to an object of class aquaenv}
-\usage{c.aquaenv(aquaenv, x, ...)}
+\usage{c(aquaenv, x, ...)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}
   \item{x }{a vector of the form c(value, name) representing the element to be inserted into the object of class aquaenv}

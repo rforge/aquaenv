@@ -17,7 +17,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 
 <basicplot>
 	<title>basicplot</title>
-	<description>PRIVATE function: bbasic wrapper for the R plot function for plotting objects of class aquaenv; no return value, just side-effect</description>
+	<description>PRIVATE function: basic wrapper for the R plot function for plotting objects of class aquaenv; no return value, just side-effect</description>
 	<usage>basicplot(aquaenv, xval, type="l", mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0), size=c(15,13), mfrow=c(11,10), device="x11", filename="aquaenv", ...)</usage>
 	<arguments>
 		<aquaenv>object of class aquaenv</aquaenv>
@@ -67,7 +67,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <c.aquaenv>
 	<title>c.aquaenv</title>
 	<description>PRIVATE function: adds an element to an object of class aquaenv</description>
-	<usage>c.aquaenv(aquaenv, x, ...)</usage>
+	<usage>c(aquaenv, x, ...)</usage>
 	<arguments>
 		<aquaenv>object of class aquaenv</aquaenv>
 		<x>a vector of the form c(value, name) representing the element to be inserted into the object of class aquaenv</x>
@@ -138,7 +138,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 		<x>the object to be converted (pH value, K* value, or concentration value)</x>
 		<vartype>the type of x, either "pHscale", "KHscale", or "conc"</vartype>
 		<what>the type of conversion to be done, for pH scales one of "free2tot", "free2sws", "free2nbs", ... (any combination of "free", "tot", "sws", and "nbs"); for concentrations one of "molar2molal", "molar2molin", ... (any combination of "molar" (mol/l), "molal" (mol/kg-H2O), and "molin" (mol/kg-solution))</what>
-		<Tc>temperature in degrees centigrade</Tc>
+		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity (in practical salinity units: no unit)</S>
 		<d>depth in meters</d>
 		<SumH2SO4>total sulfate concentration in mol/kg-solution; if not supplied this is calculated from S</SumH2SO4>
@@ -226,7 +226,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <length.aquaenv>
 	<title>length.aquaenv</title>
 	<description>PRIVATE function: returns the (maximal) length of the elements in an object of class aquaenv (i.e. > 1 if one of the input variables was a vector)</description>
-	<usage>length.aquaenv(aquaenv, ...)</usage>
+	<usage>length(aquaenv, ...)</usage>
 	<arguments>
 		<aquaenv>object of class aquaenv</aquaenv>
 		<...>further arguments will be passed</...>
@@ -241,7 +241,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <merge.aquaenv>
 	<title>merge.aquaenv</title>
 	<description>PRIVATE function: merges the elements of two objects of class aquaenv: element names are taken from the first argument, the elements of which are also first in the merged object</description>
-	<usage>merge.aquaenv(aquaenv1, aquaenv2, ...)</usage>
+	<usage>merge(aquaenv1, aquaenv2, ...)</usage>
 	<arguments>
 		<aquaenv1>object of class aquaenv: this is where the element names are taken from</aquaenv1>
 		<aquaenv2>object of class aquaenv: must contain at leas all the element (names) as aquaenv1, extra elements are ignored</aquaenv2>

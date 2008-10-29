@@ -18,7 +18,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <aquaenv>
 	<title>aquaenv</title>
 	<description>PUBLIC function: the main function of the package AquaEnv: creates an object of class aquaenv</description>
-	<usage>aquaenv(Tc, S, d=0, SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0, SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL, SumH2SO4=NULL, SumHF=NULL, TA=NULL, pH=NULL, pCO2=NULL, CO2=NULL, speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, SumH2SO4\_Koffset=0, SumHF\_Koffset=0, revelle=FALSE, skeleton=FALSE)</usage>
+	<usage>aquaenv(Tc, S, d=0, SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0, SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL, SumH2SO4=NULL, SumHF=NULL, TA=NULL, pH=NULL, pCO2=NULL, CO2=NULL, speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, SumH2SO4_Koffset=0, SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE)</usage>
 	<arguments>
 		<Tc>temperature in degrees centigrade</Tc>
 		<S>salinity in practical salinity units (i.e. no unit)</S>
@@ -93,7 +93,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <as.data.frame.aquaenv>
 	<title>as.data.frame.aquaenv</title>
 	<description>PUBLIC function: converts an object of class aquaenv to a standard R data frame</description>
-	<usage>as.data.frame.aquaenv(aquaenv, ...)</usage>
+	<usage>as.data.frame(aquaenv, ...)</usage>
 	<arguments>
 		<aquaenv>object of type aquaenv</aquaenv>
 		<...>further arguments are passed on</...>
@@ -123,7 +123,7 @@ Additionally, the sensitivity of the system to variations in the input variables
 <plot.aquaenv>
 	<title>plot.aquaenv</title>
 	<description>PUBLIC function: high level plot function for objects of class aquaenv</description>
-	<usage>plot.aquaenv(aquaenv, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, ...)</usage>
+	<usage>plot(aquaenv, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, ...)</usage>
 	<arguments>
 		<aquaenv>object of class aquaenv</aquaenv>
 		<xval>a vector of the (maximal) length of the elements of aquaenv against which they are to be plotted</xval>

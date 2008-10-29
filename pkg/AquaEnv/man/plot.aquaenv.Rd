@@ -2,7 +2,7 @@
 \alias{plot.aquaenv}
 \title{plot.aquaenv}
 \description{PUBLIC function: high level plot function for objects of class aquaenv}
-\usage{plot.aquaenv(aquaenv, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, ...)}
+\usage{plot(aquaenv, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, ...)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}
   \item{xval }{a vector of the (maximal) length of the elements of aquaenv against which they are to be plotted}

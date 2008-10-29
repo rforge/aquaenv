@@ -2,7 +2,7 @@
 \alias{aquaenv}
 \title{aquaenv}
 \description{PUBLIC function: the main function of the package AquaEnv: creates an object of class aquaenv}
-\usage{aquaenv(Tc, S, d=0, SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0, SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL, SumH2SO4=NULL, SumHF=NULL, TA=NULL, pH=NULL, pCO2=NULL, CO2=NULL, speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, SumH2SO4\_Koffset=0, SumHF\_Koffset=0, revelle=FALSE, skeleton=FALSE)}
+\usage{aquaenv(Tc, S, d=0, SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0, SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL, SumH2SO4=NULL, SumHF=NULL, TA=NULL, pH=NULL, pCO2=NULL, CO2=NULL, speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, SumH2SO4_Koffset=0, SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}
