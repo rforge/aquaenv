@@ -29,10 +29,10 @@ convert.aquaenv <- function(aquaenv,           # object of class aquaenv
 
 # PRIVATE function:
 # returns the (maximal) length of the elements in an object of class aquaenv (i.e. > 1 if one of the input variables was a vector)
-length.aquaenv <- function(aquaenv,           # object of class aquaenv
+length.aquaenv <- function(x,           # object of class aquaenv
                            ...)
   {
-    for (e in aquaenv)
+    for (e in x)
       {
         if (length(e) > 1)
           {
