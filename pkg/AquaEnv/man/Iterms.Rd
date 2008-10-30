@@ -13,6 +13,6 @@
   \item{sqrtI }{the square root of the ionic strength}
   \item{I*sqrtI }{the ionic strength times its square root}
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
 

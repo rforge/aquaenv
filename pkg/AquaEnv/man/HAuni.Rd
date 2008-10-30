@@ -8,6 +8,6 @@
   \item{K }{the dissociation constant of the acid in question in a unit consistent with all other input variables (e.g. mol/kg-solution)}
   \item{H }{the proton concentration in a unit consistent with all othert input variables (e.g. mol/kg-solution)}
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
 

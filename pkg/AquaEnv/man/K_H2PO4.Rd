@@ -13,7 +13,7 @@
 \value{
   the dissociation constant of H2PO4 in mol/kg-solution on the free proton pH scale
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Millero1995 (original, SWS pH version), DOE1994 (in a later revision cites Millero1995)}
 \keyword{misc}
 

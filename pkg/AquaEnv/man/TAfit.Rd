@@ -14,6 +14,6 @@
 \value{
   a list of three values ([TA] in mol/kg-solution, [SumCO2] in mol/kg-solution, sum of the squared residuals)
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
 

@@ -56,18 +56,18 @@ c.aquaenv <- function(aquaenv,                # object of class aquaenv
 
 # PRIVATE function:
 # merges the elements of two objects of class aquaenv: element names are taken from the first argument, the elements of which are also first in the merged object
-merge.aquaenv <- function(aquaenv1,           # object of class aquaenv: this is where the element names are taken from
-                          aquaenv2,           # object of class aquaenv: must contain at leas all the element (names) as aquaenv1, extra elements are ignored
+merge.aquaenv <- function(x,           # object of class aquaenv: this is where the element names are taken from
+                          y,           # object of class aquaenv: must contain at leas all the element (names) as x, extra elements are ignored
                           ...)
   {
-    nam <- names(aquaenv1)
+    nam <- names(x)
     for (n in nam)
       {
-        unit <- attr(aquaenv1[[n]], "unit")
-        aquaenv1[[n]] <- c(aquaenv1[[n]], aquaenv2[[n]])
-        attr(aquaenv1[[n]], "unit") <- unit
+        unit <- attr(x[[n]], "unit")
+        x[[n]] <- c(x[[n]], y[[n]])
+        attr(x[[n]], "unit") <- unit
       }
-    return(aquaenv1)                          # object of class aquaenv with merged elements
+    return(x)                          # object of class aquaenv with merged elements
   }
 
 

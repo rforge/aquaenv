@@ -13,7 +13,7 @@
 \value{
   the dissociation constant of NH4 in mol/kg-solution on the free proton pH scale
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Millero1995a, Millero1995, corrected by Lewis1998}
 \keyword{misc}
 

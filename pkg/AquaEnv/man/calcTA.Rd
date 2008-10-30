@@ -10,6 +10,6 @@
 \value{
   the calculated [TA]
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
 

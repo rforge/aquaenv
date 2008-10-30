@@ -8,7 +8,7 @@
   \item{d }{the depth in meters}
   \item{coeff }{a vector containing the coefficients a0, a1, a2, b0, b1, b2 for the respective dissociation constant or solubility product}
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Millero1995, corrected by Lewis1998}
 \keyword{misc}
 

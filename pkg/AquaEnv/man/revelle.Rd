@@ -9,7 +9,7 @@
 \value{
   the revelle factor
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Sundquist1979, Zeebe2001, Emerson2008}
 \keyword{misc}
 

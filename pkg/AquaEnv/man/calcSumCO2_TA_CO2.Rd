@@ -11,6 +11,6 @@
 \value{
   calculated [SumCO2] in mol/kg-solution
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
 

@@ -13,6 +13,6 @@
 \value{
   object of class aquaenv which contains a titration simulation
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
 

@@ -2,7 +2,7 @@
 \alias{length.aquaenv}
 \title{length.aquaenv}
 \description{PRIVATE function: returns the (maximal) length of the elements in an object of class aquaenv (i.e. > 1 if one of the input variables was a vector)}
-\usage{length(aquaenv, ...)}
+\usage{length.aquaenv(aquaenv, ...)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}
   \item{... }{further arguments will be passed}

@@ -13,7 +13,7 @@
 \value{
   the dissociation constant of B(OH)3 in mol/kg-solution on the free proton pH scale
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Dickson1990, DOE1994, Millero1995 (molality version given), Zeebe2001}
 \keyword{misc}
 

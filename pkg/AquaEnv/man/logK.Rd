@@ -14,6 +14,6 @@
 \value{
   the log of the K associated with the coefficients
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
 

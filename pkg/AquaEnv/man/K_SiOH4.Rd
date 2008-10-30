@@ -13,7 +13,7 @@
 \value{
   the dissociation constant of SiOH4 in mol/kg-solution on the free proton pH scale
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Millero1988, DOE1994, Millero1995}
 \keyword{misc}
 

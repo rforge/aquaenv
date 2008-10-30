@@ -441,36 +441,36 @@ aquaenv <- function(Tc,S, d=0,
   }
 
 
-plot.aquaenv <- function(aquaenv, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, ...)
+plot.aquaenv <- function(x, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, ...)
   {
     if ((!bjerrum) && (!cumulative))
       {
         if (is.null(what))
           {
-            plotall(aquaenv=aquaenv, xval=xval, ...)
+            plotall(aquaenv=x, xval=xval, ...)
           }
         else 
           {
-            selectplot(aquaenv=aquaenv, xval=xval, what=what, ...)
+            selectplot(aquaenv=x, xval=xval, what=what, ...)
           }
       }
     else if (bjerrum)
       {
-        bjerrumplot(aquaenv=aquaenv, what=what, ...)
+        bjerrumplot(aquaenv=x, what=what, ...)
       }
     else
       {
-        cumulativeplot(aquaenv=aquaenv, xval=xval, what=what, ...)
+        cumulativeplot(aquaenv=x, xval=xval, what=what, ...)
       }
   } 
 
 
     
-as.data.frame.aquaenv <- function(aquaenv, ...)
+as.data.frame.aquaenv <- function(x, ...)
   {
-    len <- length(aquaenv)
+    len <- length(x)
     temp  <- list()
-    for (e in aquaenv)
+    for (e in x)
       {
         if (length(e) > 1)
           {
@@ -481,7 +481,7 @@ as.data.frame.aquaenv <- function(aquaenv, ...)
             temp <- c(temp, list(rep(e,len)))
           }
       }
-    names(temp) <- names(aquaenv)
+    names(temp) <- names(x)
 
     return(as.data.frame(temp))
   }

@@ -11,7 +11,7 @@
 \value{
   the solubility product for calcite in (mol/kg-solution)2
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Mucci1983, Boudreau1996}
 \keyword{misc}
 

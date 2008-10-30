@@ -9,6 +9,6 @@
 \value{
   the value for S where the two formulae intersect at temperature Tk
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
 

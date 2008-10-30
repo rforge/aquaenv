@@ -13,7 +13,7 @@
 \value{
   the ion product of H2O in (mol/kg-solution)2 on the free proton pH scale
 }
-\author{Andreas F. Hofmann}
+\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Millero1995 (SWS pH version), DOE1994 (cites Millero1995), Zeebe2001}
 \keyword{misc}
 
