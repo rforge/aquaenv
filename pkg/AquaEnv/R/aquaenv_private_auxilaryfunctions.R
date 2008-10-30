@@ -333,9 +333,13 @@ basicplot <- function(aquaenv,                # object of class aquaenv
                       mfrow=c(11,10),         # standard plot parameter;     default: 11 columns and 10 rows of plots
                       device="x11",           # the device to plot on;       default: "x11" (can also be "eps" or "pdf")
                       filename="aquaenv",     # filename to be used if "eps" or "pdf" is selected for device
+                      newdevice,              # flag: if TRUE, new plot device is opened
                       ...)
   {
-    opendevice(device, size, filename)
+    if (newdevice)
+      {
+        opendevice(device, size, filename)
+      }
     par(mfrow=mfrow, mar=mar, oma=oma, mgp=mgp)
     aquaenv <- as.data.frame(aquaenv)
     for (i in 1:length(aquaenv))
@@ -372,7 +376,7 @@ plotall <- function(aquaenv,                  # object of class aquaenv
                     xval,                     # x-value: the independent variable describing a change in elements of an object of class aquaenv
                     ...)
   {
-    basicplot(aquaenv, xval=xval, ...)
+    basicplot(aquaenv, xval=xval,  ...)
   }
 
 
@@ -410,6 +414,7 @@ bjerrumplot <- function(aquaenv,              # object of class aquaenv
                         legendinset=0.05,     # standard legend parameter inset   
                         legendlwd=4,          # standard legend parameter lwd: line width of lines in legend
                         bg="white",           # standard legend parameter: default background color: white
+                        newdevice,            # flag: if TRUE, new plot device is opened
                         ...)
   {
     if (is.null(what))
@@ -420,8 +425,11 @@ bjerrumplot <- function(aquaenv,              # object of class aquaenv
     bjerrumvarslist <- aquaenv[what]
     class(bjerrumvarslist) <- "aquaenv"
     bjerrumvars <- as.data.frame(bjerrumvarslist)
-    
-    opendevice(device, size, filename)
+
+    if (newdevice)
+      {
+        opendevice(device, size, filename)
+      }
     par(mar=mar, mgp=mgp, oma=oma)
 
     if (is.null(palette))
@@ -478,6 +486,7 @@ cumulativeplot <- function(aquaenv,           # object of class aquaenv
                            legendlwd=4,       # standard legend parameter lwd: line width of lines in legend
                            bg="white",        # standard legend parameter: default background color: white
                            y.intersp=1.2,     # standard legend parameter; default: 1.2 lines space between the lines in the legend
+                           newdevice,         # flag: if TRUE, new plot device is opened
                            ...)
   {
     if (is.null(what))
@@ -501,8 +510,11 @@ cumulativeplot <- function(aquaenv,           # object of class aquaenv
       {
         palette <- 1:length(names(cumulativevars))
       }
-    
-    opendevice(device, size, filename)
+
+    if (newdevice)
+      {
+        opendevice(device, size, filename)
+      }
     par(mar=mar, mgp=mgp, oma=oma)
         
     plot(xval, rep(0,length(xval)), type="l", ylim=ylim, col="white", ...)

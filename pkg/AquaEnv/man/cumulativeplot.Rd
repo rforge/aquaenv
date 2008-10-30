@@ -2,7 +2,11 @@
 \alias{cumulativeplot}
 \title{cumulativeplot}
 \description{PRIVATE function: creates a cumulative plot from the elements of an object of class aquaenv given in what; no return value, just side-effect}
-\usage{cumulativeplot(aquaenv, xval, what, total=TRUE, palette=NULL, device="x11", filename="aquaenv", size=c(12,10), ylim=NULL, lwd=2, mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0), legendposition="bottomleft", legendinset=0.05, legendlwd=4, bg="white", y.intersp=1.2, ...)}
+\usage{cumulativeplot(aquaenv, xval, what, total=TRUE, palette=NULL,
+device="x11", filename="aquaenv", size=c(12,10), ylim=NULL, lwd=2,
+mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
+legendposition="bottomleft", legendinset=0.05, legendlwd=4, bg="white",
+y.intersp=1.2, newdevice, ...)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}
   \item{xval }{x-value: the independent variable describing a change in elements of an object of class aquaenv}
@@ -21,7 +25,9 @@
   \item{legendinset }{standard legend parameter inset}
   \item{legendlwd }{standard legend parameter lwd: line width of lines in legend}
   \item{bg }{standard legend parameter: default background color: white}
-  \item{y.intersp }{standard legend parameter; default: 1.2 lines space between the lines in the legend}
+  \item{y.intersp }{standard legend parameter; default: 1.2 lines space
+    between the lines in the legend}
+  \item{newdevice}{flag: if TRUE, new plot device is opened}
   \item{... }{further arguments will be passed}
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}

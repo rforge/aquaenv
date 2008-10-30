@@ -441,26 +441,26 @@ aquaenv <- function(Tc,S, d=0,
   }
 
 
-plot.aquaenv <- function(x, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, ...)
+plot.aquaenv <- function(x, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, newdevice=TRUE, ...)
   {
     if ((!bjerrum) && (!cumulative))
       {
         if (is.null(what))
           {
-            plotall(aquaenv=x, xval=xval, ...)
+            plotall(aquaenv=x, xval=xval, newdevice=newdevice,...)
           }
         else 
           {
-            selectplot(aquaenv=x, xval=xval, what=what, ...)
+            selectplot(aquaenv=x, xval=xval, what=what, newdevice=newdevice,...)
           }
       }
     else if (bjerrum)
       {
-        bjerrumplot(aquaenv=x, what=what, ...)
+        bjerrumplot(aquaenv=x, what=what, newdevice=newdevice,...)
       }
     else
       {
-        cumulativeplot(aquaenv=x, xval=xval, what=what, ...)
+        cumulativeplot(aquaenv=x, xval=xval, what=what, newdevice=newdevice,...)
       }
   } 
 
