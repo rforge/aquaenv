@@ -3,8 +3,9 @@
 \title{Constants}
 \description{PUBLIC list: a collection of physical and chemical constants}
 \value{A list containing:
-  	\item{R}{the gas constant (corrected after Lewis1998, in Millero1995: R = 83.131)}
-	\item{uMolToMol}{conversion factor from umol to mol}
+        \item{R}{(bar*cm3)/(mol*K) the gas constant (corrected after Lewis1998, in Millero1995: R = 83.131); digits extended after DOE1994)}
+	\item{F}{C/mol the Faraday constant (charge per mol of electrons) (N\_A*e-): DOE1994}
+  	\item{uMolToMol}{conversion factor from umol to mol}
 	\item{absZero}{absolute zero in degrees centigrade}
 	\item{e}{relative dielectric constanf of seawater (Zeebe2001)}
 	\item{K_HNO2}{dissociation constant of HNO2:  mol/l, NBS pH scale, hybrid constant (Riordan2005)}

@@ -1,10 +1,11 @@
 # a list of physical-chemical constants used in AquaEnv
 Constants <- list(
-                  R         = 83.145,          # the gas constant (corrected after Lewis1998, in Millero1995: R = 83.131)
+                  R         = 83.1451070,      # (bar*cm3)/(mol*K) the gas constant (corrected after Lewis1998, in Millero1995: R = 83.131; digits extended after DOE1994)
+                  F         = 96485.30929,     # C/mol the Faraday constant (charge per mol of electrons) (N_A*e-)
                   uMolToMol = 1e-6,            # conversion factor from umol to mol
                   absZero   = -273.15,         # absolute zero in degrees centigrade
                   e         = 79,              # relative dielectric constanf of seawater (Zeebe2001)
-
+                  
                   K_HNO2    = 1.584893e-3,     # dissociation constant of HNO2:  mol/l, NBS pH scale, hybrid constant (Riordan2005)
                   K_HNO3    = 23.44,           # dissociation constant of HNO3:  assumed on mol/kg-soln and free pH scale, stoichiometric constant (Soetaert pers. comm.)
                   K_H2SO4   = 100,             # dissociation constant of H2SO4: assumed on mol/kg-soln and free pH scale, stoichiometric constant (Atkins1996)
