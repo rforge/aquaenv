@@ -89,7 +89,9 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
                   Evals=FALSE,                # are the supplied datapoints pH or E (V) values?
                   K1fit=FALSE,                # should K1 be fitted as well?
                   equalspaced=TRUE,           # are the mass values of titcurve equally spaced?
-                  seawater_titrant=FALSE)     # is the titrant based on natural seawater? (does it contain SumBOH4, SumHSO4, and SumHF in the same proportions as seawater, i.e., correlated to S?); Note that you can only assume a seawater based titrant (i.e. SumBOH4, SumHSO4, and SumHF ~ S) or a water based titrant (i.e. SumBOH4, SumHSO4, and SumHF = 0). It is not possible to give values for SumBOH4, SumHSO4, and SumHF of the titrant. 
+                  seawater_titrant=FALSE,     # is the titrant based on natural seawater? (does it contain SumBOH4, SumHSO4, and SumHF in the same proportions as seawater, i.e., correlated to S?); Note that you can only assume a seawater based titrant (i.e. SumBOH4, SumHSO4, and SumHF ~ S) or a water based titrant (i.e. SumBOH4, SumHSO4, and SumHF = 0). It is not possible to give values for SumBOH4, SumHSO4, and SumHF of the titrant.
+                  pHscale="free",             # either "free", "total", "sws" or "nbs": if the titration curve contains pH data: on which scale is it measured?
+                  debug=FALSE)                # debug mode: the last simulated titration tit and the converted pH profile calc are made global variables for investigation and plotting
   {
     ae$Na <- NULL   # make sure ae gets cloned as "skeleton": "skeleton" TRUE or FALSE is determined from the presence of a value for Na
 
@@ -99,18 +101,22 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
 
         ae$SumCO2  <- state[[1]]
         tit        <- titration(aquaenv(ae=ae, TA=state[[2]], K1=K1), mass_sample=mass_sample, mass_titrant=titcurve[,1][[length(titcurve[,1])]],
-                                conc_titrant=conc_titrant, S_titrant=S_titrant, steps=(length(titcurve[,1])-1), type=type, K1=K1, seawater_titrant=seawater_titrant)    
+                                conc_titrant=conc_titrant, S_titrant=S_titrant, steps=(length(titcurve[,1])-1), type=type, K1=K1, seawater_titrant=seawater_titrant)
         calc       <- tit$pH
        
         if (Evals)
           {
             calc <- state[[3]] - ((Constants$R/10)*ae$Tk/Constants$F)*log(calc) #Nernst Equation: E = E0 -(RT/F)ln([H+]); 83.14510 (bar*cm3)/(mol*K) = 8.314510 J/(mol*K): division by 10
           }
+        else if (!(pHscale=="free"))
+          {
+            calc <- convert(calc, "pHscale", paste("free2", pHscale, sep=""), Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF) #conversion done here not on data before call, since S changes along the titration!       
+          }
         if (!equalspaced)
           {
             # to cope with not equally spaced delta values for the masses (i.e. per step of the titration, NOT the same amount of titrant has been added),
             # we fit a function through our calculated pH curve (NOT the data)
-            calcfun <- approxfun(tit$delta_mass_titrant, calc, rule=2)
+            calcfun   <- approxfun(tit$delta_mass_titrant, calc, rule=2)
 
             residuals <- titcurve[,2]-calcfun(titcurve[,1])
           }
@@ -118,7 +124,13 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
           {     
             residuals <- titcurve[,2]-calc
           }
-       
+        
+        if (debug) # debug mode: make some variables global
+          {
+            tit  <<- tit
+            calc <<- calc
+          }
+
         return(residuals)
       }
 
@@ -153,7 +165,16 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
       }
     else
       {
-        out    <- nls.lm(fn=residuals, par=c(TASumCO2guess, TASumCO2guess))
+
+
+
+        
+        out    <<- nls.lm(fn=residuals, par=c(TASumCO2guess, TASumCO2guess))
+
+
+
+        
+
         result <- list(out$par[[2]], out$par[[1]], out$deviance)
         
         names(result) <- c("TA","SumCO2","sumofsquares")
