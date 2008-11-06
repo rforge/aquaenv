@@ -1,6 +1,6 @@
-\name{sample1}
-\alias{sample1}
-\title{sample1}
+\name{sample3}
+\alias{sample3}
+\title{sample3}
 \description{PUBLIC dataset: titration curve for TA determination,
   obtained in the lab of the  NIOO-CEME, Yerseke, The Netherlands}
 \details{Metadata:
