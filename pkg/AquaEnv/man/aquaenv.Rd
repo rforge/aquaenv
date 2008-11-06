@@ -2,7 +2,12 @@
 \alias{aquaenv}
 \title{aquaenv}
 \description{PUBLIC function: the main function of the package AquaEnv: creates an object of class aquaenv}
-\usage{aquaenv(Tc, S, d=0, SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0, SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL, SumH2SO4=NULL,SumHF=NULL, TA=NULL, pH=NULL, pCO2=NULL, CO2=NULL, speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, SumH2SO4_Koffset=0,SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE, K1=NULL)}
+\usage{aquaenv(Tc, S, d=0, SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0,
+SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL,
+SumH2SO4=NULL,SumHF=NULL, TA=NULL, pH=NULL, pCO2=NULL, CO2=NULL,
+speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,
+SumH2SO4_Koffset=0,SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE,
+k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL, k_hf=NULL)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}
@@ -29,7 +34,13 @@
   \item{SumHF_Koffset }{only used internally to calculate dTAdKdKdSumHF}
   \item{revelle }{flag: TRUE = the revelle factor is calculated}
   \item{skeleton }{flag: TRUE = a reduced amount of information is calculated yielding a smaller object of type aquaenv}
-  \item{K1}{used for TA fitting: give a K\_CO2 and NOT calculate it from T and S: i.e. K\_CO2 can be fitted in the routine as well}
+  \item{k_w}{a fixed K\_W can be specified}
+  \item{k_co2}{a fixed K\_CO2 can be specified; used for TA fitting: give a K\_CO2 and NOT calculate it from T and S: i.e. K\_CO2 can be fitted in the routine as well}
+  \item{k_hco3}{a fixed K\_HCO3 can be specified}
+  \item{k_boh3}{a fixed K\_BOH3 can be specified}
+  \item{k_hso4}{a fixed K\_HSO4 can be specified}
+  \item{k_hf}{a fixed K\_HF can be specified}
+  }
 }
 \value{
   a list containing: 

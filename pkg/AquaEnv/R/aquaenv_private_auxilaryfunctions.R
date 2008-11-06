@@ -76,7 +76,7 @@ merge.aquaenv <- function(x,           # object of class aquaenv: this is where 
 cloneaquaenv <- function(aquaenv,             # object of class aquaenv
                          TA=NULL,             # optional new value for TA
                          pH=NULL,             # optional new value for pH
-                         K1=NULL)             # used for TA fitting: give a K_CO2 and NOT calculate it from T and S: i.e. K_CO2 can be fitted in the routine as well
+                         k_co2=NULL)          # used for TA fitting: give a K_CO2 and NOT calculate it from T and S: i.e. K_CO2 can be fitted in the routine as well
   {
     if (is.null(TA) && is.null(pH))
       {
@@ -86,9 +86,9 @@ cloneaquaenv <- function(aquaenv,             # object of class aquaenv
                    SumSiOH4=aquaenv$SumSiOH4, SumHNO3=aquaenv$SumHNO3, SumHNO2=aquaenv$SumHNO2, SumBOH3=aquaenv$SumBOH3, SumH2SO4=aquaenv$SumH2SO4,
                    SumHF=aquaenv$SumHF, pH=pH, TA=TA,
                    speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), revelle=(!is.null(aquaenv$revelle)), dsa=(!is.null(aquaenv$dTAdH)))
-    if (!is.null(K1))
+    if (!is.null(k_co2))
       {
-        res$K_CO2                   <- rep(K1,length(res))
+        res$K_CO2                   <- rep(k_co2,length(res))
         attr(res$K_CO2, "unit")     <- "mol/kg-soln"
         attr(res$K_CO2, "pH scale") <- "free"
       }

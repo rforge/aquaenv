@@ -31,7 +31,12 @@ aquaenv <- function(Tc,S, d=0,
                     SumHF_Koffset=0,
                     revelle=FALSE,
                     skeleton=FALSE,
-                    K1=NULL)
+                    k_w=NULL,
+                    k_co2=NULL,
+                    k_hco3=NULL,
+                    k_boh3=NULL,
+                    k_hso4=NULL,
+                    k_hf=NULL)
   { 
     if (from.data.frame)
       {
@@ -39,7 +44,7 @@ aquaenv <- function(Tc,S, d=0,
       }
     else if (!is.null(ae))
       {
-        return (cloneaquaenv(ae, TA=TA, pH=pH, K1=K1))
+        return (cloneaquaenv(ae, TA=TA, pH=pH, k_co2=k_co2))
       }
     else
       {
@@ -125,24 +130,63 @@ aquaenv <- function(Tc,S, d=0,
             aquaenv[["CO2_sat"]]     <- Fugacity$CO2 * aquaenv[["K0_CO2"]] ; attr(aquaenv[["CO2_sat"]], "unit")  <- "mol/kg-soln"
             aquaenv[["O2_sat"]]      <- Fugacity$O2  * aquaenv[["K0_O2"]]  ; attr(aquaenv[["O2_sat"]],  "unit")  <- "mol/kg-soln"
           }
-        
-        aquaenv[["K_W"]]         <- K_W     (Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)  
-        
-        aquaenv[["K_HSO4"]]      <- K_HSO4  (Tc, S, d)
-        aquaenv[["K_HF"]]        <- K_HF    (Tc, S, d)
 
-        if (is.null(K1))
+        len <- max(length(Tc), length(S), length(d))
+        
+        if (is.null(k_w))
+          {
+            aquaenv[["K_W"]]         <- K_W(Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
+          }
+        else
+          {
+            aquaenv[["K_W"]]         <- eval(att(rep(k_w,len)))
+          }
+
+        if (is.null(k_hso4))
+          {    
+            aquaenv[["K_HSO4"]]      <- K_HSO4(Tc, S, d)
+          }
+        else
+          {
+            aquaenv[["K_HSO4"]]      <- eval(att(rep(k_hso4,len)))
+          }
+
+        if (is.null(k_hf))
+          {
+            aquaenv[["K_HF"]]        <- K_HF(Tc, S, d)
+          }
+        else
+        {
+          aquaenv[["K_HF"]]          <- eval(att(rep(k_hf,len)))
+        }
+
+        if (is.null(k_co2))
           {
             aquaenv[["K_CO2"]]       <- K_CO2 (Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
           }
         else
           {
-            aquaenv[["K_CO2"]]                   <- rep(K1, length(aquaenv[["K_HF"]]))
-            attr(aquaenv[["K_CO2"]], "unit")     <- "mol/kg-soln"
-            attr(aquaenv[["K_CO2"]], "pH scale") <- "free"
+            aquaenv[["K_CO2"]]       <- eval(att(rep(k_co2,len)))
           }
-        aquaenv[["K_HCO3"]]      <- K_HCO3  (Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
-        aquaenv[["K_BOH3"]]      <- K_BOH3  (Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)  
+
+        if (is.null(k_hco3))
+          {
+            aquaenv[["K_HCO3"]]      <- K_HCO3(Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
+          }
+        else
+          {
+            aquaenv[["K_HCO3"]]      <- eval(att(rep(k_hco3,len)))
+          }
+
+        if (is.null(k_boh3))
+          {
+            aquaenv[["K_BOH3"]]      <- K_BOH3(Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
+          }
+        else
+          {
+            aquaenv[["K_BOH3"]]      <- eval(att(rep(k_boh3,len)))
+          }
+        
         aquaenv[["K_NH4"]]       <- K_NH4   (Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
         aquaenv[["K_H2S"]]       <- K_H2S   (Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)  
         aquaenv[["K_H3PO4"]]     <- K_H3PO4 (Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
