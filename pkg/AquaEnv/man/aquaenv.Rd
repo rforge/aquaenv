@@ -40,7 +40,6 @@ k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL, k_hf=NULL)}
   \item{k_boh3}{a fixed K\_BOH3 can be specified}
   \item{k_hso4}{a fixed K\_HSO4 can be specified}
   \item{k_hf}{a fixed K\_HF can be specified}
-  }
 }
 \value{
   a list containing: 

@@ -1,0 +1,296 @@
+\documentclass[article,nojss]{jss}
+\DeclareGraphicsExtensions{.pdf,.eps}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\newcommand{\noun}[1]{\textsc{#1}}
+\newcommand{\aq}{\textbf{\textsf{AquaEnv}}}
+\newcommand{\lm}{\textbf{\textsf{minpack.lm}}}
+\newcommand{\R}{\proglang{R}}
+\newcommand{\ds}{\textbf{\textsf{deSolve}}}
+
+
+\title{Package \aq: an \noun{Aqua}tic modelling \noun{Env}ironment in \proglang{R}}
+\Plaintitle{Package AquaEnv: an Aquatic modelling Environment in R}
+
+\Keywords{aquatic modelling, pH, pH scales, dissolved inorganic carbon, total alkalinity, total alkalinity curve fitting, theoretical titration, revelle factor, omega, solubility products, $\rm CO_2$, ocean acidification, estuaries, carbonate system, seawater, \proglang{R}}
+
+\Plainkeywords{aquatic modelling, pH, pH scales, dissolved inorganic carbon, total alkalinity, total alkalinity curve fitting, theoretical titration, revelle factor, omega, solubility products, CO2, ocean acidification, estuaries, carbonate system, seawater, R}
+
+
+\author{Andreas F. Hofmann\\
+Centre for Estuarine and Marine Ecology\\
+Netherlands Institute of Ecology\\
+The Netherlands}
+
+\Plainauthor{Andreas F. Hofmann}
+
+\Abstract{ 
+\noindent
+AquaEnv is an integrated development toolbox for aquatic chemical model generation focused on (ocean) acidification and CO2 air-water exchange. 
+\begin{itemize}
+\item It contains all elements necessary to model the pH, the related CO2 air-water exchange, as well as aquatic acid-base chemistry in general for
+an arbitrary marine, estuarine or freshwater system. Also chemical batches can be modelled. 
+\item Next to the routines necessary to calculate desired information, AquaEnv also contains a suite of tools to visualize this information.
+\item Furthermore, AquaEnv can not only be used to build dynamic models of aquatic systems, but it can also serve as a simple desktop tool for the 
+experimental aquatic chemist to generate and visualize all possible derived information from a set of measurements with one single easy to use R function.
+\item Additionally, the sensitivity of the system to variations in the input variables can be visualized.
+\item AquaEnv also contains a number of example ``applications'' that make use of the aquatic modelling toolbox that AquaEnv provides: 
+\begin{itemize}
+\item a theoretical titration simulator
+\item and a routine to determine total alkalinity ([TA]), the total dissolved inorganic carbon concentration ([$\sum$CO2]), 
+as well as additionally the electrode standard potential ($\rm E_0$) and the first dissociation constant of the carbonate system ($\rm K^*_{CO_2}$)
+\end{itemize}
+\end{itemize}
+}
+
+\Address{
+  Andreas F. Hofmann\\
+  Centre for Estuarine and Marine Ecology (CEME)\\
+  Netherlands Institute of Ecology (NIOO)\\
+  4401 NT Yerseke, Netherlands
+  E-mail: \email{a.hofmann@nioo.knaw.nl}\\
+  URL: \url{http://www.nioo.knaw.nl/ppages/ahofmann}\\
+}
+
+
+
+%% need no \usepackage{Sweave}
+%\VignetteIndexEntry{AquaEnv}
+
+
+
+\begin{document}
+\SweaveOpts{engine=R,eps=FALSE}
+\SweaveOpts{keep.source=TRUE}
+
+<<preliminaries,echo=FALSE,results=hide>>=
+library("AquaEnv")
+options(prompt = "> ")
+options(width=70)
+
+@
+
+
+\maketitle
+
+\clearpage
+\tableofcontents
+\clearpage
+
+\section{Introduction}
+
+\aq is a toolbox for aquatic modelling that serves several purposes
+\begin{itemize}
+\item It provides functions to calculate the stoichiometric equilibrium constants ($\rm K^*$) for key acid base systems in natural seawater, the Henry's constants ($\rm K_0$), 
+      as well as the solubility products ($\rm K_{sp}$) for calcite and aragonite. This functionality is provided via the functions 
+      \texttt{K\_CO2, K\_HCO3, K\_BOH3, K\_W, K\_HSO4, K\_HF, K\_NH4, K\_H2S, K\_H3PO4, K\_H2PO4, K\_HPO4, K\_SiOH4, K\_SiOOH3, K0\_CO2, K0\_O2, Ksp\_aragonite,} and \texttt{Ksp\_calcite}.
+
+\item all information (which information: including revelle, full speciation, all partial derivatives of ta needed for \cite{Hofmann2008} and ionization fractions as 
+defined by \cite{Stumm1996} and used in \cite{Hofmann2008b} that can be calculated from all that is know over one single sample (tool for the experimentalist).
+this is done by the central function aquaenv. (is returnded as object of class aquaenv) 
+Input for aquaenv has to be supplied in standard SI units and in molinity (mol/kg-solution) 
+(footnote: explain importance of molinity vs molality), This can be done with the function convert.
+
+the information created with aquaenv is also supplied in  standard SI units and in molinity and can be converted to other units with the function
+convert
+
+from any of the variable pairs .... also $\sum \rm CO_2$ can be calculated
+
+one can use input vectors of T, S or d for aquaenv to obtain vectors of all possibly calculated information as function of the input vector
+this can be visualized in a large variety of ways using the plot function specially defined for objects of type aquaenv
+
+objects of class aquaenv can be used in dynamic models to define the state of the system in each timestep of the numerical integration (done e.g. with \ds).
+with the function from.dataframe it is possible to convert output of those dynamic models into objects of type aquaenv which allows the user to use the 
+whole suite of visualisation tools that is provided in AquaEnv.
+
+\cite{Hofmann2008} and \cite{Hofmann2008b} describe methods for an ``explicit'' pH modelling which allows for the quantification of the influences of 
+kinetically modelled processes on the pH. Objects of type aquaenv provide all needed quantities (partial derivatives of TA, ionization fractions) to 
+employ both of those methods in dynamic models. Furthermore, \aq provides the functionality to cumulatively plot the obtained influences on the pH.
+
+as an example of how to use the toolbox that is \aq, two applications are provided
+
+  the creation of theoretical titrations which can be used e.g. to create bjerrum plots, something that can also be done with the plot function in \aq.
+
+  a routine based on a method in \cite{DOE1994} that makes use of that theoretical titration function and allows for determining  total alkalinity ([TA]), 
+  the total dissolved inorganic carbon concentration ([$\sum$CO2]), 
+  as well as additionally the electrode standard potential ($\rm E_0$) and the first dissociation constant of the carbonate system ($\rm K^*_{CO_2}$) using 
+  the Levenberg-Marquart algorithm (least squares optimization procedure) as provided in \lm
+
+\end{itemize}
+
+
+\section{Using \aq}
+
+\subsection{Basic features}
+
+\subsubsection{calling the ``K'' functions directly}
+
+<<fig=FALSE, echo=TRUE>>=
+# the first and second dissociation constant of the carbonate system
+K_CO2(15,30)
+K_HCO3(15,30)
+
+# the Henry's constant for $\rm CO_2$
+K0_CO2(15,30)
+
+# the solubility product for calcite
+Ksp_calcite(15,30,100)
+
+@ 
+
+
+\subsubsection{Minimal \textit{aquaenv} definition}
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=15, S=30)
+ae$K_CO2
+
+ae$Ksp_calcite
+ae$Ksp_aragonite
+
+ae <- aquaenv(Tc=15, S=30, d=10)
+ae$K_CO2
+
+ae$Ksp_calcite
+ae$Ksp_aragonite
+
+names(ae)
+
+@ 
+
+\subsubsection{Defining the complete aquaenv system in different ways}
+<<fig=FALSE, echo=TRUE>>=
+Tc     <- 15
+S      <- 30
+d      <- 10
+SumCO2 <- 0.0020
+pH     <- 8
+TA     <- 0.002140323
+pCO2   <- 0.000533576
+CO2    <- 2.055419e-05
+
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH)
+ae$TA
+
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA)
+ae$pH
+
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, CO2=CO2)
+ae$pH
+
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pCO2=pCO2, dsa=TRUE, revelle=TRUE)
+ae$pH
+
+names(ae)
+
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, CO2=CO2, pCO2=pCO2)
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, TA=TA)
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, CO2=CO2)
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, pCO2=pCO2)
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, CO2=CO2)
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, pCO2=pCO2)
+
+@ 
+
+
+
+\subsubsection{Cloning the aquaenv system: 1 to 1 and with different pH or TA}
+<<fig=FALSE, echo=TRUE>>=
+Tc     <- 15
+S      <- 30
+SumCO2 <- 0.0020
+TA     <- 0.00214
+
+ae <- aquaenv(Tc, S, SumCO2=SumCO2, TA=TA)
+
+aeclone1 <- aquaenv(ae=ae)
+
+pH <- 9
+
+aeclone2 <- aquaenv(ae=ae, pH=pH)
+
+TA <- 0.002
+
+aeclone3 <- aquaenv(ae=ae, TA=TA)
+
+ae$pH
+aeclone1$pH
+aeclone2$TA
+aeclone3$pH
+
+@ 
+
+
+\subsubsection{preparing input variables}
+<<fig=FALSE, echo=TRUE>>=
+Tc <- 15
+S  <- 10
+
+pH_NBS      <- 8.142777
+SumCO2molar <- 0.002016803
+
+pH_free     <- convert(pH_NBS,      "pHscale", "nbs2free",    Tc=Tc, S=S)
+SumCO2molin <- convert(SumCO2molar, "conc",    "molar2molin", Tc=Tc, S=S)
+
+ae <- aquaenv(Tc, S, SumCO2=SumCO2molin, pH=pH_free)
+ae$pH
+ae$SumCO2
+ae$TA
+
+@ 
+
+
+
+\subsubsection{Vectors as input variables}
+(only ONE input variable may be a vector)\\
+(with full output: including the Revelle factor and the DSA properties)
+<<fig=TRUE, echo=TRUE, width=15, height=10>>=
+SumCO2 <- 0.0020
+pH     <- 8
+
+Tc     <- 1:15
+S      <- 30
+d      <- 10
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=Tc, xlab="T/(deg C)", newdevice=FALSE)
+
+@ 
+
+extra examples
+<<fig=FALSE, echo=TRUE>>=
+Tc <- 15
+S  <- 1:30
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=S, xlab="S")
+
+S <- 30
+d <- seq(1,1000, 100)
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=d, xlab="depth/m")
+
+
+TA     <- 0.0023
+
+Tc     <- 1:15
+S      <- 30
+d      <- 10
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=Tc, xlab="T/(deg C)")
+
+Tc <- 15
+S  <- 1:30
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=S, xlab="S")
+
+S <- 30
+d <- seq(1,1000, 100)
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=d, xlab="depth/m")
+
+@ 
+
+
+
+\bibliography{AquaEnv}
+\end{document}
