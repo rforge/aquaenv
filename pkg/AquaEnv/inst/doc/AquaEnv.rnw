@@ -3,6 +3,7 @@
 
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{longtable}
 
 \newcommand{\noun}[1]{\textsc{#1}}
 \newcommand{\aq}{\textbf{\textsf{AquaEnv}}}
@@ -28,15 +29,15 @@ The Netherlands}
 
 \Abstract{ 
 \noindent
-AquaEnv is an integrated development toolbox for aquatic chemical model generation focused on (ocean) acidification and CO2 air-water exchange. 
+\aq$\,$ is an integrated development toolbox for aquatic chemical model generation focused on (ocean) acidification and CO2 air-water exchange. 
 \begin{itemize}
 \item It contains all elements necessary to model the pH, the related CO2 air-water exchange, as well as aquatic acid-base chemistry in general for
 an arbitrary marine, estuarine or freshwater system. Also chemical batches can be modelled. 
-\item Next to the routines necessary to calculate desired information, AquaEnv also contains a suite of tools to visualize this information.
-\item Furthermore, AquaEnv can not only be used to build dynamic models of aquatic systems, but it can also serve as a simple desktop tool for the 
+\item Next to the routines necessary to calculate desired information, \aq$\,$ also contains a suite of tools to visualize this information.
+\item Furthermore, \aq$\,$ can not only be used to build dynamic models of aquatic systems, but it can also serve as a simple desktop tool for the 
 experimental aquatic chemist to generate and visualize all possible derived information from a set of measurements with one single easy to use R function.
 \item Additionally, the sensitivity of the system to variations in the input variables can be visualized.
-\item AquaEnv also contains a number of example ``applications'' that make use of the aquatic modelling toolbox that AquaEnv provides: 
+\item \aq$\,$ also contains a number of example ``applications'' that make use of the aquatic modelling toolbox that \aq$\,$ provides: 
 \begin{itemize}
 \item a theoretical titration simulator
 \item and a routine to determine total alkalinity ([TA]), the total dissolved inorganic carbon concentration ([$\sum$CO2]), 
@@ -67,7 +68,6 @@ as well as additionally the electrode standard potential ($\rm E_0$) and the fir
 
 <<preliminaries,echo=FALSE,results=hide>>=
 library("AquaEnv")
-options(prompt = "> ")
 options(width=70)
 
 @
@@ -81,45 +81,229 @@ options(width=70)
 
 \section{Introduction}
 
-\aq is a toolbox for aquatic modelling that serves several purposes
+\aq$\,$is a toolbox for aquatic modelling that serves several purposes
 \begin{itemize}
 \item It provides functions to calculate the stoichiometric equilibrium constants ($\rm K^*$) for key acid base systems in natural seawater, the Henry's constants ($\rm K_0$), 
       as well as the solubility products ($\rm K_{sp}$) for calcite and aragonite. This functionality is provided via the functions 
-      \texttt{K\_CO2, K\_HCO3, K\_BOH3, K\_W, K\_HSO4, K\_HF, K\_NH4, K\_H2S, K\_H3PO4, K\_H2PO4, K\_HPO4, K\_SiOH4, K\_SiOOH3, K0\_CO2, K0\_O2, Ksp\_aragonite,} and \texttt{Ksp\_calcite}.
+      \texttt{K\_CO2, K\_HCO3, K\_BOH3, K\_W, K\_HSO4, K\_HF, K\_NH4, K\_H2S, K\_H3PO4, K\_H2PO4, K\_HPO4, K\_SiOH4, K\_SiOOH3, K0\_CO2, K0\_O2, Ksp\_aragonite,} and \\
+      \texttt{Ksp\_calcite}.
 
-\item all information (which information: including revelle, full speciation, all partial derivatives of ta needed for \cite{Hofmann2008} and ionization fractions as 
-defined by \cite{Stumm1996} and used in \cite{Hofmann2008b} that can be calculated from all that is know over one single sample (tool for the experimentalist).
-this is done by the central function aquaenv. (is returnded as object of class aquaenv) 
-Input for aquaenv has to be supplied in standard SI units and in molinity (mol/kg-solution) 
-(footnote: explain importance of molinity vs molality), This can be done with the function convert.
-
-the information created with aquaenv is also supplied in  standard SI units and in molinity and can be converted to other units with the function
-convert
-
-from any of the variable pairs .... also $\sum \rm CO_2$ can be calculated
-
-one can use input vectors of T, S or d for aquaenv to obtain vectors of all possibly calculated information as function of the input vector
-this can be visualized in a large variety of ways using the plot function specially defined for objects of type aquaenv
-
-objects of class aquaenv can be used in dynamic models to define the state of the system in each timestep of the numerical integration (done e.g. with \ds).
-with the function from.dataframe it is possible to convert output of those dynamic models into objects of type aquaenv which allows the user to use the 
-whole suite of visualisation tools that is provided in AquaEnv.
-
-\cite{Hofmann2008} and \cite{Hofmann2008b} describe methods for an ``explicit'' pH modelling which allows for the quantification of the influences of 
-kinetically modelled processes on the pH. Objects of type aquaenv provide all needed quantities (partial derivatives of TA, ionization fractions) to 
-employ both of those methods in dynamic models. Furthermore, \aq provides the functionality to cumulatively plot the obtained influences on the pH.
-
-as an example of how to use the toolbox that is \aq, two applications are provided
-
-  the creation of theoretical titrations which can be used e.g. to create bjerrum plots, something that can also be done with the plot function in \aq.
-
-  a routine based on a method in \cite{DOE1994} that makes use of that theoretical titration function and allows for determining  total alkalinity ([TA]), 
-  the total dissolved inorganic carbon concentration ([$\sum$CO2]), 
-  as well as additionally the electrode standard potential ($\rm E_0$) and the first dissociation constant of the carbonate system ($\rm K^*_{CO_2}$) using 
-  the Levenberg-Marquart algorithm (least squares optimization procedure) as provided in \lm
-
+\item It is designed to make its use as easy as possible: all the information that can be calculated from the set of parameters know of a system or sample
+can be obtained by one single function: \texttt{aquaenv}. This function returs a list of class  \textit{aquaenv} that contains next to the input parameters 
+\begin{itemize}
+\item the clorinity, the ionic strength, $[\rm \sum B(OH)_3]$, $[\rm \sum H_2SO_4]$, $[\rm \sum HF]$, $[\rm Cl^-]$, $[\rm Cl^-]$,$[\rm \sum Br]$, $[\rm Na^+]$, $[\rm Mg^{2+}]$, 
+$[\rm Ca^{2+}]$, $[\rm K^{+}]$, $[\rm Sr^{2+}]$ calculated from salinity as given in \cite{DOE1994}
+(Please note that if values for $[\rm \sum B(OH)_3]$, $[\rm \sum H_2SO_4]$, $[\rm \sum HF]$ are given as input parameters, these parameters are used and not the ones calculated 
+from salinity.)
+\item the hydrostatic pressure calculated from the given depth and the seawater density calculated from temperature and salinity as given by \cite{Millero1981}
+\item a set of conversion factors to convert between different pH scales \citep{Dickson1984, Zeebe2001} and between mol/kg-$\rm H_2O$ and mol/kg-solution
+ (inferred from \cite{Roy1993b} and \cite{DOE1994})
+\item the Henry's constants for $\rm CO_2$ \citep{Weiss1974} and for $\rm O_2$ \citep[inferred from][]{Weiss1970} calculated from temperature and salinity as well as the 
+associated saturation concentrations of $\rm CO_2$ and $\rm O_2$.
+\item the ion product of water \citep{Millero1995}, the stoichiometric equilibrium constants of $\rm HSO_4^-$ \citep{Dickson1990},  $\rm HF$\citep{Dickson1979a} ,
+$\rm CO_2$ \citep{Roy1993b}, $\rm HCO_3^-$ \citep{Roy1993b}, $\rm B(OH)_3$ \citep{Dickson1990}, $\rm NH4^+$\citep{Millero1995a}, $\rm H2_S$ \citep{Millero1995},
+$\rm H_3PO4$\citep{Millero1995}, $\rm H_2PO4^-$ \citep{Millero1995}, $HPO4^{2-}$ \citep{Millero1995}, $\rm SiOH4$ \citep{Millero1988},         
+$\rm SiOOH3^-$ \citep{Wischmeyer2003}, $\rm HNO2$ \citep{Riordan2005}, $\rm HNO3$,  $\rm H2SO4$ \citep{Atkins1996}, $\rm HS$ \citep{Atkins1996} mostly calculated 
+as functions of temperature and salinity and pressure corrected according to \cite{Millero1995}.
+\item the solubility products of calcite and aragonite \citep{Mucci1983} as well as the associated $\Omega$'s if a full speciation is calculated (see below)
+\item the partial pressure of $\rm CO_2$ - if a full speciation is calculated (see below)
+\item if $[\rm \sum CO_2]$ and pH are given $[\rm TA]$ is calculated, if $[\rm \sum CO_2]$ and $[\rm TA]$ are given pH is calculated, if $[\rm \sum CO_2]$ and $\rm [CO_2]$ or p$\rm CO_2$
+are given, pH and $[\rm TA]$ are calculated.
+\item if either one of the pairs pH and  $\rm [CO_2]$ or p$\rm CO_2$, pH and $[\rm TA]$, or $[\rm TA]$ and $\rm [CO_2]$ or p$\rm CO_2$ is given, $[\rm \sum CO_2]$ is calculated
+\item if sufficient information is given and the flag \texttt{speciation=TRUE} is set, a full speciation of $[\rm \sum CO2]$, $[\rm \sum NH4]$, $[\rm \sum H_2S]$, $[\rm \sum HNO3]$,  $[\rm \sum HNO2]$,
+ $[\rm \sum H_3PO4]$, $[\rm \sum Si(OH)_4]$, $[\rm \sum B(OH)_3]$, $[\rm \sum H_2SO_4]$, $[\rm \sum HF]$, as well as water itself is calculated
+\item if the flag \texttt{revelle=TRUE} is set, the revelle factor \citep{Zeebe2001} is calculated.
+item if the flag \texttt{revelle=TRUE} is set, all necessary quantities for the explicit ``direct substitution approach'' (DSA) to pH modelling as given in \cite{Hofmann2008} are 
+calculated. These are the buffer factor (the partial derivative of $\rm [TA]$ with respect to $\rm [H^+]$) and the partial derivatives of $\rm [TA]$ with respect to the other 
+total quantities. Furthermore, the partial derivatives of $\rm [TA]$ with respect to changes in the equilibrium constants ($K^*$), multiplied with the partial derivatives
+of the equilibrium constants with respect to their variables needed for the DSA with time variable equilibrium constants as described in \cite{Hofmann2008b} are calculated.
+Finally, the ionization fractions as defined by \cite{Stumm1996} and used in \cite{Hofmann2008c} are calculated for the full speciation.
+\end{itemize}
+\item Input for \texttt{aquaenv} has to be supplied in standard SI units, the free proton pH scale and in molinity\footnote{Note that it is not sufficient to give a gravimetric concentration in 
+mol/kg since there is a substancial difference between mol/kg-$\rm H_2O$ (molality) and mol/kg-solution (molinity).} (mol/kg-solution).
+Conversion of input parameters to this necessary units and pH scale  can be done with the generic function \texttt{convert}.
+\item The information created with aquaenv is also supplied in standard SI units and in molinity. All elements of an object of class \textit{aquaenv} of a certain unit or pH scale
+can be converted into other units or pH scales with the function \texttt{convert} as well.
+\item One can use input vectors of temperature T, salinity S or depth d for \texttt{aquaenv} to obtain vectors of all calculated information as function of 
+the input vector. This can be visualized in a large variety of ways using the \texttt{plot} function specially defined for objects of type \textit{aquaenv}.
+\item  Objects of class aquaenv can be used in dynamic models to define the state of the system in each timestep of the numerical integration (done e.g. with \ds).
+with the function \texttt{aquaenv} and the flag \texttt{from.data.frame=TRUE} it is possible to convert output of those dynamic models into objects of type
+\textit{aquaenv} which allows the user to use the whole suite of visualisation tools that is provided by the function \texttt{plot} in \aq.
+\item As mentioned above \cite{Hofmann2008}, \cite{Hofmann2008b}, and \cite{Hofmann2008c} describe methods for an ``explicit'' pH modelling which allows 
+for the quantification of the influences of kinetically modelled processes on the pH. Objects of type \textit{aquaenv} provide all needed quantities 
+(partial derivatives of $\rm[TA]$, ionization fractions, etc.) to employ both of those methods in dynamic models. 
+Furthermore, \aq$\,$provides the functionality to cumulatively plot the obtained influences on the pH.
+\item As an example of how to use the toolbox that is \aq, two applications are provided
+\begin{itemize}
+\item The function \texttt{titration}: creates theoretical titrations which can be used e.g. to create bjerrum plots, something that can also be done with the function \texttt{plot} in \aq.
+\item The function \texttt{TAfit}:  a routine based on a method in \cite{DOE1994} that makes use of that theoretical titration function and allows for 
+determining  total alkalinity ($\rm [TA]$),  the total dissolved inorganic carbon concentration ([$\sum$CO2]), as well as additionally the electrode standard potential ($\rm E_0$) and the first dissociation 
+constant of the carbonate system ($\rm K^*_{CO_2}$) using the Levenberg-Marquart algorithm (least squares optimization procedure) as provided in \lm.
+\end{itemize}
 \end{itemize}
 
+
+\section{The elements of an object of class \textit{aquaenv}}
+The function \texttt{aquaenv}, the central function of \aq$ $, returns an object of class \textit{aquaenv}. This object is a list of different elements which can be accesses with the \$ character or 
+with the [[]] operator
+<<fig=FALSE, echo=TRUE>>=
+test <- aquaenv(10,35)
+test$Tc
+test[["Tc"]]
+@ 
+Maximally, i.e., if the enough input data is supplied to define the pH of the system and the flags \texttt{speciation}, \texttt{dsa}, and \texttt{revelle} are \texttt{TRUE} while the flag
+\texttt{skeleton} is \texttt{FALSE}, an object of class \textit{aquaenv} contains the following elements
+
+\begin{footnotesize}
+\begin{longtable}{l|l|p{7cm}}
+\textbf{element}& \textbf{unit}            & \textbf{explanation} \\ \hline 
+Tc          & \textdegree C                & temperature          \\
+Tk          & K                            & absolute temperature \\
+S           & ``psu'' (no unit)            & salinity             \\
+Cl          & \textperthousand             & chlorinity           \\
+I           & mol/kg-$\rm H_2O$            & ionic strength       \\
+d           & m                            & depth                \\ 
+hydroP      & bar                          & hydrostatic pressure \\
+density     & kg/$\rm m^3$                 & (seawater) density   \\
+SumCO2      & mol/kg-soln                  & $[\rm \sum CO_2]$, total dissolved inorganic carbon concentration \\         
+SumNH4      & mol/kg-soln                  & $[\rm \sum NH_4^+]$, total ammonium concentration\\
+SumH2S      & mol/kg-soln                  & $[\rm \sum H_2S]$, total sulfide concentration\\
+SumHNO3     & mol/kg-soln                  & $[\rm \sum HNO_3]$, total nitrate concentration\\
+SumHNO2     & mol/kg-soln                  & $[\rm \sum HNO_2]$, total nitrite concentration\\
+SumH3PO4    & mol/kg-soln                  & $[\rm \sum H_3PO_4]$, total phosphate concentration\\
+SumSiOH4    & mol/kg-soln                  & $[\rm \sum Si(OH)_4]$, total silicate concentration\\       
+SumBOH3     & mol/kg-soln                  & $[\rm \sum B(OH)_3]$, total borates concentration\\
+SumH2SO4    & mol/kg-soln                  & $[\rm \sum H_2SO_4]$, total sulfate concentration\\
+SumHF       & mol/kg-soln                  & $[\rm \sum HF]$, total fluoride concentration\\
+SumBr       & mol/kg-soln                  & $[\rm \sum HBr]$, total bromide concentration\\
+ClConc      & mol/kg-soln                  & $[\rm Cl^-]$, chloride concentration\\
+Na          & mol/kg-soln                  & $[\rm Na^{+}]$, sodium concentration\\
+Mg          & mol/kg-soln                  & $[\rm Mg^{2+}]$, magnesium concentration\\
+Ca          & mol/kg-soln                  & $[\rm Ca^{2+}]$, calcium concentration\\
+K           & mol/kg-soln                  & $[\rm K^+]$, potassium concentration\\               
+Sr          & mol/kg-soln                  & $[\rm Sr^{2+}]$, strontium concentration\\    
+molal2molin & (mol/kg-soln)/(mol/kg-H2O)   & concentration conversion factor: from molality to molinity\\
+free2tot    & -                            & pH conversion factor: free scale to total scale\\
+free2sws    & -                            & pH conversion factor: free scale to sawater scale\\
+tot2free    & -                            & pH conversion factor: total scale to free scale\\ 
+tot2sws     & -                            & pH conversion factor: total scale to seawater scale\\ 
+sws2free    & -                            & pH conversion factor: seawater scale to  free scale\\ 
+sws2tot     & -                            & pH conversion factor: seawater scale to total scale\\ 
+K0\_CO2     & mol/(kg-soln*atm)            & Henry's constant for $\rm CO_2$\\ 
+K0\_O2      & mol/(kg-soln*atm)            & Henry's constant for $\rm O_2$\\ 
+CO2\_sat    & mol/kg-soln                  & $\rm CO_2$ saturation concentration at an atmospheric partial pressure/fugacity of Fugacity\$CO2\\
+O2\_sat     & mol/kg-soln                  & $\rm O_2$ saturation concentration at an atmospheric partial pressure/fugacity of Fugacity\$O2\\
+K\_W        &(mol/kg-soln)$^2$, free pH scale & stoichiometric equilibrium ion product of \\
+            &                              & $\rm H_2O$: $\rm K^*_W = [H^+][OH-]$\\
+K\_HSO4     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+            &                              & $\rm K^*_{HSO_4^-} = [H^+][SO_4^{2-}] / [HSO_4^-]$\\
+K\_HF       &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{HF} = [H^+][F^{-}] / [HF]$\\
+K\_CO2      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{CO_2} = [H^+][HCO_3^{-}] / [CO_2]$\\
+K\_HCO3     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+            &                                 & $\rm K^*_{HCO_3^{-}} = [H^+][CO_3^{2-}] / [HCO_3^{-}]$\\
+K\_BOH3     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{B(OH)_3} = [H^+][B(OH)_4^-] / [B(OH)_3]$\\          
+K\_NH4      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{NH_4^+} = [H^+][NH_3] / [NH_4^+]$\\
+K\_H2S      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+            &                                 & $\rm K^*_{H_2S} = [H^+][HS^-] / [H_2S]$\\
+K\_H3PO4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{H_3PO_4} = [H^+][H_2PO_4^-] / [H_3PO_4]$\\         
+K\_H2PO4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{H_2PO_4^-} = [H^+][HPO_4^{2-}] / [H_2PO_4^-]$\\
+K\_HPO4     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{HPO_4^{2-}} = [H^+][PO_4^{3-}] / [HPO_4^{2-}]$\\
+K\_SiOH4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{Si(OH)_4} = [H^+][SiO(OH)_3^-] / [Si(OH)_4]$\\         
+K\_SiOOH3   &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{SiO(OH)_3^-} = [H^+][SiO_2(OH)_2^{2-}] / [SiO(OH)_3^-]$\\         
+K\_HNO2     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+            &                                 & $\rm K^*_{HNO_2} = [H^+][NO_2^-] / [HNO_2]$\\         
+K\_HNO3     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+            &                                 & $\rm K^*_{HNO_3} = [H^+][NO_3^-] / [HNO_3]$\\              
+K\_H2SO4    &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+            &                                 & $\rm K^*_{H_2SO_4} = [H^+][HSO_4^-] / [H_2SO_4]$\\    
+K\_HS       & mol/kg-soln; mol/kg-H2O; mol/l  & approximate value for equilibrium constant \\
+            &                                 & $\rm K^*_{HS^-} = [H^+][S^{2-}] / [HS^-]$\\
+Ksp\_calcite& (mol/kg-soln)$^2$               & stoichiometric equilibrium solubility product of calcite\\
+            &                                 & $\rm Ksp^*_{cal} = [Ca^{2+}][CO_3^{2-}]$\\
+Ksp\_aragonite &(mol/kg-soln)$^2$             & stoichiometric equilibrium solubility product of aragonite\\
+            &                                 & $\rm Ksp^*_{ara} = [Ca^{2+}][CO_3^{2-}]$\\
+TA          & mol/kg-soln                     & [TA], total alkalinity\\
+pH          & -, free scale                   & pH\\              
+pCO2        & atm,                            & partial pressure (~fugacity) of $\rm CO_2$ in the water\\
+CO2         & mol/kg-soln                     & $[\rm CO_2]$\\         
+HCO3        & mol/kg-soln                     & $[\rm HCO_3^-]$\\         
+CO3         & mol/kg-soln                     & $[\rm CO_3^{2-}]$\\         
+BOH3        & mol/kg-soln                     & $[\rm B(OH)_3]$\\         
+BOH4        & mol/kg-soln                     & $[\rm B(OH)_4^-]$\\                     
+OH          & mol/kg-soln                     & $[\rm OH^-]$\\         
+H3PO4       & mol/kg-soln                     & $[\rm H_3PO_4]$\\         
+H2PO4       & mol/kg-soln                     & $[\rm H2PO_4^-]$\\                    
+HPO4        & mol/kg-soln                     & $[\rm HPO_4^{2-}]$\\         
+PO4         & mol/kg-soln                     & $[\rm PO_4^{3-}]$\\         
+SiOH4       & mol/kg-soln                     & $[\rm Si(OH)_4]$\\                    
+SiOOH3      & mol/kg-soln                     & $[\rm SiO(OH)_3^-]$\\         
+SiO2OH2     & mol/kg-soln                     & $[\rm SiO_2(OH)_2^{2-}]$\\         
+H2S         & mol/kg-soln                     & $[\rm H_2S]$\\                      
+HS          & mol/kg-soln                     & $[\rm HS^-]$\\         
+S2min       & mol/kg-soln                     & $[\rm S^{2-}]$\\         
+NH4         & mol/kg-soln                     & $[\rm NH_4^+]$\\                      
+NH3         & mol/kg-soln                     & $[\rm NH_3]$\\         
+H2SO4       & mol/kg-soln                     & $[\rm H_2SO_4]$\\         
+HSO4        & mol/kg-soln                     & $[\rm HSO_4^-]$\\                     
+SO4         & mol/kg-soln                     & $[\rm SO_4^{2-}]$\\         
+HF          & mol/kg-soln                     & $[\rm HF]$\\         
+F           & mol/kg-soln                     & $[\rm F^-]$\\                        
+HNO3        & mol/kg-soln                     & $[\rm HNO_3]$\\
+NO3         & mol/kg-soln                     & $[\rm NO_3^-]$\\         
+HNO2        & mol/kg-soln                     & $[\rm HNO_2]$\\                     
+NO2         & mol/kg-soln                     & $[\rm NO_2^-]$\\         
+omega\_calcite   & -                          & saturation state $\Omega$ with respect to calcite\\
+omega\_aragonite & -                          & saturation state $\Omega$ with respect to aragonite\\
+revelle     & -                               & Revelle factor\\    
+c1          & -                               & ionization fraction $c_1 = [\rm CO_2]/[\rm \sum CO_2]$\\
+c2          & -                               & ionization fraction $c_2 = [\rm HCO_3^-]/[\rm \sum CO_2]$\\
+c3          & -                               & ionization fraction $c_3 = [\rm CO_3^{2-}]/[\rm \sum CO_2]$\\
+dTAdSumCO2  & -                               & $\rm \frac{\partial [TA]}{[\partial \sum CO_2]}$\\
+            &                                 & with $\rm[TA] = f([H^+], [\sum CO_2], ...)$\\
+b1          & -                               & ionization fraction $b_1 = [\rm B(OH)_3]/[\rm \sum B(OH)_3]$\\               
+b2          & -                               & ionization fraction $b_2 = [\rm B(OH)_4^-]/[\rm \sum B(OH)_3]$\\               
+dTAdSumBOH3 & -                               & $\rm \frac{\partial [TA]}{[\partial \sum B(OH)_3]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\
+so1         & -                               & ionization fraction $so_1 = [\rm H_2SO_4]/[\rm \sum H_2SO_4]$\\               
+so2         & -                               & ionization fraction $so_2 = [\rm HSO_4^-]/[\rm \sum H_2SO_4]$\\               
+so3         & -                               & ionization fraction $so_3 = [\rm SO_4^{2-}]/[\rm \sum H_2SO_4]$\\               
+dTAdSumH2SO4& -                               & $\rm \frac{\partial [TA]}{[\partial \sum H_2SO_4]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\   
+f1          & -                               & ionization fraction $f_1 = [\rm HF]/[\rm \sum HF]$\\               
+f2          & -                               & ionization fraction $f_1 = [\rm F^-]/[\rm \sum HF]$\\               
+dTAdSumHF   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum HF]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
+dTAdH       & -                               & $\rm \frac{\partial [TA]}{[\partial [H^+]}$: buffer factor\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
+dTAdKdKdS   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial S}$\\
+            &                                 &  with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\        
+dTAdKdKdT   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial T}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\     
+dTAdKdKdd   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial d}$\\
+            &                                 &  with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\ 
+dTAdKdKdSumH2SO4 & -                          & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial [\sum H_2SO_4]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\ 
+dTAdKdKdSumHF & -                             & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial [\sum HF]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\   
+\end{longtable}
+\end{footnotesize}
+
+
+ANOTHER LONGTABLE WITH REFERENCES AND ALL EXPLANATIONS!
+%Cl          & \textperthousand             & chlorinity            & \cite{DOE1994}, ch. 5, p.11; \cite{Zeebe2001}, p.100, footn. 3\\
+%I           & mol/kg-$\rm H_2O$            & ionic strength        & \cite{DOE1994}, ch. 5, p.13, \cite{Zeebe2001}, p. 12,  \cite{Roy1993b}, p.257\\
+longtable with names, units, references, descriptions etc. of EVERYTHING that is stored in an object of type qauaenv
+
+explain pressure correction: what has been corrected in Millero1995?
 
 \section{Using \aq}
 
@@ -258,7 +442,9 @@ plot(ae, xval=Tc, xlab="T/(deg C)", newdevice=FALSE)
 @ 
 
 extra examples
-<<fig=FALSE, echo=TRUE>>=
+<<fig=FALSE, echo=TRUE, eval=FALSE>>=
+options(prompt = " ")
+
 Tc <- 15
 S  <- 1:30
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)

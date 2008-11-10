@@ -3,8 +3,10 @@
 \title{bjerrumplot}
 \description{PRIVATE function: creates a bjerrumplot from the elements of an object of class aquaenv given in what; no return value, just side-effect}
 \usage{bjerrumplot(aquaenv, what, log=FALSE, palette=NULL, device="x11",
-filename="aquaenv", size=c(12,10), ylim=NULL, lwd=2, xlab="free scale pH", mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
-legendposition="bottomleft", legendinset=0.05, legendlwd=4, bg="white", newdevice, ...)}
+            filename="aquaenv", size=c(12,10), ylim=NULL, lwd=2, xlab="free scale pH",
+            mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
+            legendposition="bottomleft", legendinset=0.05, legendlwd=4,
+            bg="white", newdevice, ...)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}
   \item{what }{vector of names of elements of aquaenv that should be plotted; if not specified:  what <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "H3PO4", "H2PO4", "HPO4", "PO4", "SiOH4", "SiOOH3", "SiO2OH2", "H2S", "HS", "S2min", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "HNO3", "NO3", "HNO2", "NO2")}

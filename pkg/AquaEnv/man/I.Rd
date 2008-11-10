@@ -7,7 +7,7 @@
   \item{S }{salinity S in practical salinity units (i.e. no unit)}
 }
 \value{
-  ionic strength in mol/kg-solution (molinity)
+  ionic strength in mol/kg-H2O (molality)
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{DOE1994, Zeebe2001, Roy1993b (the carbonic acid paper)}

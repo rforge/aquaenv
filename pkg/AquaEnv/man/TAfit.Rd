@@ -2,8 +2,12 @@
 \alias{TAfit}
 \title{TAfit}
 \description{PUBLIC function: calculates [TA] and [SumCO2] (and optionally K\_C02 and E0) from a titration curve using an optimization procedure (nls.lm from R package minpack.lm)}
-\usage{TAfit(ae, titcurve, conc_titrant, mass_sample, S_titrant=NULL,TASumCO2guess=0.0025, E0guess=0.4, type="HCl", Evals=FALSE, K_CO2fit=FALSE,equalspaced=TRUE, seawater_titrant=FALSE, pHscale="free", debug=FALSE,
-k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL, k_hf=NULL, nlscontrol=nls.lm.control())}
+\usage{TAfit(ae, titcurve, conc_titrant, mass_sample, S_titrant=NULL,
+      TASumCO2guess=0.0025, E0guess=0.4, type="HCl", Evals=FALSE,
+      K_CO2fit=FALSE,equalspaced=TRUE, seawater_titrant=FALSE,
+      pHscale="free", debug=FALSE, 
+      k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL, k_hf=NULL,
+      nlscontrol=nls.lm.control())}
 \arguments{
   \item{ae }{an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc (Note that it is possible to give values for SumBOH4, SumHSO4, and SumHF in the sample other than the ones calculated from salinity)}
   \item{titcurve }{a table containing the titration curve: basically a series of tuples of added titrant solution mass and pH values (pH on free proton scale) or E values in V}

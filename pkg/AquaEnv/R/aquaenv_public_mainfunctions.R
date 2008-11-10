@@ -113,7 +113,7 @@ aquaenv <- function(Tc,S, d=0,
             aquaenv[["Sr"]]          <- seaconc("Sr", S)    ; attr(aquaenv[["Sr"]], "unit")           <- "mol/kg-soln"
             
             
-            aquaenv[["molal2molin"]] <- molal2molin(S)      ; attr(aquaenv[["molal2molin"]], "unit")  <- "mol/kg-H2O -> mol/kg-soln"
+            aquaenv[["molal2molin"]] <- molal2molin(S)      ; attr(aquaenv[["molal2molin"]], "unit")  <- "(mol/kg-soln)/(mol/kg-H2O)"
             
             scaleconvs <- scaleconvert(Tc, S, d, SumH2SO4, SumHF)
             aquaenv[["free2tot"]]    <- scaleconvs$free2tot ; attr(aquaenv[["free2tot"]], "pH scale") <- "free -> tot"
@@ -390,13 +390,16 @@ aquaenv <- function(Tc,S, d=0,
                         aquaenv[["NO2"]]    <<- Auni  (SumHNO2,  K_HNO2,                   H) ; attr(aquaenv[["NO2"]], "unit")     <<- "mol/kg-soln"
 
 
-                        aquaenv[["omega_calcite"]]   <<- aquaenv[["Ca"]]*aquaenv[["CO3"]]/aquaenv[["Ksp_calcite"]]
-                        aquaenv[["omega_aragonite"]] <<- aquaenv[["Ca"]]*aquaenv[["CO3"]]/aquaenv[["Ksp_aragonite"]]
+                        aquaenv[["omega_calcite"]]               <<- aquaenv[["Ca"]]*aquaenv[["CO3"]]/aquaenv[["Ksp_calcite"]]
+                        attributes(aquaenv[["omega_calcite"]])   <<- NULL
+                        aquaenv[["omega_aragonite"]]             <<- aquaenv[["Ca"]]*aquaenv[["CO3"]]/aquaenv[["Ksp_aragonite"]]
+                        attributes(aquaenv[["omega_aragonite"]]) <<- NULL
                       })
 
                 if (revelle)
                   {
-                    aquaenv[["revelle"]] <- revelle(aquaenv)
+                    aquaenv[["revelle"]]             <- revelle(aquaenv)
+                    attributes(aquaenv[["revelle"]]) <- NULL
                   }
               }
             if (dsa)
