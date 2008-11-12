@@ -4,7 +4,8 @@
 \description{PUBLIC function: creates an object of class aquaenv which contains a titration simulation}
 \usage{titration(aquaenv, mass_sample, mass_titrant, conc_titrant,
           S_titrant=NULL, steps, type, seawater_titrant=FALSE,
-          k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL, k_hf=NULL)}
+          k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
+          k_hf=NULL)}
 \arguments{
   \item{aquaenv }{an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc (Note that it is possible to give values for SumBOH4, SumHSO4, and SumHF in the sample other than the ones calculated from salinity)}
   \item{mass_sample}{the mass of the sample solution in kg}

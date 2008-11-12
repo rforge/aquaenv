@@ -3,7 +3,8 @@
 \title{bjerrumplot}
 \description{PRIVATE function: creates a bjerrumplot from the elements of an object of class aquaenv given in what; no return value, just side-effect}
 \usage{bjerrumplot(aquaenv, what, log=FALSE, palette=NULL, device="x11",
-            filename="aquaenv", size=c(12,10), ylim=NULL, lwd=2, xlab="free scale pH",
+            filename="aquaenv", size=c(12,10), ylim=NULL,
+            lwd=2, xlab="free scale pH",
             mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
             legendposition="bottomleft", legendinset=0.05, legendlwd=4,
             bg="white", newdevice, ...)}

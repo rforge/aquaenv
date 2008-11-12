@@ -93,6 +93,7 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
                   E0guess=0.4,                # first guess for E0 in V
                   type="HCl",                 # the type of titrant: either "HCl" or "NaOH"
                   Evals=FALSE,                # are the supplied datapoints pH or E (V) values?
+                  electrode_polarity="pos",   # either "pos" or "neg": how is the polarity of the Electrode: E = E0 -(RT/F)ln(H^+) ("pos") or -E = E0 -(RT/F)ln(H^+) ("neg")
                   K_CO2fit=FALSE,             # should K_CO2 be fitted as well?
                   equalspaced=TRUE,           # are the mass values of titcurve equally spaced?
                   seawater_titrant=FALSE,     # is the titrant based on natural seawater? (does it contain SumBOH4, SumHSO4, and SumHF in the same proportions as seawater, i.e., correlated to S?); Note that you can only assume a seawater based titrant (i.e. SumBOH4, SumHSO4, and SumHF ~ S) or a water based titrant (i.e. SumBOH4, SumHSO4, and SumHF = 0). It is not possible to give values for SumBOH4, SumHSO4, and SumHF of the titrant.
@@ -104,7 +105,8 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
                   k_boh3=NULL,                # a fixed K_BOH3 can be specified
                   k_hso4=NULL,                # a fixed K_HSO4 can be specified
                   k_hf=NULL,                  # a fixed K_HF can be specified
-                  nlscontrol=nls.lm.control())# nls.lm.control() can be specified
+                  nlscontrol=nls.lm.control(),# nls.lm.control() can be specified
+                  verbose=FALSE)              # verbose mode: show the traject of the fitting in a plot
   {
     residuals <- function(state)
       {     
@@ -123,11 +125,29 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
        
         if (Evals)
           {
-            calc <- state[[3]] - ((Constants$R/10)*ae$Tk/Constants$F)*log(calc) #Nernst Equation: E = E0 -(RT/F)ln([H+]); 83.14510 (bar*cm3)/(mol*K) = 8.314510 J/(mol*K): division by 10
+            # The Nernst equation relates E to TOTAL [H+] (DOE1994, p.7, ch.4, sop.3), BUT if fluoride is present, its effect (as proton donor/acceptor) is measured, too! Hence we use SWS!
+            calc <- convert(calc, "pHscale", "free2sws", Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF)
+            
+            # electrode polarity: E = E0 -(RT/F)ln([H+]) ("pos") or -E = E0 -(RT/F)ln([H+]) ("neg")
+            if (electrode_polarity=="pos")
+              {
+                pol <- 1
+              }
+            else
+              {
+                pol <- -1
+              }
+            
+            #Nernst Equation: E = E0 -(RT/F)ln([H+]); 83.14510 (bar*cm3)/(mol*K) = 8.314510 J/(mol*K): division by 10
+            calc <- pol*(state[[3]] - (((Constants$R/10)*ae$Tk)/Constants$F)*log(10^(-calc))) 
+
+            ylab <- "E/V"         
           }
         else if (!(pHscale=="free"))
           {
-            calc <- convert(calc, "pHscale", paste("free2", pHscale, sep=""), Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF) #conversion done here not on data before call, since S changes along the titration!       
+            calc <- convert(calc, "pHscale", paste("free2", pHscale, sep=""), Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF) #conversion done here not on data before call, since S changes along the titration!
+
+            ylab <- paste("pH (", pHscale, " scale)", sep="")         
           }
         if (!equalspaced)
           {
@@ -138,7 +158,7 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
             residuals <- titcurve[,2]-calcfun(titcurve[,1])
           }
         else
-          {     
+          {
             residuals <- (titcurve[,2]-calc)
           }
         
@@ -147,7 +167,14 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
             tit  <<- tit
             calc <<- calc
           }
-
+        if (verbose) # show the traject of the fitting procedure in a plot
+          {
+            ylim=range(titcurve[,2], calc)
+            xlim=range(tit$delta_mass_titrant, titcurve[,1])
+            plot(titcurve[,1], titcurve[,2], xlim=xlim, ylim=ylim, type="l", xlab="delta mass titrant", ylab=ylab)
+            par(new=TRUE)
+            plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red", xlab="", ylab="")
+          }
         return(residuals)
       }
 

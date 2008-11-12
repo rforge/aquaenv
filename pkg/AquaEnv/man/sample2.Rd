@@ -12,7 +12,10 @@
   \item{volume sample}{10 ml}
   \item{titrant type}{HCl}
   \item{titrant conc}{0.01 N}
+  \item{[TA] (Peene-method)}{5709.335 umol/kg-soln}
+  \item{[SumCO2] (Peene-method)}{3533.236 umol/kg-soln}
   }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
+
 

@@ -3,19 +3,22 @@
 \title{plot.aquaenv}
 \description{PUBLIC function: high level plot function for objects of  class aquaenv}
 \details{Top level generic usage is
-  \preformatted{plot.aquaenv(x, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, newdevice=TRUE,...)}
+  \preformatted{plot.aquaenv(x, xval, what=NULL, bjerrum=FALSE,
+             cumulative=FALSE, newdevice=TRUE,...)}
   Generic usages for standard plotting are
   \preformatted{plot.aquaenv(x, xval, ...)}
   \preformatted{plot.aquaenv(x, xval, what, mfrow=c(1,1), size=c(7,7), ...)}
   Generic usage for creating a bjerrum plot is
-  \preformatted{plot.aquaenv(x, what, log=FALSE, palette=NULL, device="x11", filename="aquaenv",
-             size=c(12,10), ylim=NULL, lwd=2, xlab="free scale pH", mgp=c(1.8, 0.5, 0),
-             mar=c(3,3,0.5,0.5), oma=c(0,0,0,0), legendposition="bottomleft",
-	     legendinset=0.05, legendlwd=4, bg="white", newdevice=TRUE, ...)}
+  \preformatted{plot.aquaenv(x, what, log=FALSE, palette=NULL,
+             device="x11", filename="aquaenv",
+             size=c(12,10), ylim=NULL, lwd=2, xlab="free scale pH",
+	     mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
+	     legendposition="bottomleft", legendinset=0.05,
+	     legendlwd=4, bg="white", newdevice=TRUE, ...)}
   Generic usage for creating a cumulative plot is
   \preformatted{plot.aquaenv(x, xval, what, total=TRUE, palette=NULL,
-             device="x11", filename="aquaenv", size=c(12,10), ylim=NULL, lwd=2,
-             mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
+             device="x11", filename="aquaenv", size=c(12,10), ylim=NULL,
+             lwd=2, mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
              legendposition="bottomleft", legendinset=0.05, legendlwd=4,
              bg="white", y.intersp=1.2, newdevice, ...)}
 }

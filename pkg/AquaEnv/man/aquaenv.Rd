@@ -7,7 +7,8 @@
         SumH2SO4=NULL,SumHF=NULL, TA=NULL, pH=NULL, pCO2=NULL, CO2=NULL,
         speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,
         SumH2SO4_Koffset=0,SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE,
-        k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL, k_hf=NULL)}
+        k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
+        k_hf=NULL)}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}
