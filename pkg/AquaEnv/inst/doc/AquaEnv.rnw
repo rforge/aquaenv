@@ -4,13 +4,15 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{longtable}
+\usepackage{array}
+\setlength{\extrarowheight}{0.1cm}
+
 
 \newcommand{\noun}[1]{\textsc{#1}}
 \newcommand{\aq}{\textbf{\textsf{AquaEnv}}}
 \newcommand{\lm}{\textbf{\textsf{minpack.lm}}}
 \newcommand{\R}{\proglang{R}}
 \newcommand{\ds}{\textbf{\textsf{deSolve}}}
-
 
 \title{Package \aq: an \noun{Aqua}tic modelling \noun{Env}ironment in \proglang{R}}
 \Plaintitle{Package AquaEnv: an Aquatic modelling Environment in R}
@@ -297,13 +299,7 @@ dTAdKdKdSumHF & -                             & $\rm \sum_i \frac{\partial [TA]}
 \end{longtable}
 \end{footnotesize}
 
-
-ANOTHER LONGTABLE WITH REFERENCES AND ALL EXPLANATIONS!
-%Cl          & \textperthousand             & chlorinity            & \cite{DOE1994}, ch. 5, p.11; \cite{Zeebe2001}, p.100, footn. 3\\
-%I           & mol/kg-$\rm H_2O$            & ionic strength        & \cite{DOE1994}, ch. 5, p.13, \cite{Zeebe2001}, p. 12,  \cite{Roy1993b}, p.257\\
-longtable with names, units, references, descriptions etc. of EVERYTHING that is stored in an object of type qauaenv
-
-explain pressure correction: what has been corrected in Millero1995?
+For elements that are calculated according to certain literature references, those references are given in appendix \ref{app: references}.
 
 \section{Using \aq}
 
@@ -476,6 +472,62 @@ plot(ae, xval=d, xlab="depth/m")
 
 @ 
 
+
+\appendix
+
+\section{Elements of an object of class \textit{aquaenv} are calcualated according to} \label{app: references}
+\begin{footnotesize}
+\begin{longtable}{p{.2\textwidth}|p{.8\textwidth}}
+\textbf{element}& \textbf{references} \\ \hline 
+Cl          & \cite{DOE1994} chapter 5, p. 11, and \cite{Zeebe2001} p. 100, footnote 3\\
+I           & \cite{DOE1994}, chapter 5, p. 13, 15, \cite{Zeebe2001}. p.12, and \cite{Roy1993b}, p.257. 
+Note that the approximation I/(mol/kg-solution) $\approx$ 0.0199201 \; S is given in \cite{Millero1982},  p. 428.
+This relationship converted into mol/kg-$\rm H_2O$ and the last digits adjusted (from 0.0199201 to 0.019924) results in the formula used here.\\
+density     & \cite{Millero1981} and \cite{DOE1994}, chapter 5, p. 6f   \\
+SumBr, ClConc, Na, Mg, Ca, K, Sr & \cite{DOE1994}, chapter 5, p.11\\    
+molal2molin & \cite{Roy1993b}, p.257. and  \cite{DOE1994}, chapter 5, p. 15\\
+free2tot, tot2free  & \cite{Dickson1984}, p.2302, \cite{DOE1994}, chapter 4, p.16, \cite{Zeebe2001}, p.57, 261\\
+free2sws, tot2sws, sws2free, sws2tot &  \cite{Dickson1984}, p.2303, \cite{Zeebe2001}, p.57\\
+K0\_CO2     & \cite{Weiss1974}, \cite{DOE1994}, chapter 5, p. 13 (here it is stated that the unit is mol/(kg-solution*atm)), \cite{Millero1995}, p.663, \cite{Zeebe2001}, p.257\\
+K0\_O2      & derived from  a formula for the oxygen saturation concentration in ml-$\rm O_2$/kg-solution by \cite{Weiss1970} using the first virial coefficient
+of oxygen \citep[][p. 41, 1029]{Atkins1996} and the atmospheric oxygen fugacity \citep{Williams2004}\\
+K\_W        & \cite[p.670]{Millero1995} (\textbf{original reference}, but slightly different formula for SWS pH), \cite[chapter 5, p. 18]{DOE1994} (NOT the original reference! \cite{DOE1994} cites in an update from 1997 \cite{Millero1995}! 
+However the version of the formula used here is the one converted to total pH scale given in \cite{DOE1994}), and \cite[p. 258]{Zeebe2001}. Constant type (stoichiometric), 
+pH scale (total, converted to free here) , and 
+concentration unit (molinity squared): \cite[chapter 5, p. 12,18]{DOE1994}, pH scale also in \cite[p. 258]{Zeebe2001}.\\
+K\_HSO4     & \cite[chapter 5 page 13]{DOE1994}, \cite[p. 260]{Zeebe2001}, \cite{Dickson1990a} (original reference). Constant type (stoichiometric), pH scale (free) , and 
+concentration unit (molality converted to molinity here): \cite[chapter 5, p. 13]{DOE1994}.\\
+%K\_HF       & 
+%K\_CO2      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+%K\_HCO3     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+%K\_BOH3     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+%K\_NH4      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+%K\_H2S      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+%K\_H3PO4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+%K\_H2PO4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+%K\_HPO4     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+%K\_SiOH4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+%K\_SiOOH3   &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+%K\_HNO2     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+%K\_HNO3     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+%K\_H2SO4    &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+%K\_HS       & mol/kg-soln; mol/kg-H2O; mol/l  & approximate value for equilibrium constant \\
+%Ksp\_calcite& (mol/kg-soln)$^2$               & stoichiometric equilibrium solubility product of calcite\\
+%Ksp\_aragonite &(mol/kg-soln)$^2$             & stoichiometric equilibrium solubility product of aragonite\\
+pH  & As given in \cite{Dickson1984}, p. 2303 (use of "m") and \cite{Dickson1979a}, p. 91f all concentrations appearing in the definition 
+of the total and the seawater pH scale are \textbf{molal} (mol/kg-$\rm H_2O$) concentrations. But in \cite{Roy1993b}, p. 257  and in \cite{DOE1994}, 
+chapter 4, SOP 6, p. 1 it is stated, that concentrations for the seawater and total pH scale are in mol/kg-solution.
+To be consistent with \cite{DOE1994} \textbf{molin} concentrations (mol/kg-solution) are chosen for calculating the pH.\\
+%            &                                 & $\rm Ksp^*_{ara} = [Ca^{2+}][CO_3^{2-}]$\\
+%revelle     & -                               & Revelle factor\\    
+dTAdKdKdS, dTAdKdKdT, dTAdKdKdd, dTAdKdKdSumH2SO4, dTAdKdKdSumHF & \cite{Hofmann2008b}\\
+\end{longtable}
+\end{footnotesize}
+
+
+mention that all corrections from \cite{Lewis1998} have been applied
+
+explain pressure correction: what has been corrected in Millero1995?
 
 
 \bibliography{AquaEnv}
