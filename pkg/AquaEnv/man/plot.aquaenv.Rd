@@ -4,7 +4,8 @@
 \description{PUBLIC function: high level plot function for objects of  class aquaenv}
 \details{Top level generic usage is
   \preformatted{plot.aquaenv(x, xval, what=NULL, bjerrum=FALSE,
-             cumulative=FALSE, newdevice=TRUE,...)}
+             cumulative=FALSE, newdevice=TRUE, setpar=TRUE,
+	     device="x11", ...)}
   Generic usages for standard plotting are
   \preformatted{plot.aquaenv(x, xval, ...)}
   \preformatted{plot.aquaenv(x, xval, what, mfrow=c(1,1), size=c(7,7), ...)}
@@ -14,13 +15,15 @@
              size=c(12,10), ylim=NULL, lwd=2, xlab="free scale pH",
 	     mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
 	     legendposition="bottomleft", legendinset=0.05,
-	     legendlwd=4, bg="white", newdevice=TRUE, ...)}
+	     legendlwd=4, bg="white", newdevice=TRUE, setpar=TRUE,
+	     device="x11",...)}
   Generic usage for creating a cumulative plot is
   \preformatted{plot.aquaenv(x, xval, what, total=TRUE, palette=NULL,
              device="x11", filename="aquaenv", size=c(12,10), ylim=NULL,
              lwd=2, mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
              legendposition="bottomleft", legendinset=0.05, legendlwd=4,
-             bg="white", y.intersp=1.2, newdevice, ...)}
+             bg="white", y.intersp=1.2, newdevice=TRUE, setpar=TRUE,
+	     device="x11",...)}
 }
 \arguments{
   \item{x}{object of class aquaenv}
@@ -29,6 +32,7 @@
   \item{bjerrum }{flag: TRUE = a bjerrum plot is done (by calling bjerrumplot)}
   \item{cumulative }{flag: TRUE = a cumulative plot is done (by calling cumulativeplot)}
   \item{newdevice}{flag: if TRUE, new plot device is opened}
+  \item{setpar}{flag: if TRUE parameters are set with the function par}
   \item{xlab }{x axis label}
   \item{log }{only valif if bjerrum=TRUE: should the plot be on a logarithmic y axis?}
   \item{total }{only valid if cumulative=TRUE: should the sum of all elements specified in what be plotted as well?}

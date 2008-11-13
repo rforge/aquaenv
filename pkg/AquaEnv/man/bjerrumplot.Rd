@@ -7,7 +7,7 @@
             lwd=2, xlab="free scale pH",
             mgp=c(1.8, 0.5, 0), mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
             legendposition="bottomleft", legendinset=0.05, legendlwd=4,
-            bg="white", newdevice, ...)}
+            bg="white", newdevice, setpar,...)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}
   \item{what }{vector of names of elements of aquaenv that should be plotted; if not specified:  what <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "H3PO4", "H2PO4", "HPO4", "PO4", "SiOH4", "SiOOH3", "SiO2OH2", "H2S", "HS", "S2min", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "HNO3", "NO3", "HNO2", "NO2")}
@@ -27,6 +27,7 @@
   \item{legendlwd }{standard legend parameter lwd: line width of lines in legend}
   \item{bg }{standard legend parameter: default background color: white}
   \item{newdevice}{flag: if TRUE, new plot device is opened}
+  \item{setpar}{flag: if TRUE parameters are set with the function par}
   \item{... }{further arguments will be passed}
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}

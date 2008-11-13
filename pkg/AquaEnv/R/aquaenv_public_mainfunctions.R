@@ -498,26 +498,31 @@ aquaenv <- function(Tc,S, d=0,
   }
 
 
-plot.aquaenv <- function(x, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, newdevice=TRUE, ...)
+plot.aquaenv <- function(x, xval, what=NULL, bjerrum=FALSE, cumulative=FALSE, newdevice=TRUE, setpar=TRUE, device="x11", ...)
   {
     if ((!bjerrum) && (!cumulative))
       {
         if (is.null(what))
           {
-            plotall(aquaenv=x, xval=xval, newdevice=newdevice,...)
+            plotall(aquaenv=x, xval=xval, newdevice=newdevice, setpar=setpar, device=device, ...)
           }
         else 
           {
-            selectplot(aquaenv=x, xval=xval, what=what, newdevice=newdevice,...)
+            selectplot(aquaenv=x, xval=xval, what=what, newdevice=newdevice, setpar=setpar, device=device, ...)
           }
       }
     else if (bjerrum)
       {
-        bjerrumplot(aquaenv=x, what=what, newdevice=newdevice,...)
+        bjerrumplot(aquaenv=x, what=what, newdevice=newdevice, setpar=setpar,  device=device, ...)
       }
     else
       {
-        cumulativeplot(aquaenv=x, xval=xval, what=what, newdevice=newdevice,...)
+        cumulativeplot(aquaenv=x, xval=xval, what=what, newdevice=newdevice, setpar=setpar, device=device, ...)
+      }
+
+    if (!(device=="x11"))
+      {
+        dev.off()
       }
   } 
 

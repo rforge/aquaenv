@@ -8,7 +8,7 @@
                mar=c(3,3,0.5,0.5), oma=c(0,0,0,0),
                legendposition="bottomleft", legendinset=0.05,
                legendlwd=4, bg="white",
-               y.intersp=1.2, newdevice, ...)}
+               y.intersp=1.2, newdevice, setpar,...)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}
   \item{xval }{x-value: the independent variable describing a change in elements of an object of class aquaenv}
@@ -30,6 +30,7 @@
   \item{y.intersp }{standard legend parameter; default: 1.2 lines space
     between the lines in the legend}
   \item{newdevice}{flag: if TRUE, new plot device is opened}
+  \item{setpar}{flag: if TRUE parameters are set with the function par}
   \item{... }{further arguments will be passed}
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}

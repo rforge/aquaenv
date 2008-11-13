@@ -5,7 +5,7 @@
 \usage{basicplot(aquaenv, xval, type="l", mgp=c(1.8, 0.5, 0),
           mar=c(3,3,0.5,0.5), oma=c(0,0,0,0), size=c(15,13),
           mfrow=c(11,10), device="x11", filename="aquaenv",
-          newdevice,...)}
+          newdevice, setpar,...)}
 \arguments{
   \item{aquaenv }{object of class aquaenv}
   \item{xval }{x-value: the independent variable describing a change in elements of an object of class aquaenv}
@@ -19,6 +19,7 @@
   \item{filename }{filename to be used if "eps" or "pdf" is selected for
     device}
   \item{newdevice}{flag: if TRUE, new plot device is opened}
+  \item{setpar}{flag: if TRUE parameters are set with the function par}
   \item{... }{further arguments will be passed}
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}

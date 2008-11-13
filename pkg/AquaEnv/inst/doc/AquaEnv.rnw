@@ -7,12 +7,18 @@
 \usepackage{array}
 \setlength{\extrarowheight}{0.1cm}
 
-
 \newcommand{\noun}[1]{\textsc{#1}}
 \newcommand{\aq}{\textbf{\textsf{AquaEnv}}}
 \newcommand{\lm}{\textbf{\textsf{minpack.lm}}}
-\newcommand{\R}{\proglang{R}}
+\newcommand{\R}{\proglang{R }}
 \newcommand{\ds}{\textbf{\textsf{deSolve}}}
+
+\setkeys{Gin}{width=\textwidth} %width of graphics produced by Sweave
+
+% enumerate and add to table down to subparagraph
+\addtocounter{tocdepth}{+3}
+\addtocounter{secnumdepth}{+3}
+
 
 \title{Package \aq: an \noun{Aqua}tic modelling \noun{Env}ironment in \proglang{R}}
 \Plaintitle{Package AquaEnv: an Aquatic modelling Environment in R}
@@ -306,40 +312,49 @@ For elements that are calculated according to certain literature references, tho
 \subsection{Basic features}
 
 \subsubsection{calling the ``K'' functions directly}
+The elements \texttt{K\_CO2, K\_HCO3, K\_BOH3, K\_W, K\_HSO4, K\_HF, K\_NH4, K\_H2S, K\_H3PO4, K\_H2PO4, K\_HPO4, K\_SiOH4, K\_SiOOH3, K0\_CO2, K0\_O2, Ksp\_aragonite,} and \\
+\texttt{Ksp\_calcite} can be calculated directly, witout creating an object of class \textit{aquaenv}. This is done via functions that bear the same as those elements
 
 <<fig=FALSE, echo=TRUE>>=
-# the first and second dissociation constant of the carbonate system
 K_CO2(15,30)
-K_HCO3(15,30)
-
-# the Henry's constant for $\rm CO_2$
 K0_CO2(15,30)
-
-# the solubility product for calcite
 Ksp_calcite(15,30,100)
-
 @ 
 
 
 \subsubsection{Minimal \textit{aquaenv} definition}
+Minimally, an object of class \textit{aquaenv} can be defined with just a temperature and salinity value
+
 <<fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=30)
 ae$K_CO2
+@
 
-ae$Ksp_calcite
-ae$Ksp_aragonite
+Optionally, a mean depth can be given. As in the above case, the returned object of class \textit{aquaenv} then contains
+a standard set of elements as shown by the \texttt{names} command.
 
+<<fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=30, d=10)
-ae$K_CO2
-
 ae$Ksp_calcite
-ae$Ksp_aragonite
+names(ae)
+@ 
 
+A minimal set of elements in an object of class \textit{aquaenv} can be obtained by setting the flag \texttt{skeleton} to \texttt{TRUE}
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=15, S=30, d=10, skeleton=TRUE)
 names(ae)
 
 @ 
 
-\subsubsection{Defining the complete aquaenv system in different ways}
+
+
+\subsubsection{Defining the complete \textit{aquaenv} system in different ways}
+If enough information is given to define a complete speciation, i.e. either one of the pairs
+SumCO2 and pH, SumCO2 and TA, SumCO2 and CO2, or SumCO2 and pCO2, 
+a full \textit{aquaenv} system can be defined.
+
+
 <<fig=FALSE, echo=TRUE>>=
 Tc     <- 15
 S      <- 30
@@ -359,23 +374,83 @@ ae$pH
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, CO2=CO2)
 ae$pH
 
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pCO2=pCO2, dsa=TRUE, revelle=TRUE)
-ae$pH
-
 names(ae)
 
+@ 
+
+As seen above, a full speciation is calculated along with the pH or total alkalinity respectively. If only pH or total alkalinity is needed, 
+the calculation of the full speciation can be toggled off. Furthermore the flag \texttt{skeleton} also works for a full system.
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, speciation=FALSE)
+names(ae)
+
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, speciation=FALSE, skeleton=TRUE)
+names(ae)
+
+@ 
+
+Furtermore all the quantities needed for the explicit pH modelling approaches as given in \cite{Hofmann2008} and \cite{Hofmann2008c} can be calculated by 
+setting the flag \texttt{dsa} to \texttt{TRUE}. The revelle factor can be calculated using the flag \texttt{revelle}.
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pCO2=pCO2, dsa=TRUE, revelle=TRUE)
+ae$dTAdH
+ae$revelle
+@ 
+
+If an ambivalent situation is created because the user enters too much information, an error message is displayed
+
+\begin{scriptsize}
+<<fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, CO2=CO2, pCO2=pCO2)
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, TA=TA)
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, CO2=CO2)
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, pCO2=pCO2)
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, CO2=CO2)
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, pCO2=pCO2)
+@ 
+\end{scriptsize}
 
+
+
+\subsubsection{Calculating $\rm [\sum CO_2]$} 
+
+
+$\rm [\sum CO_2]$ can be calculated by giving a constant pair of either pH and CO2, pH and pCO2, pH and TA, TA and CO2, or TA and pCO2  
+
+<<fig=FALSE, echo=TRUE>>=
+pCO2   <- 0.0006952296
+CO2    <- 2.678134e-05
+pH     <- 7.888569
+TA     <- 0.0021
+
+Tc <- 15
+S  <- 30
+d  <- 10
+
+ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, CO2=CO2)
+ae$SumCO2
+
+ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, pCO2=pCO2)
+ae$SumCO2
+
+ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, TA=TA)
+ae$SumCO2
+
+ae <- aquaenv(Tc, S, d, SumCO2=NULL, TA=TA, CO2=CO2)
+ae$SumCO2
+
+ae <- aquaenv(Tc, S, d, SumCO2=NULL, TA=TA, pCO2=pCO2)
+ae$SumCO2
 @ 
 
 
 
-\subsubsection{Cloning the aquaenv system: 1 to 1 and with different pH or TA}
+\subsubsection{Cloning an object of class \textit{aquaenv}}
+
+ It is possible to clone an obect of class \textit{aquaenv}, either 1 to 1 or with different pH, TA, or K\_CO2
+
 <<fig=FALSE, echo=TRUE>>=
 Tc     <- 15
 S      <- 30
@@ -383,26 +458,31 @@ SumCO2 <- 0.0020
 TA     <- 0.00214
 
 ae <- aquaenv(Tc, S, SumCO2=SumCO2, TA=TA)
-
-aeclone1 <- aquaenv(ae=ae)
-
-pH <- 9
-
-aeclone2 <- aquaenv(ae=ae, pH=pH)
-
-TA <- 0.002
-
-aeclone3 <- aquaenv(ae=ae, TA=TA)
-
 ae$pH
-aeclone1$pH
-aeclone2$TA
-aeclone3$pH
 
+ae1 <- aquaenv(ae=ae)
+ae1$pH
+
+pH  <- 9
+ae2 <- aquaenv(ae=ae, pH=pH)
+ae2$TA
+
+TA  <- 0.002
+ae3 <- aquaenv(ae=ae, TA=TA)
+ae3$pH
+
+K_CO2 <- 1e-6
+ae4 <- aquaenv(ae=ae, k_co2=K_CO2)
+ae4$pH
 @ 
 
+Note that K\_CO2 as an input variable is in lower cases!
 
-\subsubsection{preparing input variables}
+
+\subsubsection{Preparing input variables}
+Input variables for the function \texttt{aquaenv} need to be in mol/kg-solution and on the free pH scale. 
+Data in other concentration units or pH scales can be converted using the function \texttt{convert}.
+
 <<fig=FALSE, echo=TRUE>>=
 Tc <- 15
 S  <- 10
@@ -416,118 +496,564 @@ SumCO2molin <- convert(SumCO2molar, "conc",    "molar2molin", Tc=Tc, S=S)
 ae <- aquaenv(Tc, S, SumCO2=SumCO2molin, pH=pH_free)
 ae$pH
 ae$SumCO2
-ae$TA
-
 @ 
 
 
 
 \subsubsection{Vectors as input variables}
-(only ONE input variable may be a vector)\\
-(with full output: including the Revelle factor and the DSA properties)
-<<fig=TRUE, echo=TRUE, width=15, height=10>>=
+One of the input variables for the function \texttt{aquaenv} may be a vector. All the other input variables are then assumed to be constant.
+The elements of the resulting two dimensional object of class \textit{aquaenv} are then vectors containing the elements as a function of the input variable
+for which a vector is given.
+
+<<fig=FALSE, echo=TRUE>>=
 SumCO2 <- 0.0020
 pH     <- 8
-
 Tc     <- 1:15
 S      <- 30
 d      <- 10
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=Tc, xlab="T/(deg C)", newdevice=FALSE)
 
+ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE)
+ae$revelle
 @ 
 
-extra examples
-<<fig=FALSE, echo=TRUE, eval=FALSE>>=
-options(prompt = " ")
+A two dimensional object of class \textit{aquaenv} can be visualized using the \texttt{plot} function. 
+For convenience of the user, the default setting for the \texttt{plot} function for an object of class \textit{aquaenv} results in a
+new plotting device being opened. Setting the flag \texttt{newdevice} to \texttt{FALSE} prevents that.
 
-Tc <- 15
-S  <- 1:30
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=S, xlab="S")
+\vspace*{-2cm}
+<<fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, xval=Tc, xlab="T/(deg C)", newdevice=FALSE)
+@ 
+\vspace*{-2cm}
 
-S <- 30
-d <- seq(1,1000, 100)
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=d, xlab="depth/m")
+The \texttt{plot} function plots all elements of the respective object of class \textit{aquaenv}. This, however, might not be what the user wants,
+especially if a larger plotting device cannot properly displayed like in the case above. In this case the parameter \texttt{what} can be used.
+Note, however, that the default setting for calling \texttt{plot} with the parameter \texttt{what} is that \texttt{mfrow=c(1,1)}. So
+if one wants to plot several elements, \texttt{mfrow} needs to be set to a suitable value.
+
+<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+plot(ae, xval=Tc, xlab="T/(deg C)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
+@ 
 
 
-TA     <- 0.0023
+The following chunks  of example code show other possible definitions of objects of class \textit{aquaenv} with vectors as input variables. 
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=15, S=20:30, d=10, SumCO2=SumCO2, pH=pH, dsa=TRUE)
+plot(ae, xval=20:30, xlab="S")
+@ 
 
-Tc     <- 1:15
-S      <- 30
-d      <- 10
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=Tc, xlab="T/(deg C)")
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=15, S=30, d=seq(1,1000, 100), SumCO2=SumCO2, pH=pH, revelle=TRUE)
+plot(ae, xval=seq(1,1000, 100), xlab="depth/m")
+@ 
 
-Tc <- 15
-S  <- 1:30
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=S, xlab="S")
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=1:15, S=30, d=10, SumCO2=SumCO2, TA=0.0023)
+plot(ae, xval=1:15, xlab="T/(deg C)")
+@ 
 
-S <- 30
-d <- seq(1,1000, 100)
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=d, xlab="depth/m")
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=15, S=20:30, d=10, SumCO2=SumCO2, TA=TA)
+plot(ae, xval=20:30, xlab="S")
+@
 
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=15, S=30, d=seq(1,1000, 200), SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=seq(1,1000, 200), xlab="depth/m")
+@ 
+
+
+Interesting to note is that also, e.g., SumCO2, TA, pH and SumNH4 can be vectors
+
+<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+ae <- aquaenv(10,20, SumCO2=seq(0.001,0.002, 0.0001), TA=0.002)
+plot(ae, xval=ae$SumCO2, xlab="SumCO2/(mol/kg-soln)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
+@ 
+
+<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+ae <- aquaenv(10,20, SumCO2=0.002, TA=seq(0.001,0.002, 0.0001))
+plot(ae, xval=ae$TA, xlab="TA/(mol/kg-soln)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
+@ 
+
+<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+ae <- aquaenv(10,20, SumCO2=0.002, pH=seq(8,8.2,0.001)) 
+plot(ae, xval=ae$pH, xlab="pH (free scale)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
+@ 
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(10,20, SumCO2=0.002, SumNH4=seq(0.0001, 0.0002, 0.00001), pH=8)
+ae$NH3
+@ 
+
+
+\subsubsection{Calculating $\rm [\sum CO_2]$ from input vectors}
+
+The functionality of calculating SumCO2 can also be used together with vectors as input variables.
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=11:15, S=30,SumCO2=NULL, pH=pH, CO2=CO2, revelle=TRUE, dsa=TRUE)
+ae$SumCO2
+@ 
+
+Two further examples
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=15, S=20:30, SumCO2=NULL, pH=pH, pCO2=pCO2)
+plot(ae, xval=20:30, xlab="S")
+@ 
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=15, S=30, d=seq(1,1000, 100), SumCO2=NULL, pH=pH, TA=TA)
+plot(ae, xval=seq(1,1000, 100), xlab="depth/m")
+@ 
+
+
+
+\subsubsection{Conversion from and to a dataframe}
+Objects of class \textit{aquaenv} can be converted to an \R \textit{data.frame} to further post-process them with standard
+\R means. Similarly, \R \textit{data.frames} can be converted to objects of class \textit{aquaenv} to use the plotting 
+facilities that exist for objects of class \textit{aquaenv}. This can be helpful for plotting output of a dynamic model run, e.g. from \R package \ds,
+and will be shown later in this document.
+
+<<fig=FALSE, echo=TRUE>>=
+aedataframe <- as.data.frame(ae)
+aetest      <- aquaenv(ae=aedataframe, from.data.frame=TRUE)
+@ 
+
+\subsubsection{Converting  elements in an obect of class \textit{aquaenv}}
+
+Elements of an object of class \textit{aquaenv} are calculated in, e.g., the concentration unit mol/kg-solution (molinity).
+The function \texttt{convert} can be used to convert all elements in an object of class \textit{aquaenv} that share a common attribute,
+e.g. the unit.
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(10,30)
+ae$SumBOH3
+ae <- convert(ae, "mol/kg-soln", "umol\kg-H2O", 1e6/ae$molal2molin, "unit")
+ae$SumBOH3
+@ 
+
+
+\subsubsection{Quantities needed for explicit pH modelling}
+As already mentioned above, the quantities needed for the explicit pH modelling approach (direct substitution approach - DSA) as presented by \cite{Hofmann2008}
+can be calculated with the function \texttt{aquaenv} by setting the flag \texttt{dsa}.
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(Tc=15, S=30, d=10, SumCO2=0.002, pH=8, dsa=TRUE, revelle=TRUE)
+@ 
+
+This command calculated the buffer factor and the partial derivatives of [TA] with respect to other summed quantities referred to in \cite{Hofmann2008}
+
+<<fig=FALSE, echo=TRUE>>=
+ae$dTAdH
+ae$dTAdSumCO2
+@ 
+
+as well the sums partial derivatives of [TA] with respect to the equilibrium constants ($K^*$'s) multiplied with the partial derivatives of the respective
+equilibrium constant with one of their variables (i.e., S, T, d, SumH2SO4, od SumHF) as introduced in \cite{Hofmann2008b}.
+
+<<fig=FALSE, echo=TRUE>>=
+ae$dTAdKdKdS
+ae$dTAdKdKdSumH2SO4
+@ 
+
+Furthermore the ionization fractions used for the pH dependent fractional stoichiometric pH modelling approach described in \cite{Hofmann2008c} are calculated as well
+
+<<fig=FALSE, echo=TRUE>>=
+ae$c1
+@ 
+
+
+\subsection{The \texttt{plot.aquaenv} function}
+In the previous sections, the \texttt{plot} function has been introduced. What actually is called if the first element of the arguments list of
+\texttt{plot} is an object of type \textit{aquaenv} is the function \texttt{plot.aquaenv}. 
+This is a multifunctional tool to visualize information contained in an object of class
+\textit{aquaenv}. For the convenience of the users, \texttt{plot.aquaenv} combines the call of standard \R plotting functions and the previous call of the function \texttt{par} 
+to set parameters like \texttt{mfrow}, \texttt{mar}, etc. as well as the opening of a plotting device with a certain size. As already shown above, setting
+the flag \texttt{newdevice} to \texttt{FALSE} suppresses the opening of a new plotting device (this feature is needed here to create a plot that will be
+woven into the \LaTeX$\,$document by Sweave).\\
+
+\noindent
+For example
+<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+ae <- aquaenv(10, 20:30)
+plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(10,2), mfrow=c(1,3), newdevice=FALSE)
+@ 
+and
+\setkeys{Gin}{width=.2\textwidth} %width of graphics produced by Sweave
+<<fig=TRUE, echo=TRUE, width=2, height=5>>=
+plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(2,10), mfrow=c(3,1), newdevice=FALSE)
+@ 
+\setkeys{Gin}{width=\textwidth} %width of graphics produced by Sweave
+
+Furthermore the parameter \texttt{device} can be specified which allows the user to write the plots to .eps and .pdf files.
+The parameter \texttt{filename} can be used to specify a filename other than the default filename ``aquaenv''.
+
+<<fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(10, 20:30)
+plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(10,2), mfrow=c(1,3), device="pdf", filename="test")
+plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(2,10), mfrow=c(3,1), device="eps", filename="test")
+@ 
+
+These features make the function \texttt{plot.aquaenv} different from standard \R plotting functions.
+However, if the flags \texttt{newdevice} and \texttt{setpar} are set to \texttt{FALSE}, \texttt{plot.aquaenv} behaves like a ``normal'' \R plotting function
+
+<<fig=TRUE, echo=TRUE, width=10, height=5>>=
+par(mfrow=c(1,2))
+plot(ae, xval=20:30, xlab="S", what="K_CO2", lwd=3, col="red", newdevice=FALSE, setpar=FALSE)
+plot(ae, xval=20:30, xlab="S", what="K_HCO3", cex=3, type="b", col="blue", newdevice=FALSE, setpar=FALSE)
+@ 
+
+Furthermore, the function \texttt{plot.aquaenv} can be used to create ``cumulative'' plots and ``Bjerrum'' plots. This will be explained in some of the following sections.
+
+
+\subsection{Using objects of class \textit{aquaenv} in dynamic models}
+
+\subsubsection{Ordinary dynamic models}
+
+It is convenient to use objects of class \textit{aquaenv} in a dynamic model, e.g. solved using the \R package \ds.
+This can be illustrated with an example. (For information about how to set up a dynamic model with \ds, consult the documentation of \ds).
+<<fig=FALSE, echo=TRUE>>=
+require(deSolve)
+@ 
+A list of parameters is specified
+<<fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+parameters <- list(             
+                   S          = 25    , # psu       
+                   Tc_min     = 5     , # degrees C
+                   Tc_max     = 25    , # degrees C
+                   d          = 10    , # m
+                   
+                   k          = 0.4       , # 1/d	      proportionality factor for air-water exchange
+                   rOx        = 0.0000003 , # mol-N/(kg*d)  maximal rate of oxic mineralisation
+                   rNitri     = 0.0000002 , # mol-N/(kg*d)  maximal rate of nitrification 
+                   rPP        = 0.000006  , # mol-N/(kg*d)  maximal rate of primary production
+                   
+                   ksDINPP    = 0.000001  , # mol-N/kg
+                   ksNH4PP    = 0.000001  , # mol-N/kg
+                   
+                   D          = 0.1       , #   1/d            (dispersive) transport coefficient
+                   
+                   O2_io      = 0.000296  , # mol/kg-soln 
+                   NO3_io     = 0.000035  , # mol/kg-soln 
+                   SumNH4_io  = 0.000008  , # mol/kg-soln 
+                   SumCO2_io  = 0.002320  , # mol/kg-soln 
+                   TA_io      = 0.002435  , # mol/kg-soln 
+                   
+                   C_Nratio     = 8       , # mol C/mol N     C:N ratio of organic matter
+                   
+                   a           = 30       , # timestep from which PP begins     
+                   b           = 50       , # timestep where PP shuts off again
+                   
+                   modeltime   = 100        # duration of the model
+                   )
+@ 
+
+A model function is defined which will be executed every timestep of the numerical integration. An object of class \textit{aquaenv}
+is created in each timestep, some of its elements are used to calculated kinetic rate expressions and the whole object is returned as output.
+
+<<fig=FALSE, echo=TRUE>>=
+Waddenzeebox <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {
+          Tc <- c(seq(Tc_min, Tc_max, (Tc_max-Tc_min)/(modeltime/2)), seq(Tc_max, Tc_min, -(Tc_max-Tc_min)/(modeltime/2)))[[round(timestep)+1]]
+          
+          ae <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, SumNH4=SumNH4, TA=TA)
+                                    
+          ECO2    <- k * (ae$CO2_sat - ae$CO2)            
+          EO2     <- k * (ae$O2_sat  - O2)             
+         
+          TO2     <- D*(O2_io     - O2)
+          TNO3    <- D*(NO3_io    - NO3)
+          TSumNH4 <- D*(SumNH4_io - SumNH4)
+          TTA     <- D*(TA_io     - TA)
+          TSumCO2 <- D*(SumCO2_io - SumCO2)
+          
+          RNit      <- rNitri 
+
+          ROx       <- rOx 
+          ROxCarbon <- ROx * C_Nratio
+
+          pNH4PP <- 0
+          RPP <- 0
+          
+          if ((timestep > a) && (timestep < b))
+            {
+              RPP    <- rPP * ((SumNH4+NO3)/(ksDINPP + (SumNH4+NO3)))
+              pNH4PP <- 1 - (ksNH4PP/(ksNH4PP + SumNH4))
+            }
+          else
+            {
+              RPP <- 0
+            }
+          RPPCarbon <- RPP * C_Nratio
+          
+          dO2     <- TO2     + EO2 - ROxCarbon - 2*RNit  + (2-2*pNH4PP)*RPP + RPPCarbon
+          dNO3    <- TNO3    + RNit -(1-pNH4PP)*RPP
+
+          dSumCO2 <- TSumCO2 + ECO2 + ROxCarbon - RPPCarbon
+          dSumNH4 <- TSumNH4 + ROx  - RNit - pNH4PP*RPP
+                    
+          dTA     <- TTA     + ROx - 2*RNit -(2*pNH4PP-1)*RPP 
+
+          ratesofchanges <- c(dO2, dNO3, dSumNH4, dSumCO2, dTA)
+          transport      <- c(TO2=TO2, TNO3=TNO3, TSumNH4=TSumNH4, TTA=TTA, TSumCO2=TSumCO2)
+          airseaexchange <- c(ECO2=ECO2, EO2=EO2)
+          
+          return(list(ratesofchanges, list(transport, airseaexchange, ae)))
+        }
+        )
+}
+@ 
+
+The model is solved
+
+<<fig=FALSE, echo=TRUE>>=
+with (as.list(parameters),
+      {
+        initialstate <<- c(O2=O2_io, NO3=NO3_io, SumNH4=SumNH4_io, SumCO2=SumCO2_io, TA=TA_io)
+        times        <<- c(0:modeltime)
+        output       <<- as.data.frame(vode(initialstate,times,Waddenzeebox,parameters, hmax=1))[-1,]        
+      })
+@ 
+
+and the output can be plotted in the same way as a two dimensional object of class \textit{aquaenv} by converting it 
+to an object of class \textit{aquaenv} using the \texttt{from.data.frame} flag of the function \texttt{aquaenv}
+<<fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(10,10), newdevice=FALSE) 
+@ 
+
+
+
+
+\subsubsection{Models using the explicit pH modelling approach}
+
+\paragraph{In one single model}
+
+Since an object of class \textit{aquaenv} can contain all quantities necessary to employ the explicit pH modelling approaches as introduced by 
+\cite{Hofmann2008, Hofmann2008b, Hofmann2008c}, they can be readily used in an explicit pH model.\\
+
+\noindent
+As an example, we give a model that calculates the pH in the ``classical'' way in every timestep using \texttt{aquaenv}, also employs the explicit pH modelling 
+approach (direct substitution approach - DSA) given in \cite{Hofmann2008} and additionally employs fractional stoichiometry as given in \cite{Hofmann2008c}.
+The pH evolution is thus calculated in three different ways which allows comparing the three values for consistency.\\
+
+\noindent
+Again, a list of parameters is defined
+<<fig=FALSE, echo=TRUE>>=
+parameters <- list(             
+                   S          = 25    , # psu       
+                   Tc         = 15    , # degrees C
+                   d          = 10    , # m
+                   
+                   k          = 0.4       , # 1/d	    proportionality factor for air-water exchange
+                   rOx        = 0.0000003 , # mol-N/(kg*d)  maximal rate of oxic mineralisation
+                   rNitri     = 0.0000002 , # mol-N/(kg*d)  maximal rate of nitrification 
+                   rPP        = 0.0000006 , # mol-N/(kg*d)  maximal rate of primary production
+                   
+                   ksSumNH4   = 0.000001  , # mol-N/kg
+                  
+                   D          = 0.1       , #   1/d            (dispersive) transport coefficient
+                   
+                   O2_io      = 0.000296  , # mol/kg-soln 
+                   NO3_io     = 0.000035  , # mol/kg-soln 
+                   SumNH4_io  = 0.000008  , # mol/kg-soln 
+                   SumCO2_io  = 0.002320  , # mol/kg-soln 
+                   TA_io      = 0.002435  , # mol/kg-soln 
+                   
+                   C_Nratio     = 8       , # mol C/mol N     C:N ratio of organic matter
+                   
+                   a           = 30       , # timestep from which PP begins     
+                   b           = 50       , # timestep where PP shuts off again
+                   
+                   modeltime   = 100        # duration of the model
+                   )
+@ 
+
+And a model function is defined. Again, an object of class \textit{aquaenv} is created in each timestep and respective elements are used.
+
+<<fig=FALSE, echo=TRUE>>=
+boxmodel <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {        
+          ae <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, SumNH4=SumNH4, TA=TA, dsa=TRUE)
+                                    
+          ECO2    <- k * (ae$CO2_sat - ae$CO2)            
+          EO2     <- k * (ae$O2_sat  - O2)                    
+        
+          RNit      <- rNitri 
+          ROx       <- rOx 
+        
+          if ((timestep > a) && (timestep < b))
+            {
+              RPP <- rPP * (SumNH4/(ksSumNH4 + SumNH4))
+            }
+          else
+            {
+              RPP <- 0
+            }
+          
+          dO2     <- EO2 - C_Nratio*ROx - 2*RNit + C_Nratio*RPP
+          dNO3    <- RNit
+          
+          dSumCO2 <- ECO2 + C_Nratio*ROx - C_Nratio*RPP
+          dSumNH4 <- ROx  - RNit - RPP
+
+          dTA     <- ROx - 2*RNit - RPP
+          
+          # The DSA pH
+          dH    <- (dTA - (dSumCO2*ae$dTAdSumCO2 + dSumNH4*ae$dTAdSumNH4))/ae$dTAdH
+          DSApH <- -log10(H)
+
+          # The DSA pH using pH dependent fractional stoichiometry (= using partitioning coefficients)
+          rhoHECO2 <- ae$c2 + 2*ae$c3
+          rhoHRNit <- 1 + ae$n1
+          rhoHROx  <- C_Nratio * (ae$c2 + 2*ae$c3) - ae$n1
+          rhoHRPP  <- -(C_Nratio * (ae$c2 + 2*ae$c3)) + ae$n1
+          
+          dH_ECO2  <- rhoHECO2*ECO2/(-ae$dTAdH)
+          dH_RNit  <- rhoHRNit*RNit/(-ae$dTAdH)
+          dH_ROx   <- rhoHROx*ROx  /(-ae$dTAdH)
+          dH_RPP   <- rhoHRPP*RPP  /(-ae$dTAdH)
+
+          dH_stoich   <- dH_ECO2 + dH_RNit + dH_ROx + dH_RPP
+          DSAstoichpH <- -log10(H_stoich)       
+
+          ratesofchanges <- c(dO2, dNO3, dSumNH4, dSumCO2, dTA, dH, dH_stoich)
+          processrates   <- c(ECO2=ECO2, EO2=EO2, RNit=RNit, ROx=ROx, RPP=RPP)
+          DSA            <- c(DSApH=DSApH, rhoHECO2=rhoHECO2, rhoHRNit=rhoHRNit, rhoHROx=rhoHROx,
+                              rhoHRPP=rhoHRPP, dH_ECO2=dH_ECO2, dH_RNit=dH_RNit, dH_ROx=dH_ROx, dH_RPP=dH_RPP, DSAstoichpH=DSAstoichpH)
+          
+          return(list(ratesofchanges, list(processrates, DSA, ae)))
+        }
+        )
+}
+@ 
+
+The model is solved
+<<fig=FALSE, echo=TRUE>>=
+with (as.list(parameters),
+      {
+        H_init       <<- 10^(-(aquaenv(Tc=Tc, S=S, SumCO2=SumCO2_io, SumNH4=SumNH4_io, TA=TA_io, speciation=FALSE)$pH))
+        initialstate <<- c(O2=O2_io, NO3=NO3_io, SumNH4=SumNH4_io, SumCO2=SumCO2_io, TA=TA_io, H=H_init, H_stoich=H_init)
+        times        <<- c(0:modeltime)
+        output       <<- as.data.frame(vode(initialstate, times, boxmodel, parameters, hmax=1))[-1,]        
+      })
+@ 
+
+and output can be plotted. Again using \texttt{plot.aquaenv}. Note that here the parameter \texttt{what} is used.
+
+<<fig=TRUE, echo=TRUE, width=13, height=10>>=
+what <- c("SumCO2", "TA", "SumNH4", "NO3", "ECO2", "EO2", "RNit", "ROx", "RPP", "dTAdH", "dTAdSumCO2", "dTAdSumNH4", "c1", "c2", "c3", "n1", "n2",
+          "rhoHECO2", "rhoHRNit", "rhoHROx", "rhoHRPP", "dH_ECO2", "dH_RNit", "dH_ROx", "dH_RPP",
+          "pH", "DSApH", "DSAstoichpH")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, what=what,  xlab="time/d", mfrow=c(6,5), size=c(20,13), newdevice=FALSE) 
+@ 
+
+Here, the cumulative plotting functionality of  \texttt{plot.aquaenv} can be employed as well to visualize the influences of the different kinetically
+modelled processes on $\rm [H^+]$.
+<<fig=TRUE, echo=TRUE, width=10, height=5>>=
+what <- c("dH_ECO2", "dH_RNit", "dH_ROx", "dH_RPP")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, what=what, xlab="time/d", size=c(7,5), ylab="mol-H/(kg-soln*d)", legendposition="bottomright", cumulative=TRUE, newdevice=FALSE) 
+@  
+
+
+Finally, the pH values calculated with the three different methods can be plotted in one single graph to see if they are identical, i.e. the three 
+methods of pH calculation are consistent with each other
+
+<<fig=TRUE, echo=TRUE, width=10, height=5>>=
+ylim <- range(output$DSApH, output$DSAstoichpH, output$pH)
+plot(output$DSApH, ylim=ylim, type="l", xlab="time/d", ylab="pH (free scale)")
+par(new=TRUE)
+plot(output$DSApH, ylim=ylim, type="l", col="red", xlab="", ylab="")
+par(new=TRUE)
+plot(output$DSAstoichpH, ylim=ylim, type="l", col="blue", xlab="", ylab="")
+@
+
+
+
+
+
+
+
+<<fig=FALSE, echo=FALSE>>=
+graphics.off()
 @ 
 
 
 \appendix
 
-\section{Elements of an object of class \textit{aquaenv} are calcualated according to} \label{app: references}
+\section{References for the elements of an object of class \textit{aquaenv}} \label{app: references}
 \begin{footnotesize}
-\begin{longtable}{p{.2\textwidth}|p{.8\textwidth}}
+\begin{longtable}{p{.15\textwidth}|p{.9\textwidth}}
 \textbf{element}& \textbf{references} \\ \hline 
-Cl          & \cite{DOE1994} chapter 5, p. 11, and \cite{Zeebe2001} p. 100, footnote 3\\
-I           & \cite{DOE1994}, chapter 5, p. 13, 15, \cite{Zeebe2001}. p.12, and \cite{Roy1993b}, p.257. 
-Note that the approximation I/(mol/kg-solution) $\approx$ 0.0199201 \; S is given in \cite{Millero1982},  p. 428.
+Cl          & \cite[ chapter 5, p. 11]{DOE1994}, and \cite[p. 100, footnote 3]{Zeebe2001}\\
+I           & \cite[chapter 5, p. 13, 15]{DOE1994},  \cite[ p.12]{Zeebe2001}, and \cite[ p.257]{Roy1993b}. 
+Note that the approximation I/(mol/kg-solution) $\approx$ 0.0199201 \; S is given in \cite[  p. 428.]{Millero1982}.
 This relationship converted into mol/kg-$\rm H_2O$ and the last digits adjusted (from 0.0199201 to 0.019924) results in the formula used here.\\
-density     & \cite{Millero1981} and \cite{DOE1994}, chapter 5, p. 6f   \\
-SumBr, ClConc, Na, Mg, Ca, K, Sr & \cite{DOE1994}, chapter 5, p.11\\    
-molal2molin & \cite{Roy1993b}, p.257. and  \cite{DOE1994}, chapter 5, p. 15\\
-free2tot, tot2free  & \cite{Dickson1984}, p.2302, \cite{DOE1994}, chapter 4, p.16, \cite{Zeebe2001}, p.57, 261\\
-free2sws, tot2sws, sws2free, sws2tot &  \cite{Dickson1984}, p.2303, \cite{Zeebe2001}, p.57\\
-K0\_CO2     & \cite{Weiss1974}, \cite{DOE1994}, chapter 5, p. 13 (here it is stated that the unit is mol/(kg-solution*atm)), \cite{Millero1995}, p.663, \cite{Zeebe2001}, p.257\\
+density     & \cite{Millero1981} and \cite[chapter 5, p. 6f]{DOE1994}.\\
+SumBr, ClConc, Na, Mg, Ca, K, Sr & \cite[ chapter 5, p.11]{DOE1994}\\    
+molal2molin & \cite[ p.257]{Roy1993b}, and  \cite[chapter 5, p. 15]{DOE1994}\\
+free2tot, tot2free  & \cite[p.2302]{Dickson1984}, \cite[ chapter 4, p.16]{DOE1994}, \cite[p.57, 261]{Zeebe2001}\\
+free2sws, tot2sws, sws2free, sws2tot &  \cite[p.2303]{Dickson1984}, \cite[ p.57]{Zeebe2001}\\
+K0\_CO2     & \cite{Weiss1974}, \cite[chapter 5, p. 13]{DOE1994} (here it is stated that the unit is mol/(kg-solution*atm)), \cite[ p.663]{Millero1995}, \cite[ p.257]{Zeebe2001}\\
 K0\_O2      & derived from  a formula for the oxygen saturation concentration in ml-$\rm O_2$/kg-solution by \cite{Weiss1970} using the first virial coefficient
 of oxygen \citep[][p. 41, 1029]{Atkins1996} and the atmospheric oxygen fugacity \citep{Williams2004}\\
-K\_W        & \cite[p.670]{Millero1995} (\textbf{original reference}, but slightly different formula for SWS pH), \cite[chapter 5, p. 18]{DOE1994} (NOT the original reference! \cite{DOE1994} cites in an update from 1997 \cite{Millero1995}! 
+K\_W        & \cite[p.670]{Millero1995} (\textbf{original reference}, but slightly different formula for seawater pH), \cite[chapter 5, p. 18]{DOE1994} (NOT the original reference! \cite{DOE1994} cites in an update from 1997 \cite{Millero1995}! 
 However the version of the formula used here is the one converted to total pH scale given in \cite{DOE1994}), and \cite[p. 258]{Zeebe2001}. Constant type (stoichiometric), 
 pH scale (total, converted to free here) , and 
-concentration unit (molinity squared): \cite[chapter 5, p. 12,18]{DOE1994}, pH scale also in \cite[p. 258]{Zeebe2001}.\\
+concentration unit (mol/kg-solution squared): \cite[chapter 5, p. 12,18]{DOE1994}, pH scale also in \cite[p. 258]{Zeebe2001}.\\
 K\_HSO4     & \cite[chapter 5 page 13]{DOE1994}, \cite[p. 260]{Zeebe2001}, \cite{Dickson1990a} (original reference). Constant type (stoichiometric), pH scale (free) , and 
-concentration unit (molality converted to molinity here): \cite[chapter 5, p. 13]{DOE1994}.\\
-%K\_HF       & 
-%K\_CO2      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
-%K\_HCO3     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
-%K\_BOH3     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
-%K\_NH4      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
-%K\_H2S      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
-%K\_H3PO4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
-%K\_H2PO4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
-%K\_HPO4     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
-%K\_SiOH4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
-%K\_SiOOH3   &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
-%K\_HNO2     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
-%K\_HNO3     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
-%K\_H2SO4    &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
-%K\_HS       & mol/kg-soln; mol/kg-H2O; mol/l  & approximate value for equilibrium constant \\
-%Ksp\_calcite& (mol/kg-soln)$^2$               & stoichiometric equilibrium solubility product of calcite\\
-%Ksp\_aragonite &(mol/kg-soln)$^2$             & stoichiometric equilibrium solubility product of aragonite\\
+concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \cite[chapter 5, p. 13]{DOE1994}.\\
+K\_HF       & \cite[p. 91]{Dickson1979} (original reference), \cite[c. 5, p. 15]{DOE1994}, \cite[p. 257]{Roy1993b}, \cite[p. 1783]{Dickson1987}, \cite[p. 664]{Millero1995}, \cite[p. 260]{Zeebe2001} 
+(converted to molinty and total scale).  Constant type (stoichiometric), pH scale (free) , and 
+concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \cite[chapter 5, p. 15, 16]{DOE1994}. \\
+K\_CO2, K\_HCO3  & \cite[p. 254]{Roy1993b} (original reference), \cite[chapter 5, p.14]{DOE1994} (in a version converted to mol/kg-$\rm H_2O$), \cite[p. 664]{Millero1995}, \cite[p. 255]{Zeebe2001}.
+Constant type (stoichiometric) and  concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \cite[chapter 5, p. 14, 15]{DOE1994}, pH scale (total, converted to free here): 
+In \cite[chapter 5, p. 12]{DOE1994} the total scale is stated for the formula for high salinities and thus can be inferred for the formula for low salinities. 
+The scale is also indirectly stated for both formulations in the original reference \cite{Roy1993b}. Note that in \cite{Roy1993b} a function for
+pure water \citep{Millero1979} is cited and a function for seawater is derived. In \cite{Millero1995} it is stated that for S$<$5 the fresh water formula
+of \citep{Millero1979} should be used and for S$>=$5 the seawater formula derived in \cite{Roy1993b}. However, both formulations do not always 
+intersect at S=5. The true intersection with respect to salinity S is a function of temperature Tk. Here, we first calculate this intersection by
+numerical root finding and then decide which formulation to use. This practise results in a continuous function with respect to S.
+(Note that \cite{Millero1979} is restated wrongly in \cite{Roy1993b}: one of the numerical values for the function for $\rm K^*_{CO_2}$ is given as 310.48919, but correct is 2310.48919. However, in 
+\cite{Millero1995} this value is stated correctly.) \\
+K\_BOH3     & \cite[p. 763]{Dickson1990} (original, but mol/kg-$\rm H_2O$ version), \cite[ch. 5, p. 14]{DOE1994}, \cite[p. 262]{Zeebe2001}, \cite[p.669]{Millero1995} (mol/kg-$\rm H_2O$ version) , agrees with data in \cite{Roy1993a}.
+Constant type (stoichiometric) and  concentration unit (mol/kg-solution): \cite[chapter 5, p. 14]{DOE1994}, pH scale (total): \cite[chapter 5, p. 12]{DOE1994} and \cite[p.263]{Zeebe2001}.\\
+K\_NH4      & \cite{Millero1995a} (original reference), \cite[p.671]{Millero1995}. Constant type (stoichiometric) and concentration unit (mol/kg-solution): \cite[p.671]{Millero1995}, pH scale (seawater, converted to free here):  
+\cite{Lewis1998} (in corrections of \cite{Millero1995}).\\
+K\_H2S      & \cite{Millero1988} (original reference), \cite[p.671]{Millero1995}. Constant type (stoichiometric) and concentration unit (mol/kg-solution): \cite[p.671]{Millero1995}, pH scale (seawater, converted to free here):  
+\cite{Lewis1998} (in corrections of \cite{Millero1995}).\\
+K\_H3PO4, K\_H2PO4, K\_HPO4 & \cite[p.670]{Millero1995} (original reference, but formula for seawater scale pH), \cite[ch. 5, p 16,17]{DOE1994}, agrees with data in \cite{Dickson1979a}.
+ Constant type (stoichiometric), concentration unit (mol/kg-solution), and pH scale (total, converted to free here): \cite[chapter 5, p. 12, 16, 17]{DOE1994}.\\
+K\_SiOH4    & \cite{Millero1988} (original reference), \cite[chapter 5, p 17]{DOE1994}, \cite[p.671]{Millero1995} (formula for seawater scale pH)
+ Constant type (stoichiometric), concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here by omitting the conversion summand ln(1-0.001005 S)), and pH scale (total, converted to free here): \cite[chapter 5, p. 12, 17]{DOE1994}.\\
+K\_SiOOH3   & \cite{Wischmeyer2003} (original reference), corrected due to personal communication with Dieter Wolf-Gladrow (one of the authors). The corrected version can be obtained from either Dieter Wolf-Gladrow or Andreas F Hofmann 
+(a.hofmann@nioo.knaw.nl).  Constant type (stoichiometric), concentration unit (mol/kg-solution), and pH scale (total, converted to free here): \cite{Wischmeyer2003}.\\
+K\_HNO2     & Constant value, not a function of temperature and salinity! Obtained as a hybrid pk value (featuring the activity of the proton but the concentration of other species (see \cite{Zeebe2001} for a treatment of different types of
+equilibrium constants) in molar concentration (mol/l) on the NBS pH scale \citep{Durst1975} from \cite{Riordan2005}. Used as an approximation for the stoichiometric $\rm K^*_{\rm HNO_2}$ in mol/kg-solution on the free proton pH scale here.\\
+K\_H2SO4    & Constant value, not a function of temperature and salinity! Obtained as a standard pK value from \cite[p. 1045]{Atkins1996}. Used as an approximation for the stoichiometric $\rm K^*_{\rm H_2SO_4}$ in mol/kg-solution on the free proton pH scale here.\\
+K\_HS       & Constant value, not a function of temperature and salinity! Obtained as a standard pK value from \cite[p. 1045]{Atkins1996}. Used as an approximation for the stoichiometric $\rm K^*_{\rm Hs^-}$ in mol/kg-solution on the free proton pH scale here.\\
+Ksp\_calcite, Ksp\_aragonite  & \cite{Mucci1983} (original reference), \cite{Boudreau1996}. Note that in there are errors in \cite{Boudreau1996}: $b_0$ for calcite is not 0.7712 but 0.77712 and $b_1$ for 
+aragonite is not 0.001727 but 0.0017276.\\
 pH  & As given in \cite{Dickson1984}, p. 2303 (use of "m") and \cite{Dickson1979a}, p. 91f all concentrations appearing in the definition 
 of the total and the seawater pH scale are \textbf{molal} (mol/kg-$\rm H_2O$) concentrations. But in \cite{Roy1993b}, p. 257  and in \cite{DOE1994}, 
 chapter 4, SOP 6, p. 1 it is stated, that concentrations for the seawater and total pH scale are in mol/kg-solution.
 To be consistent with \cite{DOE1994} \textbf{molin} concentrations (mol/kg-solution) are chosen for calculating the pH.\\
-%            &                                 & $\rm Ksp^*_{ara} = [Ca^{2+}][CO_3^{2-}]$\\
-%revelle     & -                               & Revelle factor\\    
+revelle     & \cite[p.73]{Zeebe2001}\\    
 dTAdKdKdS, dTAdKdKdT, dTAdKdKdd, dTAdKdKdSumH2SO4, dTAdKdKdSumHF & \cite{Hofmann2008b}\\
 \end{longtable}
 \end{footnotesize}
+The values for K\_W, K\_HSO4, K\_HF, K\_CO2, K\_HCO3, K\_BOH3,  K\_NH4,  K\_H2S,  K\_H3PO4, K\_H2PO4, K\_HPO4, K\_SiOH4, K\_SiOOH3,  Ksp\_calcite, Ksp\_aragonite obtained as functions of 
+salinity S and temperature Tc from the above references are pressure corrected using the given depth d and the calculated hydrostatic pressure hydroP according to \cite{Millero1995} 
+with corrections by \cite{Lewis1998}.\\
 
-
-mention that all corrections from \cite{Lewis1998} have been applied
-
-explain pressure correction: what has been corrected in Millero1995?
+\noindent
+In general it is to be said that all corrections from \cite{Lewis1998} have been applied.
 
 
 \bibliography{AquaEnv}

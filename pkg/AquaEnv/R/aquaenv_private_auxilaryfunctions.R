@@ -342,13 +342,17 @@ basicplot <- function(aquaenv,                # object of class aquaenv
                       device="x11",           # the device to plot on;       default: "x11" (can also be "eps" or "pdf")
                       filename="aquaenv",     # filename to be used if "eps" or "pdf" is selected for device
                       newdevice,              # flag: if TRUE, new plot device is opened
+                      setpar,                 # flag: if TRUE parameters are set with the function par
                       ...)
   {
     if (newdevice)
       {
         opendevice(device, size, filename)
       }
-    par(mfrow=mfrow, mar=mar, oma=oma, mgp=mgp)
+    if (setpar)
+      {
+        par(mfrow=mfrow, mar=mar, oma=oma, mgp=mgp)
+      }
     aquaenv <- as.data.frame(aquaenv)
     for (i in 1:length(aquaenv))
       {
@@ -423,6 +427,7 @@ bjerrumplot <- function(aquaenv,              # object of class aquaenv
                         legendlwd=4,          # standard legend parameter lwd: line width of lines in legend
                         bg="white",           # standard legend parameter: default background color: white
                         newdevice,            # flag: if TRUE, new plot device is opened
+                        setpar,               # flag: if TRUE parameters are set with the function par
                         ...)
   {
     if (is.null(what))
@@ -438,8 +443,11 @@ bjerrumplot <- function(aquaenv,              # object of class aquaenv
       {
         opendevice(device, size, filename)
       }
-    par(mar=mar, mgp=mgp, oma=oma)
-
+    if(setpar)
+      {
+        par(mar=mar, mgp=mgp, oma=oma)
+      }
+    
     if (is.null(palette))
       {
         palette <- 1:length(what)
@@ -495,6 +503,7 @@ cumulativeplot <- function(aquaenv,           # object of class aquaenv
                            bg="white",        # standard legend parameter: default background color: white
                            y.intersp=1.2,     # standard legend parameter; default: 1.2 lines space between the lines in the legend
                            newdevice,         # flag: if TRUE, new plot device is opened
+                           setpar,            # flag: if TRUE parameters are set with the function par
                            ...)
   {
     if (is.null(what))
@@ -523,8 +532,10 @@ cumulativeplot <- function(aquaenv,           # object of class aquaenv
       {
         opendevice(device, size, filename)
       }
-    par(mar=mar, mgp=mgp, oma=oma)
-        
+    if (setpar)
+      {
+        par(mar=mar, mgp=mgp, oma=oma)
+      }
     plot(xval, rep(0,length(xval)), type="l", ylim=ylim, col="white", ...)
     sumfuncpos <- rep(0,length(xval))
     for (x in 1:(length(cumulativevars)))
