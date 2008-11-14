@@ -1479,7 +1479,7 @@ Thus, we see that \texttt{TAfit} calculates the correct SumCO2 and TA values.\\
 However, to do so we first need to convert our pH curve to the seawater pH scale. According to \cite[p.7, ch.4, sop.3]{DOE1994}, the Nernst equation relates E to 
 the total proton concentration, but, if fluoride is present, its effect (as proton donor/acceptor) is also measured. Hence, we use the seawater scale here.
 <<TAfit7, fig=FALSE, echo=TRUE>>=
-swstitcurve <- convert(titcurve[,2], "pHscale", "free2sws", Tc=Tc, S=S)  
+swstitcurve <- convert(titcurve[,2], "pHscale", "free2sws", Tc=15, S=35)  
 Etitcurve   <- cbind(titcurve[,1], (0.4 - ((Constants$R/10)*initial_ae$Tk/Constants$F)*log(10^-swstitcurve))) 
 @ 
 Again, \texttt{TAfit} can be executed, this time also calculating E0. Note that the flag \texttt{verbose=TRUE} causes
