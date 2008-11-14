@@ -74,9 +74,9 @@ as well as additionally the electrode standard potential ($\rm E_0$) and the fir
 \SweaveOpts{engine=R,eps=FALSE}
 \SweaveOpts{keep.source=TRUE}
 
-<<preliminaries,echo=FALSE,results=hide>>=
+<<Preliminaries,echo=FALSE,results=hide>>=
 library("AquaEnv")
-options(width=70)
+#options(width=70)
 
 @
 
@@ -154,7 +154,7 @@ constant of the carbonate system ($\rm K^*_{CO_2}$) using the Levenberg-Marquart
 \section{The elements of an object of class \textit{aquaenv}}
 The function \texttt{aquaenv}, the central function of \aq$ $, returns an object of class \textit{aquaenv}. This object is a list of different elements which can be accesses with the \$ character or 
 with the [[]] operator
-<<fig=FALSE, echo=TRUE>>=
+<<AquaenvElements, fig=FALSE, echo=TRUE>>=
 test <- aquaenv(10,35)
 test$Tc
 test[["Tc"]]
@@ -315,7 +315,7 @@ For elements that are calculated according to certain literature references, tho
 The elements \texttt{K\_CO2, K\_HCO3, K\_BOH3, K\_W, K\_HSO4, K\_HF, K\_NH4, K\_H2S, K\_H3PO4, K\_H2PO4, K\_HPO4, K\_SiOH4, K\_SiOOH3, K0\_CO2, K0\_O2, Ksp\_aragonite,} and \\
 \texttt{Ksp\_calcite} can be calculated directly, witout creating an object of class \textit{aquaenv}. This is done via functions that bear the same as those elements
 
-<<fig=FALSE, echo=TRUE>>=
+<<CallingKFuncsDirectly, fig=FALSE, echo=TRUE>>=
 K_CO2(15,30)
 K0_CO2(15,30)
 Ksp_calcite(15,30,100)
@@ -325,7 +325,7 @@ Ksp_calcite(15,30,100)
 \subsubsection{Minimal \textit{aquaenv} definition}
 Minimally, an object of class \textit{aquaenv} can be defined with just a temperature and salinity value
 
-<<fig=FALSE, echo=TRUE>>=
+<<MinimalAquaenv, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=30)
 ae$K_CO2
 @
@@ -333,7 +333,7 @@ ae$K_CO2
 Optionally, a mean depth can be given. As in the above case, the returned object of class \textit{aquaenv} then contains
 a standard set of elements as shown by the \texttt{names} command.
 
-<<fig=FALSE, echo=TRUE>>=
+<<AquaenvWithDepth, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=30, d=10)
 ae$Ksp_calcite
 names(ae)
@@ -341,7 +341,7 @@ names(ae)
 
 A minimal set of elements in an object of class \textit{aquaenv} can be obtained by setting the flag \texttt{skeleton} to \texttt{TRUE}
 
-<<fig=FALSE, echo=TRUE>>=
+<<SkeletonAquaenv, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=30, d=10, skeleton=TRUE)
 names(ae)
 
@@ -355,7 +355,7 @@ SumCO2 and pH, SumCO2 and TA, SumCO2 and CO2, or SumCO2 and pCO2,
 a full \textit{aquaenv} system can be defined.
 
 
-<<fig=FALSE, echo=TRUE>>=
+<<CompleteAquaenvSystem, fig=FALSE, echo=TRUE>>=
 Tc     <- 15
 S      <- 30
 d      <- 10
@@ -381,7 +381,7 @@ names(ae)
 As seen above, a full speciation is calculated along with the pH or total alkalinity respectively. If only pH or total alkalinity is needed, 
 the calculation of the full speciation can be toggled off. Furthermore the flag \texttt{skeleton} also works for a full system.
 
-<<fig=FALSE, echo=TRUE>>=
+<<SpeciationSkeletonAquaenv, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, speciation=FALSE)
 names(ae)
 
@@ -393,7 +393,7 @@ names(ae)
 Furtermore all the quantities needed for the explicit pH modelling approaches as given in \cite{Hofmann2008} and \cite{Hofmann2008c} can be calculated by 
 setting the flag \texttt{dsa} to \texttt{TRUE}. The revelle factor can be calculated using the flag \texttt{revelle}.
 
-<<fig=FALSE, echo=TRUE>>=
+<<DSAAquaenv, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pCO2=pCO2, dsa=TRUE, revelle=TRUE)
 ae$dTAdH
 ae$revelle
@@ -402,7 +402,7 @@ ae$revelle
 If an ambivalent situation is created because the user enters too much information, an error message is displayed
 
 \begin{scriptsize}
-<<fig=FALSE, echo=TRUE>>=
+<<ErrorMessagesAquaenv, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, CO2=CO2, pCO2=pCO2)
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, TA=TA)
 ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, CO2=CO2)
@@ -419,7 +419,7 @@ ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, pCO2=pCO2)
 
 $\rm [\sum CO_2]$ can be calculated by giving a constant pair of either pH and CO2, pH and pCO2, pH and TA, TA and CO2, or TA and pCO2  
 
-<<fig=FALSE, echo=TRUE>>=
+<<SumCO2Calculating, fig=FALSE, echo=TRUE>>=
 pCO2   <- 0.0006952296
 CO2    <- 2.678134e-05
 pH     <- 7.888569
@@ -451,7 +451,7 @@ ae$SumCO2
 
  It is possible to clone an obect of class \textit{aquaenv}, either 1 to 1 or with different pH, TA, or K\_CO2
 
-<<fig=FALSE, echo=TRUE>>=
+<<CloningAquaenv, fig=FALSE, echo=TRUE>>=
 Tc     <- 15
 S      <- 30
 SumCO2 <- 0.0020
@@ -483,7 +483,7 @@ Note that K\_CO2 as an input variable is in lower cases!
 Input variables for the function \texttt{aquaenv} need to be in mol/kg-solution and on the free pH scale. 
 Data in other concentration units or pH scales can be converted using the function \texttt{convert}.
 
-<<fig=FALSE, echo=TRUE>>=
+<<PreparingInput, fig=FALSE, echo=TRUE>>=
 Tc <- 15
 S  <- 10
 
@@ -505,7 +505,7 @@ One of the input variables for the function \texttt{aquaenv} may be a vector. Al
 The elements of the resulting two dimensional object of class \textit{aquaenv} are then vectors containing the elements as a function of the input variable
 for which a vector is given.
 
-<<fig=FALSE, echo=TRUE>>=
+<<InputVectors, fig=FALSE, echo=TRUE>>=
 SumCO2 <- 0.0020
 pH     <- 8
 Tc     <- 1:15
@@ -521,7 +521,7 @@ For convenience of the user, the default setting for the \texttt{plot} function 
 new plotting device being opened. Setting the flag \texttt{newdevice} to \texttt{FALSE} prevents that.
 
 \vspace*{-2cm}
-<<fig=TRUE, echo=TRUE, width=13, height=10>>=
+<<Plotall, fig=TRUE, echo=TRUE, width=13, height=10>>=
 plot(ae, xval=Tc, xlab="T/(deg C)", newdevice=FALSE)
 @ 
 \vspace*{-2cm}
@@ -531,33 +531,33 @@ especially if a larger plotting device cannot properly displayed like in the cas
 Note, however, that the default setting for calling \texttt{plot} with the parameter \texttt{what} is that \texttt{mfrow=c(1,1)}. So
 if one wants to plot several elements, \texttt{mfrow} needs to be set to a suitable value.
 
-<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+<<Selectplot, fig=TRUE, echo=TRUE, width=10, height=2>>=
 plot(ae, xval=Tc, xlab="T/(deg C)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
 @ 
 
 
 The following chunks  of example code show other possible definitions of objects of class \textit{aquaenv} with vectors as input variables. 
-<<fig=FALSE, echo=TRUE>>=
+<<MoreInputVectors1, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=20:30, d=10, SumCO2=SumCO2, pH=pH, dsa=TRUE)
 plot(ae, xval=20:30, xlab="S")
 @ 
 
-<<fig=FALSE, echo=TRUE>>=
+<<MoreInputVectors2, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=30, d=seq(1,1000, 100), SumCO2=SumCO2, pH=pH, revelle=TRUE)
 plot(ae, xval=seq(1,1000, 100), xlab="depth/m")
 @ 
 
-<<fig=FALSE, echo=TRUE>>=
+<<MoreInputVectors3, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=1:15, S=30, d=10, SumCO2=SumCO2, TA=0.0023)
 plot(ae, xval=1:15, xlab="T/(deg C)")
 @ 
 
-<<fig=FALSE, echo=TRUE>>=
+<<MoreInputVectors4, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=20:30, d=10, SumCO2=SumCO2, TA=TA)
 plot(ae, xval=20:30, xlab="S")
 @
 
-<<fig=FALSE, echo=TRUE>>=
+<<MoreInputVectors5, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=30, d=seq(1,1000, 200), SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
 plot(ae, xval=seq(1,1000, 200), xlab="depth/m")
 @ 
@@ -565,22 +565,22 @@ plot(ae, xval=seq(1,1000, 200), xlab="depth/m")
 
 Interesting to note is that also, e.g., SumCO2, TA, pH and SumNH4 can be vectors
 
-<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+<<MoreInputVectors6, fig=TRUE, echo=TRUE, width=10, height=2>>=
 ae <- aquaenv(10,20, SumCO2=seq(0.001,0.002, 0.0001), TA=0.002)
 plot(ae, xval=ae$SumCO2, xlab="SumCO2/(mol/kg-soln)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
 @ 
 
-<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+<<MoreInputVectors7, fig=TRUE, echo=TRUE, width=10, height=2>>=
 ae <- aquaenv(10,20, SumCO2=0.002, TA=seq(0.001,0.002, 0.0001))
 plot(ae, xval=ae$TA, xlab="TA/(mol/kg-soln)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
 @ 
 
-<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+<<MoreInputVectors8, fig=TRUE, echo=TRUE, width=10, height=2>>=
 ae <- aquaenv(10,20, SumCO2=0.002, pH=seq(8,8.2,0.001)) 
 plot(ae, xval=ae$pH, xlab="pH (free scale)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
 @ 
 
-<<fig=FALSE, echo=TRUE>>=
+<<MoreInputVectors9, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(10,20, SumCO2=0.002, SumNH4=seq(0.0001, 0.0002, 0.00001), pH=8)
 ae$NH3
 @ 
@@ -590,19 +590,19 @@ ae$NH3
 
 The functionality of calculating SumCO2 can also be used together with vectors as input variables.
 
-<<fig=FALSE, echo=TRUE>>=
+<<SumCO2CalcInputVecs1, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=11:15, S=30,SumCO2=NULL, pH=pH, CO2=CO2, revelle=TRUE, dsa=TRUE)
 ae$SumCO2
 @ 
 
 Two further examples
 
-<<fig=FALSE, echo=TRUE>>=
+<<SumCO2CalcInputVecs2, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=20:30, SumCO2=NULL, pH=pH, pCO2=pCO2)
 plot(ae, xval=20:30, xlab="S")
 @ 
 
-<<fig=FALSE, echo=TRUE>>=
+<<SumCO2CalcInputVecs3, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=30, d=seq(1,1000, 100), SumCO2=NULL, pH=pH, TA=TA)
 plot(ae, xval=seq(1,1000, 100), xlab="depth/m")
 @ 
@@ -615,7 +615,7 @@ Objects of class \textit{aquaenv} can be converted to an \R \textit{data.frame} 
 facilities that exist for objects of class \textit{aquaenv}. This can be helpful for plotting output of a dynamic model run, e.g. from \R package \ds,
 and will be shown later in this document.
 
-<<fig=FALSE, echo=TRUE>>=
+<<Dataframe, fig=FALSE, echo=TRUE>>=
 aedataframe <- as.data.frame(ae)
 aetest      <- aquaenv(ae=aedataframe, from.data.frame=TRUE)
 @ 
@@ -626,7 +626,7 @@ Elements of an object of class \textit{aquaenv} are calculated in, e.g., the con
 The function \texttt{convert} can be used to convert all elements in an object of class \textit{aquaenv} that share a common attribute,
 e.g. the unit.
 
-<<fig=FALSE, echo=TRUE>>=
+<<Elementconversion, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(10,30)
 ae$SumBOH3
 ae <- convert(ae, "mol/kg-soln", "umol\kg-H2O", 1e6/ae$molal2molin, "unit")
@@ -638,13 +638,13 @@ ae$SumBOH3
 As already mentioned above, the quantities needed for the explicit pH modelling approach (direct substitution approach - DSA) as presented by \cite{Hofmann2008}
 can be calculated with the function \texttt{aquaenv} by setting the flag \texttt{dsa}.
 
-<<fig=FALSE, echo=TRUE>>=
+<<DSAQuantities1, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(Tc=15, S=30, d=10, SumCO2=0.002, pH=8, dsa=TRUE, revelle=TRUE)
 @ 
 
 This command calculated the buffer factor and the partial derivatives of [TA] with respect to other summed quantities referred to in \cite{Hofmann2008}
 
-<<fig=FALSE, echo=TRUE>>=
+<<DSAQuantities2, fig=FALSE, echo=TRUE>>=
 ae$dTAdH
 ae$dTAdSumCO2
 @ 
@@ -652,14 +652,14 @@ ae$dTAdSumCO2
 as well the sums partial derivatives of [TA] with respect to the equilibrium constants ($K^*$'s) multiplied with the partial derivatives of the respective
 equilibrium constant with one of their variables (i.e., S, T, d, SumH2SO4, od SumHF) as introduced in \cite{Hofmann2008b}.
 
-<<fig=FALSE, echo=TRUE>>=
+<<DSAQuantities3, fig=FALSE, echo=TRUE>>=
 ae$dTAdKdKdS
 ae$dTAdKdKdSumH2SO4
 @ 
 
 Furthermore the ionization fractions used for the pH dependent fractional stoichiometric pH modelling approach described in \cite{Hofmann2008c} are calculated as well
 
-<<fig=FALSE, echo=TRUE>>=
+<<DSAQuantities4, fig=FALSE, echo=TRUE>>=
 ae$c1
 @ 
 
@@ -675,13 +675,13 @@ woven into the \LaTeX$\,$document by Sweave).\\
 
 \noindent
 For example
-<<fig=TRUE, echo=TRUE, width=10, height=2>>=
+<<Plot1, fig=TRUE, echo=TRUE, width=10, height=2>>=
 ae <- aquaenv(10, 20:30)
 plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(10,2), mfrow=c(1,3), newdevice=FALSE)
 @ 
 and
 \setkeys{Gin}{width=.2\textwidth} %width of graphics produced by Sweave
-<<fig=TRUE, echo=TRUE, width=2, height=5>>=
+<<Plot2, fig=TRUE, echo=TRUE, width=2, height=5>>=
 plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(2,10), mfrow=c(3,1), newdevice=FALSE)
 @ 
 \setkeys{Gin}{width=\textwidth} %width of graphics produced by Sweave
@@ -689,7 +689,7 @@ plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(2,10)
 Furthermore the parameter \texttt{device} can be specified which allows the user to write the plots to .eps and .pdf files.
 The parameter \texttt{filename} can be used to specify a filename other than the default filename ``aquaenv''.
 
-<<fig=FALSE, echo=TRUE>>=
+<<Plot3, fig=FALSE, echo=TRUE>>=
 ae <- aquaenv(10, 20:30)
 plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(10,2), mfrow=c(1,3), device="pdf", filename="test")
 plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(2,10), mfrow=c(3,1), device="eps", filename="test")
@@ -698,7 +698,7 @@ plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(2,10)
 These features make the function \texttt{plot.aquaenv} different from standard \R plotting functions.
 However, if the flags \texttt{newdevice} and \texttt{setpar} are set to \texttt{FALSE}, \texttt{plot.aquaenv} behaves like a ``normal'' \R plotting function
 
-<<fig=TRUE, echo=TRUE, width=10, height=5>>=
+<<Plot4, fig=TRUE, echo=TRUE, width=10, height=5>>=
 par(mfrow=c(1,2))
 plot(ae, xval=20:30, xlab="S", what="K_CO2", lwd=3, col="red", newdevice=FALSE, setpar=FALSE)
 plot(ae, xval=20:30, xlab="S", what="K_HCO3", cex=3, type="b", col="blue", newdevice=FALSE, setpar=FALSE)
@@ -713,11 +713,11 @@ Furthermore, the function \texttt{plot.aquaenv} can be used to create ``cumulati
 
 It is convenient to use objects of class \textit{aquaenv} in a dynamic model, e.g. solved using the \R package \ds.
 This can be illustrated with an example. (For information about how to set up a dynamic model with \ds, consult the documentation of \ds).
-<<fig=FALSE, echo=TRUE>>=
+<<LoadingDeSolve, fig=FALSE, echo=TRUE>>=
 require(deSolve)
 @ 
 A list of parameters is specified
-<<fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<OrdDynModParamList, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
 parameters <- list(             
                    S          = 25    , # psu       
                    Tc_min     = 5     , # degrees C
@@ -752,7 +752,7 @@ parameters <- list(
 A model function is defined which will be executed every timestep of the numerical integration. An object of class \textit{aquaenv}
 is created in each timestep, some of its elements are used to calculated kinetic rate expressions and the whole object is returned as output.
 
-<<fig=FALSE, echo=TRUE>>=
+<<OrdDynModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
 Waddenzeebox <- function(timestep, currentstate, parameters)
 {
   with (
@@ -810,7 +810,7 @@ Waddenzeebox <- function(timestep, currentstate, parameters)
 
 The model is solved
 
-<<fig=FALSE, echo=TRUE>>=
+<<OrdDynModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
 with (as.list(parameters),
       {
         initialstate <<- c(O2=O2_io, NO3=NO3_io, SumNH4=SumNH4_io, SumCO2=SumCO2_io, TA=TA_io)
@@ -821,7 +821,7 @@ with (as.list(parameters),
 
 and the output can be plotted in the same way as a two dimensional object of class \textit{aquaenv} by converting it 
 to an object of class \textit{aquaenv} using the \texttt{from.data.frame} flag of the function \texttt{aquaenv}
-<<fig=TRUE, echo=TRUE, width=13, height=10>>=
+<<OrdDynModePlotting, fig=TRUE, echo=TRUE, width=13, height=10>>=
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(10,10), newdevice=FALSE) 
 @ 
 
@@ -842,7 +842,7 @@ The pH evolution is thus calculated in three different ways which allows compari
 
 \noindent
 Again, a list of parameters is defined
-<<fig=FALSE, echo=TRUE>>=
+<<SinglePHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
 parameters <- list(             
                    S          = 25    , # psu       
                    Tc         = 15    , # degrees C
@@ -874,12 +874,13 @@ parameters <- list(
 
 And a model function is defined. Again, an object of class \textit{aquaenv} is created in each timestep and respective elements are used.
 
-<<fig=FALSE, echo=TRUE>>=
+<<SinglePHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
 boxmodel <- function(timestep, currentstate, parameters)
 {
   with (
         as.list(c(currentstate,parameters)),
-        {        
+        {  
+          # the "classical" implicit pH calculation method is applied in aquaenv
           ae <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, SumNH4=SumNH4, TA=TA, dsa=TRUE)
                                     
           ECO2    <- k * (ae$CO2_sat - ae$CO2)            
@@ -935,7 +936,7 @@ boxmodel <- function(timestep, currentstate, parameters)
 @ 
 
 The model is solved
-<<fig=FALSE, echo=TRUE>>=
+<<SinglPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
 with (as.list(parameters),
       {
         H_init       <<- 10^(-(aquaenv(Tc=Tc, S=S, SumCO2=SumCO2_io, SumNH4=SumNH4_io, TA=TA_io, speciation=FALSE)$pH))
@@ -947,7 +948,7 @@ with (as.list(parameters),
 
 and output can be plotted. Again using \texttt{plot.aquaenv}. Note that here the parameter \texttt{what} is used.
 
-<<fig=TRUE, echo=TRUE, width=13, height=10>>=
+<<SinglePHModePlotting1, fig=TRUE, echo=TRUE, width=13, height=10>>=
 what <- c("SumCO2", "TA", "SumNH4", "NO3", "ECO2", "EO2", "RNit", "ROx", "RPP", "dTAdH", "dTAdSumCO2", "dTAdSumNH4", "c1", "c2", "c3", "n1", "n2",
           "rhoHECO2", "rhoHRNit", "rhoHROx", "rhoHRPP", "dH_ECO2", "dH_RNit", "dH_ROx", "dH_RPP",
           "pH", "DSApH", "DSAstoichpH")
@@ -956,16 +957,16 @@ plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, what=what,  xla
 
 Here, the cumulative plotting functionality of  \texttt{plot.aquaenv} can be employed as well to visualize the influences of the different kinetically
 modelled processes on $\rm [H^+]$.
-<<fig=TRUE, echo=TRUE, width=10, height=5>>=
+<<SinglepHModPlotting2, fig=TRUE, echo=TRUE, width=10, height=5>>=
 what <- c("dH_ECO2", "dH_RNit", "dH_ROx", "dH_RPP")
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, what=what, xlab="time/d", size=c(7,5), ylab="mol-H/(kg-soln*d)", legendposition="bottomright", cumulative=TRUE, newdevice=FALSE) 
 @  
 
 
-Finally, the pH values calculated with the three different methods can be plotted in one single graph to see if they are identical, i.e. the three 
+Finally, the pH values calculated with the three different methods can be plotted in one single graph to see that they are identical, i.e. the three 
 methods of pH calculation are consistent with each other
 
-<<fig=TRUE, echo=TRUE, width=10, height=5>>=
+<<SinplePHModConsistencyCheck, fig=TRUE, echo=TRUE, width=10, height=5>>=
 ylim <- range(output$DSApH, output$DSAstoichpH, output$pH)
 plot(output$DSApH, ylim=ylim, type="l", xlab="time/d", ylab="pH (free scale)")
 par(new=TRUE)
@@ -975,12 +976,681 @@ plot(output$DSAstoichpH, ylim=ylim, type="l", col="blue", xlab="", ylab="")
 @
 
 
+\paragraph{In three separate models}
+
+
+\subparagraph{The implicit pH modelling approach}
+           
+A list of parameters
+<<ImplicitPHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+parameters <- list(             
+                   S           = 35        , # psu       
+                   Tc          = 15        , # degrees C
+
+                   SumCO2_t0   = 0.002     , # mol/kg-soln  (comparable to Wang2005)
+                   TA_t0       = 0.0022    , # mol/kg-soln  (comparable to Millero1998)
+
+                   kc          = 0.5       , # 1/d	         proportionality factor for air-water exchange
+                   kp          = 0.000001  , # mol/(kg-soln*d)	 max rate of calcium carbonate precipitation
+                   n           = 2.0       , # -                 exponent for kinetic rate law of precipitation
+                                      
+                   modeltime   = 20        , # d              duration of the model
+                   outputsteps = 100         #                number of outputsteps
+                   )
+@ 
+
+The model function
+<<ImplicitPHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+boxmodel <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {        
+          ae    <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, TA=TA, SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0)      
+          
+          Rc    <- kc * ((ae$CO2_sat) - (ae$CO2)) 
+          Rp    <- kp * (1-ae$omega_calcite)^n               
+
+          dSumCO2 <- Rc - Rp
+          dTA     <- -2*Rp
+          
+          ratesofchanges <- c(dSumCO2, dTA)
+          
+          processrates   <- c(Rc=Rc, Rp=Rp)
+          
+          return(list(ratesofchanges, list(processrates, ae)))
+        }
+        )
+}
+@ 
+
+
+Solving the model
+<<ImplicitPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+with (as.list(parameters),
+      {
+        initialstate <<- c(SumCO2=SumCO2_t0, TA=TA_t0)
+        times        <<- seq(0,modeltime,(modeltime/outputsteps))       
+        output       <<- as.data.frame(vode(initialstate,times,boxmodel,parameters, hmax=1))
+      })
+@ 
+
+
+Visualizing the output
+<<ImplicitPHModPlotting, fig=TRUE, echo=TRUE, width=10, height=5>>=
+what <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="", mfrow=c(2,3), size=c(12,5), what=what, newdevice=FALSE) 
+@ 
+
+
+
+\subparagraph{The explicit pH modelling approach}
+
+
+A list of parameters       
+<<ExplicitPHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+parameters <- list(             
+                   S           = 35        , # psu       
+                   Tc          = 15        , # degrees C
+
+                   SumCO2_t0   = 0.002     , # mol/kg-soln  (comparable to Wang2005)
+                   TA_t0       = 0.0022    , # mol/kg-soln  (comparable to Millero1998)
+
+                   kc          = 0.5       , # 1/d	         proportionality factor for air-water exchange
+                   kp          = 0.000001  , # mol/(kg-soln*d)	 max rate of calcium carbonate precipitation
+                   n           = 2.0       , # -                 exponent for kinetic rate law of precipitation
+                                      
+                   modeltime   = 20        , # d              duration of the model
+                   outputsteps = 100         #                number of outputsteps
+                   )
+@ 
+
+The model function
+<<ExplicitPHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+boxmodel <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {        
+          ae    <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, pH=-log10(H), SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0, dsa=TRUE)
+                   
+          Rc    <- kc * ((ae$CO2_sat) - (ae$CO2)) 
+          Rp    <- kp * (1-ae$omega_calcite)^n               
+
+          dSumCO2 <- Rc - Rp
+
+          dHRc    <- (      -(ae$dTAdSumCO2*Rc   ))/ae$dTAdH
+          dHRp    <- (-2*Rp -(ae$dTAdSumCO2*(-Rp)))/ae$dTAdH
+          dH      <- dHRc + dHRp
+          
+          ratesofchanges <- c(dSumCO2, dH)
+          
+          processrates   <- c(Rc=Rc, Rp=Rp)
+          outputvars     <- c(dHRc=dHRc, dHRp=dHRp)
+          
+          return(list(ratesofchanges, list(processrates, outputvars, ae)))
+        }
+        )
+}
+@ 
+
+
+Solving the model
+<<ExplicitPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+with (as.list(parameters),
+      {
+        aetmp <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2_t0, TA=TA_t0, SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0)
+        H_t0  <- 10^(-aetmp$pH)
+        
+        initialstate <<- c(SumCO2=SumCO2_t0, H=H_t0)
+        times        <<- seq(0,modeltime,(modeltime/outputsteps))       
+        output       <<- as.data.frame(vode(initialstate,times,boxmodel,parameters, hmax=1))
+      })
+@ 
+
+Visualizing the output
+<<ExplicitPHModPlotting1, fig=TRUE, echo=TRUE, width=10, height=5>>=
+what   <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH", "dHRc", "dHRp")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(3,3), size=c(15,10), what=what, newdevice=FALSE) 
+@ 
+
+Cumulatively plotting the influences of the two processes on the pH
+<<ExplicitPHModPlotting2, fig=TRUE, echo=TRUE, width=10, height=5>>=
+what <- c("dHRc", "dHRp")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", what=what, ylab="mol-H/(kg-soln*d)", legendposition="topright", cumulative=TRUE, newdevice=FALSE) 
+@ 
+
+
+
+\subparagraph{The fractional stoichiometric approach}
+
+           
+A list of parameters
+<<FracStoichModParams, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+parameters <- list(             
+                   S           = 35        , # psu       
+                   Tc          = 15        , # degrees C
+
+                   SumCO2_t0   = 0.002     , # mol/kg-soln  (comparable to Wang2005)
+                   TA_t0       = 0.0022    , # mol/kg-soln  (comparable to Millero1998)
+
+                   kc          = 0.5       , # 1/d	         proportionality factor for air-water exchange
+                   kp          = 0.000001  , # mol/(kg-soln*d)	 max rate of calcium carbonate precipitation
+                   n           = 2.0       , # -                 exponent for kinetic rate law of precipitation
+                                      
+                   modeltime   = 20        , # d              duration of the model
+                   outputsteps = 100         #                number of outputsteps
+                   )
+@
+
+The model function
+<<FracStoichModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+boxmodel <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {        
+          ae    <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, pH=-log10(H), SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0, dsa=TRUE)        
+         
+          Rc    <- kc * ((ae$CO2_sat) - (ae$CO2)) 
+          Rp    <- kp * (1-ae$omega_calcite)^n               
+
+          dSumCO2 <- Rc - Rp
+
+          rhoc    <- ae$c2 + 2*ae$c3
+          rhop    <- 2*ae$c1 + ae$c2
+          
+          dHRc    <- rhoc*Rc/(-ae$dTAdH)
+          dHRp    <- rhop*Rp/(-ae$dTAdH)
+          dH      <- dHRc + dHRp
+          
+          ratesofchanges <- c(dSumCO2, dH)
+          
+          processrates   <- c(Rc=Rc, Rp=Rp)
+          outputvars     <- c(dHRc=dHRc, dHRp=dHRp, rhoc=rhoc, rhop=rhop)
+          
+          return(list(ratesofchanges, list(processrates, outputvars, ae)))
+        }
+        )
+}
+@
+
+Solving the model
+<<FracStoichModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+with (as.list(parameters),
+      {
+        aetmp <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2_t0, TA=TA_t0, SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0)
+        H_t0  <- 10^(-aetmp$pH)
+        
+        initialstate <<- c(SumCO2=SumCO2_t0, H=H_t0)
+        times        <<- seq(0,modeltime,(modeltime/outputsteps))       
+        output       <<- as.data.frame(vode(initialstate,times,boxmodel,parameters, hmax=1))
+      })
+@
+
+Visualizing the output
+<<FracStoichModPlotting, fig=TRUE, echo=TRUE, width=10, height=5>>=
+what   <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH", "dHRc", "dHRp", "rhoc", "rhop")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(3,4), size=c(15,10), what=what, newdevice=FALSE) 
+@ 
+
+
+\subsection{Titration simulation: the function \texttt{titration}}
+
+With the function \texttt{titration} \aq$\,$ provides a powerful tool to simulate titrations. A two dimensional object of class
+\textit{aquaenv} will be created where the second dimension is the amount of titrant added.
+For this purpose, three extra elements are added to the \textit{aquaenv} object
+\begin{tabular}{llp{.6\textwidth}} \hline
+\textbf{element}    & \textbf{unit}       & \textbf{explanation}\\
+delta\_conc\_titrant  & mol/kg-solution   & the offset in concentration of the titrant that is caused by adding the titrant to the sample\\
+delta\_mass\_titrant  & kg                & the amount of mass of titrant solution added\\ 
+delta\_moles\_titrant & mol               & the amount of moles of titrant added\\
+\end{tabular}
+Each one of this elements is a suitable \texttt{xval} for plotting an \textit{aquaenv} object generated by \texttt{titration}.
+
+\subsubsection{Titration with HCl}
+The standard titration type is titration with hydrochloric acid (HCl). A simple example will illustrate this best.\\
+
+\noindent
+An object of type aquaenv needs to be created to define the initial conditions of the titration. That is
+temperature, salinity, depth, the concentrations of all summed quantities and the initial pH (or [TA]).
+
+<<HClTit1, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+ae_init <- aquaenv(Tc=15, S=35, SumCO2=0.0035, SumNH4=0.00002, pH=11.3)
+@ 
+
+Then \texttt{titration} can be run to create the object describing the simulated titration.
+In this example the titrant is HCl of the relatively low concentration of 0.01 mol/kg-solution.
+The sample solution amounts to 10 g. To sweep a considerable pH range quite a lot of sample needs to be 
+added: 20 g. This means the salinity of the solution in the titration vessel will change due to dilution with the titrant solution.
+For this reason, the salinity of the titrant solution needs to be given via the parameter \texttt{S\_titrant}.
+However, we assume the titrant does not contain borate, sulfate or fluoride, that is why we do not set the 
+flag \texttt{seawater\_titrant} to \texttt{TRUE}.
+
+<<HClTit2, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+ae <- titration(ae_init, mass_sample=0.01, mass_titrant=0.02, conc_titrant=0.01, S_titrant=0.5, steps=100)
+@ 
+
+To get a quick overview, all elements of the obtained \textit{aquaenv} object can be plotted
+
+<<HClTit2, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", mfrow=c(10,10), newdevice=FALSE)
+@ 
+
+Then, a selection of elements can be plotted as a function of the added titrant mass, 
+<<HClTit3, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4), newdevice=FALSE)
+@ 
+titrant concentration offset, or the moles of added titrant
+<<HClTit4, fig=FALSE, echo=TRUE>>=
+plot(ae, xval=ae$delta_conc_titrant, xlab="[HCl] offset added [mol/kg-soln]", what=what, size=c(12,8), mfrow=c(12,8))
+plot(ae, xval=ae$delta_moles_titrant, xlab="HCl added [mol]", what=what, size=c(12,8), mfrow=c(12,8))
+@ 
+
+However, it is also possible to plot this selection of elements against the calculated free scale pH
+<<HClTit5, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=c(12,8), mfrow=c(4,4), newdevice=FALSE)
+@ 
+
+As mentioned earlier, the function \texttt{plot.aquaenv} offers the possibility of creating bjerrum plots from objects obtained with \texttt{titration}.
+The simplest way to do that is (remember the \texttt{newdevice=FALSE} is just needed to produce plots that are nicely woven into this vignette)
+<<HClTit6, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, bjerrum=TRUE, newdevice=FALSE)
+@ 
+
+Or just select a few elements
+<<HClTit7, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what  <- c("CO2", "HCO3", "CO3")
+plot(ae, what=what, bjerrum=TRUE, newdevice=FALSE)
+@ 
+
+Again, the plotting style can be customized
+<<HClTit8, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, what=what, bjerrum=TRUE, lwd=4, palette=c("cyan", "magenta", "yellow"), bg="gray", legendinset=0.1, legendposition="topleft", newdevice=FALSE)
+@ 
+
+However, generally Bjerrum plots are done on the log scale. This can be accomplished using the flag \texttt{log}
+<<HClTit9, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, newdevice=FALSE)
+@ 
+
+Furthermore, we can zoom in to the region of most interest to marine scientists
+<<HClTit10, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]), newdevice=FALSE)
+@ 
+
+
+
+
+\subsubsection{Titration with NaOH}
+
+Similar to the titration with HCl, also a titration with NaOH can be simulated
+
+<<NaOHTit1, fig=FALSE, echo=TRUE>>=
+ae <- titration(aquaenv(Tc=15, S=35, SumCO2=0.0035, SumNH4=0.00002, pH=2), mass_sample=0.01, mass_titrant=0.02, conc_titrant=0.01, S_titrant=0.5, steps=50, type="NaOH")
+@ 
+Plottinge everything
+<<NaOHTit2, fig=FALSE, echo=TRUE>>=
+plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", mfrow=c(10,10))
+@ 
+
+Plotting selectively
+<<NaOHTit3, fig=FALSE, echo=TRUE>>=
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
+plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4))
+plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=c(12,8), mfrow=c(4,4))
+@ 
+
+Bjerrum plots
+<<NaOHTit4, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what  <- c("CO2", "HCO3", "CO3")
+plot(ae, what=what, bjerrum=TRUE, newdevice=FALSE)
+@ 
+
+<<NaOHTit5, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]), newdevice=FALSE)
+@ 
+
+
+\subsubsection{Titration with a titrant with high concentrations and a large sample volume - classical Bjerrum plots}
+The Bjerrum plots created in the previous two sections do not really look like the classical textbook ones.
+This is because we simulated a titration with a small sample volume and a titrant with low concentrations. 
+As a result the total concentrations like, e.g., total carbonate decreased due to dilution. 
+In simulating a titration with a rather large volume and a titrant with high concentrations the volume and salinity corrections do not matter
+any more and graphs known from textbooks \citep[e.g.][]{Zeebe2001} are produced.
+
+<<TextbookTit1, fig=FALSE, echo=TRUE>>=
+ae <- titration(aquaenv(Tc=15, S=35, SumCO2=0.0035, SumNH4=0.00002, pH=11.3), mass_sample=100, mass_titrant=0.5, conc_titrant=3, S_titrant=0.5, steps=100)
+@ 
+
+Plotting everything
+<<TextbookTit2, fig=FALSE, echo=TRUE>>=
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", mfrow=c(10,10))
+@ 
+
+Plotting selectively and with different elements for \texttt{xval}
+<<TextbookTit3, fig=FALSE, echo=TRUE>>=
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4))
+plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=c(12,8), mfrow=c(4,4))
+plot(ae, xval=ae$delta_conc_titrant, xlab="[HCl] offset added [mol/kg-soln]", what=what, size=c(12,8), mfrow=c(4,4))
+plot(ae, xval=ae$delta_moles_titrant, xlab="HCl added [mol]", what=what, size=c(12,8), mfrow=c(4,4))
+@ 
+
+
+
+Creating different kinds of Bjerrum plots
+<<TextbookTit4, fig=FALSE, echo=TRUE>>=
+plot(ae, bjerrum=TRUE)
+what  <- c("CO2", "HCO3", "CO3")
+plot(ae, what=what, bjerrum=TRUE)
+plot(ae, what=what, bjerrum=TRUE, lwd=4, palette=c("cyan", "magenta", "yellow"), bg="gray", legendinset=0.1, legendposition="topleft")
+what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
+plot(ae, what=what, bjerrum=TRUE, log=TRUE)
+@
+
+and the classical textbook one
+<<TextbookTit5, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]), newdevice=FALSE)
+@ 
+
+
+
+
+\subsection{Calculating information from titration curves: the function \texttt{TAfit}}
+
+\subsubsection{A little theory}
+While titrating a sample of natural seawater with HCl there one sees two clear equivalence points \citep{Dickson1981}
+The second equivalence point is the equivalence point of total alkalinity and the difference beween the second and the first
+equivalence point signifies the total amount of $\sum \rm CO_2$ of the sample \cite{Hansson1973}.\\
+
+\noindent
+This can be illustrated with \aq$\,$. The respective titration curve can be plotted, together with its first and second derivative.
+Furthermore, the equivalence points can be marked with vertical lines (Please note that for a titrant concentration of 0.01 mol/kg-solution
+and 0.01 kg of sample, the value of the concentration (in mol/kg-solution) of total alkalinity and total carbonate equals the value of the total 
+amount (in mol)).
+
+<<TAfit1, fig=TRUE, echo=TRUE, width=13, height=10>>=
+ae_init <- aquaenv(Tc=15, S=35, SumCO2=0.0035, SumNH4=0.00002, pH=11.3)
+ae <- titration(ae_init, mass_sample=0.01, mass_titrant=0.02, conc_titrant=0.01, S_titrant=0.5, steps=100)
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what="pH", xlim=c(0,0.015), newdevice=FALSE)
+par(new=TRUE)
+plot(ae$delta_mass_titrant[1:100], diff(ae$pH), type="l", col="red", xlim=c(0,0.015), ylab="", xlab="", yaxt="n")
+par(new=TRUE)
+plot(ae$delta_mass_titrant[2:100], diff(diff(ae$pH)), type="l", col="green", xlim=c(0,0.015), ylab="", xlab="", yaxt="n")
+abline(h=0, col="green")
+abline(v=ae$TA[[1]])            
+abline(v=ae$TA[[1]] - ae$SumCO2[[1]]) 
+@
+Following classical chemical textbooks \citep[e.g.][]{Skoog1982}, one can determine [TA] and $\rm [\sum CO_2]$ of a sample
+by graphically determining those equivalence points. However, there is no mechanistic understanding of the contents of the solution involved in doing so.\\
+
+\noindent
+Other methods, called ``Gran evaluations''\citep{Gran1952, Hansson1973, Dickson1981, Haraldsson1997, Anderson1999},
+try to linearize the mechanistic model of what is going on in the solution during titration. 
+They define the so called linear ``Gran functions''  and try to find their roots to determine the equivalence points.
+We will illustrate that by plotting the Gran functions  F0 (blue) and F2 (-F1, green)  and again mark the equivalence points with vertical lines.
+The y=zero line for the Gran functions is indicated by a horizontal line
+
+<<TAfit2, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what="pH", xlim=c(0,0.015), newdevice=FALSE)
+prot1 <- c()
+for (i in 1:length(ae$pH))
+  {
+    prot1 <- c(prot1, (10^-(ae$pH[[i]])+ae$HSO4[[i]]+ae$HF[[i]]+ae$CO2[[i]]-ae$CO3[[i]]-ae$BOH4[[i]]-ae$OH[[i]]))
+  }
+par(new=TRUE)
+plot(ae$delta_mass_titrant, prot1, type="l", col="blue", xlim=c(0,0.015), ylab="", xlab="", yaxt="n", ylim=c(-0.015,0.015))
+prot2 <- c()
+for (i in 1:length(ae$pH))
+  {
+    prot2 <- c(prot2, (10^-(ae$pH[[i]])+ae$HSO4[[i]]+ae$HF[[i]]-ae$HCO3[[i]]-2*ae$CO3[[i]]-ae$BOH4[[i]]-ae$OH[[i]]))
+  }
+par(new=TRUE)
+plot(ae$delta_mass_titrant, prot2, type="l", col="green", xlim=c(0,0.015), ylab="", xlab="", yaxt="n", ylim=c(-0.015,0.015))
+abline(v=ae$TA[[1]])            
+abline(v=ae$TA[[1]] - ae$SumCO2[[1]]) 
+abline(h=0)
+@ 
+
+One can see that the Gran functions actually are not linear. This is due to volume and salinity change effects during the titration.
+This can be overcome by either employing ``modified Gran functions'' \citep[see][]{Haraldsson1997} that correct for the volume changes or by using 
+a titration with a titrant with high concentrations and a large sample volume (Please not that here the value of the concentration of total
+alkalinity and total carbonate does not equal their total amount)
+
+
+<<TAfit3, fig=TRUE, echo=TRUE, width=13, height=10>>=
+ae <- titration(aquaenv(Tc=15, S=35, SumCO2=0.0035, SumNH4=0.00002, pH=11.3), mass_sample=100, mass_titrant=0.5, conc_titrant=3, S_titrant=0.5, steps=100)
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what="pH", xlim=c(0,0.5), newdevice=FALSE)
+prot1 <- c()
+for (i in 1:length(ae$pH))
+  {
+    prot1 <- c(prot1, (10^-(ae$pH[[i]])+ae$HSO4[[i]]+ae$HF[[i]]+ae$CO2[[i]]-ae$CO3[[i]]-ae$BOH4[[i]]-ae$OH[[i]]))
+  }
+par(new=TRUE)
+plot(ae$delta_mass_titrant, prot1, type="l", col="blue", xlim=c(0,0.5), ylab="", xlab="", yaxt="n", ylim=c(-0.015,0.015))
+prot2 <- c()
+for (i in 1:length(ae$pH))
+  {
+    prot2 <- c(prot2, (10^-(ae$pH[[i]])+ae$HSO4[[i]]+ae$HF[[i]]-ae$HCO3[[i]]-2*ae$CO3[[i]]-ae$BOH4[[i]]-ae$OH[[i]]))
+  }
+par(new=TRUE)
+plot(ae$delta_mass_titrant, prot2, type="l", col="green", xlim=c(0,0.5), ylab="", xlab="", yaxt="n", ylim=c(-0.015,0.015))
+abline(v=(ae$TA[[1]]*100/3))            
+abline(v=((ae$TA[[1]] - ae$SumCO2[[1]])*100/3)) 
+abline(h=0)
+@ 
+
+
+Another proposed method of determining [TA] and $\rm [\sum CO_2]$ is to not only determine the two equivalence points, but to
+fit the whole titration curve with a theoretical titration curve based on a mechanistic model 
+of what is going on in the solution during the titration \citep{Dickson1981, DOE1994, Anderson1999}. 
+The function \texttt{titration} of \aq$\,$ provides exactly such a theoretical titration curve and the function \texttt{TAfit} makes use of this fact to
+determine [TA] and $\rm [\sum CO_2]$ of a sample by non linear curve fitting. 
+
+
+\subsubsection{Determining [TA] and $\rm [\sum CO_2]$ by non linear curve fitting}
+
+\paragraph{Proof of concept}
+First, a proof of concept will show that the function \texttt{TAfit} is implemented consistently.
+Some "data" can be generated with the \texttt{titration} function.
+
+<<TAfit4, fig=FALSE, echo=TRUE>>=
+initial_ae <- aquaenv(Tc=15, S=35, SumCO2=0.002, TA=0.0022)
+ae <- titration(initial_ae, mass_sample=0.01, mass_titrant=0.003, conc_titrant=0.01, S_titrant=0.5, steps=20)
+@ 
+Now, the input data for the \texttt{TAfit} routine can be generated: a table with the added mass of the titrant and the resulting free scale pH
+<<TAfit5, fig=FALSE, echo=TRUE>>=
+titcurve <- cbind(ae$delta_mass_titrant, ae$pH)
+@ 
+Note that For the \texttt{TAfit} all total quantities except SumCO2 (SumNH4, SumH2S, SumH3PO4, SumSiOH4, SumHNO3, SumHNO2, SumBOH3, SumH2SO4, SumHF)
+need to be known. However, the latter three can be calculated from salinity as it is done in this example. 
+<<TAfit6, fig=FALSE, echo=TRUE>>=
+fit1 <- TAfit(initial_ae, titcurve, conc_titrant=0.01, mass_sample=0.01, S_titrant=0.5)
+fit1
+@ 
+Thus, we see that \texttt{TAfit} calculates the correct SumCO2 and TA values.\\
+
+\noindent
+\texttt{TAfit} can also take E (V) values as input variables, so we generate E values using E0=0.4 V and the Nernst equation.
+However, to do so we first need to convert our pH curve to the seawater pH scale. According to \cite[p.7, ch.4, sop.3]{DOE1994}, the Nernst equation relates E to 
+the total proton concentration, but, if fluoride is present, its effect (as proton donor/acceptor) is also measured. Hence, we use the seawater scale here.
+<<TAfit7, fig=FALSE, echo=TRUE>>=
+swstitcurve <- convert(titcurve[,2], "pHscale", "free2sws", Tc=Tc, S=S)  
+Etitcurve   <- cbind(titcurve[,1], (0.4 - ((Constants$R/10)*initial_ae$Tk/Constants$F)*log(10^-swstitcurve))) 
+@ 
+Again, \texttt{TAfit} can be executed, this time also calculating E0. Note that the flag \texttt{verbose=TRUE} causes
+\texttt{TAfit} to show the progress of the fitting procedure in a plot window.
+<<TAfit8, fig=FALSE, echo=TRUE>>=
+fit2 <- TAfit(initial_ae, Etitcurve, conc_titrant=0.01, mass_sample=0.01, S_titrant=0.5, Evals=TRUE, verbose=TRUE)
+fit2     
+@   
+
+Furthermore, \texttt{TAfit} can fit K\_CO2 as well, however, one single value for the whole titration curve is fitted, i.e. there is no correction for K\_CO2 changes due to changing S due to mixing with the titrant
+<<TAfit9, fig=FALSE, echo=TRUE>>=
+fit3 <- TAfit(initial_ae, titcurve, conc_titrant=0.01, mass_sample=0.01, S_titrant=0.5, K_CO2fit=TRUE)
+fit3
+initial_ae$K_CO2
+@ 
+
+One can see that the fitted value for K\_CO2 is not the same as the value in the initial \textit{aquaenv} object, which is the "correct" value. That is, because during data creation K\_CO2 changed along the course of the titration
+due to changes in salinity. Assuming that the titrant has the same salinity as the sample (and is made up of natural seawater, i.e. containing SumBOH4, SumH2SO4 and SumHF as functions of S),
+ then the "correct" K\_CO2 should be fitted. This can be accomplished in \texttt{TAfit} by not giving the argument \texttt{S\_titrant} (i.e. assuming the titrant has the 
+same salinity as the sample) and 
+setting the flag \texttt{seawater\_titrant} to \texttt{TRUE}
+
+<<TAfit10, fig=FALSE, echo=TRUE>>=
+ae       <- titration(initial_ae, mass_sample=0.01, mass_titrant=0.003, conc_titrant=0.01, steps=20, seawater_titrant=TRUE)
+titcurve <- cbind(ae$delta_mass_titrant, ae$pH)
+fit4 <- TAfit(initial_ae, titcurve, conc_titrant=0.01, mass_sample=0.01, K_CO2fit=TRUE, seawater_titrant=TRUE)
+fit4
+@ 
+
+Furthermore, TA, SumCO2, K\_CO2 and E0 can be fitted at the same time.
+<<TAfit11, fig=FALSE, echo=TRUE>>=
+Etitcurve <- cbind(titcurve[,1], (0.4 - ((Constants$R/10)*initial_ae$Tk/Constants$F)*log(10^-titcurve[,2])))
+fit5 <- TAfit(initial_ae, Etitcurve, conc_titrant=0.01, mass_sample=0.01, K_CO2fit=TRUE, seawater_titrant=TRUE, Evals=TRUE)
+fit5
+@ 
+
+Sometimes, the obtained titration curve is not equally spaced on the x axis. \texttt{TAfit} can deal with such curves if the flag
+\texttt{equalspaced} is set to \texttt{FALSE}
+<<TAfit12, fig=FALSE, echo=TRUE>>=
+neqsptitcurve <- rbind(titcurve[1:9,], titcurve[11:20,])
+fit6 <- TAfit(initial_ae, neqsptitcurve, conc_titrant=0.01, mass_sample=0.01, seawater_titrant=TRUE, equalspaced=FALSE, verbose=TRUE, debug=TRUE)
+fit6
+@ 
+
+Finally, some "noise" is added to the generated data
+<<TAfit13, fig=FALSE, echo=TRUE>>=
+noisetitcurve <- titcurve * rnorm(length(titcurve), mean=1, sd=0.01) #one percent error possible
+fit7 <- TAfit(initial_ae, noisetitcurve, conc_titrant=0.01, mass_sample=0.01, seawater_titrant=TRUE, verbose=TRUE)
+fit7
+@ 
+
+The flag \texttt{verbose=TRUE} prompts to show the traject of the fitting procedure in a plot window. However, each new fit is plotted over the first one 
+and Sweave includes only the first plot in each code chunk in the resulting \LaTeX file. Therefore, we use the flag \texttt{debug=TRUE} to 
+visualize the final fit
+
+<<TAfit14, fig=TRUE, echo=TRUE>>=
+ylim=range(noisetitcurve[,2], calc)
+xlim=range(tit$delta_mass_titrant, noisetitcurve[,1])
+plot(noisetitcurve[,1], noisetitcurve[,2], xlim=xlim, ylim=ylim, type="l", xlab="delta mass titrant", ylab="pH (free scale)")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red", xlab="", ylab="")
+@ 
+
+
+\paragraph{Test with generated data from literature}
+
+\cite{Dickson1981} provided a synthetic dataset to test total alkalinity fitting programs. This dataset is included in \aq$\,$ as
+\texttt{sample\_dickson}.
+Following quantities are given
+
+<<TAfit15, fig=FALSE, echo=TRUE>>=
+conc_titrant <- 0.3     # mol/kg-soln
+mass_sample  <- 0.2     # kg
+S_titrant    <- 14.835  # is aequivalent to the ionic strength of 0.3 mol/kg-soln 
+SumBOH3  <- 0.00042 # mol/kg-soln
+SumH2SO4 <- 0.02824 # mol/kg-soln
+SumHF    <- 0.00007 # mol/kg-soln
+@ 
+
+Note that all concentrations are in mol/kg-solution and the mass of the sample is in kg. Note further that the salinity of the titrant has been 
+calculated from its ionic strenght of 0.3 mol/kg-soln.\\
+
+\noindent
+In the original dataset as represented in \texttt{sample\_dickson}, the mass of titrant is given in g which needs to be converted to kg
+<<TAfit16, fig=FALSE, echo=TRUE>>=
+sam <- cbind(sample_dickson[,1]/1000, sample_dickson[,2]) # convert mass of titrant from g to kg
+@ 
+Then an attempt to recalculate the [TA] and $\rm [\sum CO_2]$ values given in \cite{Dickson1981} ([TA]=0.00245 mol/kg-soln and $\rm [\sum CO_2]$ 0.00220 mol/kg-soln)
+can be done
+<<TAfit17, fig=FALSE, echo=TRUE>>=
+dicksonfit <- TAfit(aquaenv(Tc=25, S=35, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF), sam, conc_titrant, mass_sample, S_titrant=S_titrant, debug=TRUE)
+dicksonfit
+@ 
+This shows the fit is not accurate. Why is that so?
+
+\subparagraph{Does the salinity correction (\texttt{S\_titrant}) matter?}$\;$\\
+
+\noindent
+Let us calculate a theoretical titration without salinity correction
+<<TAfit18, fig=FALSE, echo=TRUE>>=
+dicksontitration1 <- titration(aquaenv(Tc=25, S=35, SumCO2=0.00220, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=0.00245),
+                              mass_sample=mass_sample, mass_titrant=0.0025, conc_titrant=conc_titrant, steps=50, type="HCl")
+@ 
+and one with salinity correction
+<<TAfit19, fig=FALSE, echo=TRUE>>=
+dicksontitration2 <- titration(aquaenv(Tc=25, S=35, SumCO2=0.00220, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=0.00245),
+                              mass_sample=mass_sample, mass_titrant=0.0025, conc_titrant=conc_titrant, S_titrant=S_titrant, steps=50, type="HCl")          
+@ 
+Now the difference between both curves (in red and blue) and the ``Dickson'' curve (in black) can be visualized
+<<TAfit20, fig=TRUE, echo=TRUE>>=
+plot(dicksontitration1, xval=dicksontitration1$delta_mass_titrant, what="pH", xlim=c(0,0.0025), ylim=c(3,8.2), newdevice=FALSE, col="red", xlab="delta mass titrant") 
+par(new=TRUE)
+plot(dicksontitration2, xval=dicksontitration2$delta_mass_titrant, what="pH", xlim=c(0,0.0025), ylim=c(3,8.2), newdevice=FALSE, col="blue", xlab="") 
+par(new=TRUE)
+plot(sam[,1], sam[,2], type="l", xlim=c(0,0.0025), ylim=c(3,8.2), xlab="", ylab="")
+@ 
+
+That means, the salinity correction makes no significant difference (the red and the blue curve cannot be discerned), because the relation between the total amount of sample and the added amount of titrant is very large:
+salinity only drops from 35 to 34.75105.\\
+
+\noindent
+But there is an offset between the "Dickson" curve and our curve
+<<TAfit21, fig=TRUE, echo=TRUE>>=
+plot(dicksontitration2$pH - sam[,2])
+@ 
+
+
+\subparagraph{Does fitting K\_CO2 as well improve the fit?}
+<<TAfit22, fig=FALSE, echo=TRUE>>=
+dicksonfit2 <- TAfit(aquaenv(Tc=25, S=35, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF), sam, conc_titrant, mass_sample, S_titrant=S_titrant, debug=TRUE, K_CO2fit=TRUE)
+dicksonfit2
+@ 
+Yes it does, but it is not optimal yet.\\
+
+\noindent
+There still remains one major difference between the calculations carried out in \cite{Dickson1981} and the calculations in \aq$\,$:
+\cite{Dickson1981} uses fixed values for the equilibrium constants and does not calculate them as functions of temperature and salinity.
+Furthermore, the values that are used in \cite{Dickson1981} are not exactly the same as are obtained in \aq$\,$ for the same salinity and 
+temperature.\\
+
+Let us calculate a theoretical titration curve employing exactly the same equilibrium constant values as used in \cite{Dickson1981} and plot the
+result together with the ``Dickson'' curve
+<<TAfit23, fig=TRUE, echo=TRUE>>=
+dicksontitration3 <- titration(aquaenv(Tc=25, S=35, SumCO2=0.00220, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=0.00245, k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2)),
+                              mass_sample=mass_sample, mass_titrant=0.0025, conc_titrant=conc_titrant,  steps=50, type="HCl", S_titrant=S_titrant,
+                              k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2))          
+
+plot(dicksontitration3, xval=dicksontitration3$delta_mass_titrant, what="pH", xlim=c(0,0.0025), ylim=c(3,8.2), newdevice=FALSE, col="blue", xlab="delta mass titrant") 
+par(new=TRUE)
+plot(sam[,1], sam[,2], type="l", xlim=c(0,0.0025), ylim=c(3,8.2), xlab="", ylab="")
+@ 
+Plotting the differences between both curves reveals that they are the same down to 1 umol/kg-soln.
+
+<<TAfit24, fig=TRUE, echo=TRUE>>=
+plot(dicksontitration3$pH - sam[,2])
+@ 
+
+Calculating [TA] and $\rm [\sum CO_2]$ using \texttt{TAfit} and exactly the same equilibrium constant values as used in \cite{Dickson1981}
+<<TAfit25, fig=FALSE, echo=TRUE>>=
+dicksonfit3 <- TAfit(aquaenv(Tc=25, S=35, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2)),
+                     sam, conc_titrant, mass_sample, S_titrant=S_titrant, debug=TRUE,
+                     k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2))
+dicksonfit3
+@ 
+reveals that now exactly the same values are calculated as are given in \cite{Dickson1981}.
 
 
 
 
 
-<<fig=FALSE, echo=FALSE>>=
+<<CleaningUp, fig=FALSE, echo=FALSE>>=
 graphics.off()
 @ 
 

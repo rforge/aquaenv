@@ -3,7 +3,7 @@
 \title{titration}
 \description{PUBLIC function: creates an object of class aquaenv which contains a titration simulation}
 \usage{titration(aquaenv, mass_sample, mass_titrant, conc_titrant,
-          S_titrant=NULL, steps, type, seawater_titrant=FALSE,
+          S_titrant=NULL, steps, type="HCl", seawater_titrant=FALSE,
           k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
           k_hf=NULL)}
 \arguments{
@@ -13,7 +13,7 @@
   \item{conc_titrant}{the concentration of the titrant solution in mol/kg-soln}
   \item{S_titrant}{the salinity of the titrant solution, if not supplied it is assumed that the titrant solution has the same salinity as the sample solution}
   \item{steps}{the amount of steps the mass of titrant is added in} 
-  \item{type}{the type of titrant: either "HCl" or "NaOH"}
+  \item{type}{the type of titrant: either "HCl" or "NaOH", default: "HCl"}
   \item{seawater_titrant}{is the titrant based on natural seawater?
     (does it contain SumBOH4, SumHSO4, and SumHF in the same proportions
     as seawater, i.e., correlated to S?); Note that you can only assume

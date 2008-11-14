@@ -6,7 +6,7 @@ titration <- function(aquaenv,                # an object of type aquaenv: minim
                       conc_titrant,           # the concentration of the titrant solution in mol/kg-soln
                       S_titrant=NULL,         # the salinity of the titrant solution, if not supplied it is assumed that the titrant solution has the same salinity as the sample solution
                       steps,                  # the amount of steps the mass of titrant is added in 
-                      type,                   # the type of titrant: either "HCl" or "NaOH"
+                      type="HCl",             # the type of titrant: either "HCl" or "NaOH"
                       seawater_titrant=FALSE, # is the titrant based on natural seawater? (does it contain SumBOH4, SumHSO4, and SumHF in the same proportions as seawater, i.e., correlated to S?); Note that you can only assume a seawater based titrant (i.e. SumBOH4, SumHSO4, and SumHF ~ S) or a water based titrant (i.e. SumBOH4, SumHSO4, and SumHF = 0). It is not possible to give values for SumBOH4, SumHSO4, and SumHF of the titrant.
                       k_w=NULL,               # a fixed K_W can be specified
                       k_co2=NULL,             # a fixed K_CO2 can be specified: used for TA fitting: give a K_CO2 and NOT calculate it from T and S: i.e. K_CO2 can be fitted in the routine as well
@@ -139,7 +139,7 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
               }
             
             #Nernst Equation: E = E0 -(RT/F)ln([H+]); 83.14510 (bar*cm3)/(mol*K) = 8.314510 J/(mol*K): division by 10
-            calc <- pol*(state[[3]] - (((Constants$R/10)*ae$Tk)/Constants$F)*log(10^(-calc))) 
+            calc <- pol*(state[[3]]*1e2 - (((Constants$R/10)*ae$Tk)/Constants$F)*log(10^(-calc))) 
 
             ylab <- "E/V"         
           }
@@ -148,6 +148,10 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
             calc <- convert(calc, "pHscale", paste("free2", pHscale, sep=""), Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF) #conversion done here not on data before call, since S changes along the titration!
 
             ylab <- paste("pH (", pHscale, " scale)", sep="")         
+          }
+        else
+          {
+             ylab <- paste("pH (", pHscale, " scale)", sep="")         
           }
         if (!equalspaced)
           {
@@ -182,8 +186,8 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
   
     if (Evals && K_CO2fit)
       {
-        out    <- nls.lm(fn=residuals, par=c(TASumCO2guess, TASumCO2guess, E0guess, ae$K_CO2*1e4), control=nlscontrol) #multiply K_CO2 with 1e4 to bring the variables to fit into the same order of magnitude
-        result <- list(out$par[[2]], out$par[[1]], out$par[[3]], out$par[[4]]/1e4, out$deviance)
+        out    <- nls.lm(fn=residuals, par=c(TASumCO2guess, TASumCO2guess, E0guess/1e2, ae$K_CO2*1e4), control=nlscontrol) #multiply K_CO2 with 1e4 to bring the variables to fit into the same order of magnitude
+        result <- list(out$par[[2]], out$par[[1]], out$par[[3]]*1e2, out$par[[4]]/1e4, out$deviance)                       #same thing for E0 but the other way round and with 1e2
         
         attr(result[[3]], "unit")     <- "V"
         attr(result[[4]], "unit")     <- "mol/kg-soln"
@@ -192,8 +196,8 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
       }
     else if (Evals)
       { 
-        out    <- nls.lm(fn=residuals, par=c(TASumCO2guess, TASumCO2guess, E0guess), control=nlscontrol)
-        result <- list(out$par[[2]], out$par[[1]], out$par[[3]], out$deviance)
+        out    <- nls.lm(fn=residuals, par=c(TASumCO2guess, TASumCO2guess, E0guess/1e2), control=nlscontrol)
+        result <- list(out$par[[2]], out$par[[1]], out$par[[3]]*1e2, out$deviance)
         
         attr(result[[3]], "unit") <- "V"
         names(result)             <- c("TA", "SumCO2", "E0", "sumofsquares")    
