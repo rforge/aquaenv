@@ -1648,6 +1648,858 @@ reveals that now exactly the same values are calculated as are given in \cite{Di
 
 
 
+\paragraph{Real data}  $\;$ \\
+
+\subparagraph{\texttt{sample1}} $\;$ \\
+
+The dataset \texttt{sample1} is a titration curve for TA determination, obtained in the lab of the  NIOO-CEME, Yerseke, The Netherlands.
+
+Metadata of the sample which is:\\
+\begin{tabular}{|lp{.7\textwidth}|} \hline
+x-value & volume of titrant added (in ml) with a Metrohm Omega 665 Dosimat\\
+y-value & pH measured on the NBS scale with a Metrohm Omega 714 pH Meter (Buffer pH 4: citric acid, sodium hydroxide, chlor hydrogen; Buffer pH 7: di-sodium hydrogen phosphate, potassium di-hydrogen phosphate)\\
+Tc & 23.5 \textdegree$ $C\\
+S   & 34\\
+volume of the sample & 10 ml\\
+titrant type & HCl\\
+titrant concrntration & 0.01 N = 0.01 M \\ \hline
+\end{tabular}
+
+We assume that the salinity of the titrant solution is 0.5 (the salinity of a solution with a ionic strength of 0.01 mol/kg-solution (~0.01N) according to: I = (19.924 S) / (1000 - 1.005 S)).
+Furthermore, the the x values have to be converted to kg titrant, assuming the density of the titrant solution is aequivalent to the density of seawater with S=0.5,
+and last but not least 1 ml = 0.000001 m3.
+
+<<TAfit26, fig=FALSE, echo=TRUE>>=
+sample       <- cbind((sample1[,1] * 0.000001 * aquaenv(Tc=23.5, S=0.5)$density), sample1[,2])
+@ 
+
+We reduce the amount of datapoints: for runtime reasons
+
+<<TAfit27, fig=FALSE, echo=TRUE>>=
+sample       <- sample[seq(1,length(sample[,1]), 3),]
+@ 
+
+We convert the concentration of the titrant from molarity (mol/l) to mol/kg-soln
+
+<<TAfit28, fig=FALSE, echo=TRUE>>=
+conc_titrant <- convert(0.01, "conc", "molar2molin", Tc=23.5, S=0.5)
+@ 
+
+
+We calculate the mass of the sample in kg (and 10 ml = 0.00001 m3) 
+
+<<TAfit29, fig=FALSE, echo=TRUE>>=
+mass_sample  <- 0.00001 * aquaenv(Tc=23.5, S=34)$density
+@ 
+
+No the fitting procedure can be performed. Note that the datapoints are not equally spaced and the pH scale of the measured pH values is the NBS scale.
+
+<<TAfit30, fig=FALSE, echo=TRUE>>=
+sample1_fit <- TAfit(aquaenv(Tc=23.5, S=34), sample, conc_titrant, mass_sample, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, verbose=TRUE)
+sample1_fit
+@ 
+
+Note that AquaEnv uses the Davies eqation to calculate the activity coefficient for the proton upon conversion from/to NBS scale.
+The Davies equation is only valid up to a ionic strength (I) of 0.5 \citep{Zeebe2001}, that is around S=24.48.
+To accurately determine [TA] for samples with higher salinity using the function \texttt{TAfit}, 
+one needs to provide either pH values on the free, total or seawater scale or E (V) values.\\
+
+\noindent
+The [TA] value obtained with the Peene-Method was 0.0058740 mol/l, i.e.
+<<TAfit31, fig=FALSE, echo=TRUE>>=
+convert(0.0058740, "conc", "molar2molin", Tc=23.5, S=34)
+@ 
+
+the difference in umol/kg-soln is
+
+<<TAfit32, fig=FALSE, echo=TRUE>>=
+(0.005724596 - sample1_fit$TA)*1e6
+@ 
+
+and the SumCO2 value was 0.0522 mgC/l, i.e.
+
+<<TAfit33, fig=FALSE, echo=TRUE>>=
+convert((0.0522/12), "conc", "molar2molin", Tc=23.5, S=34)
+@ 
+
+the difference in umol/kg-soln is
+<<TAfit32, fig=FALSE, echo=TRUE>>=
+(0.004239359 - sample1_fit$SumCO2)*1e6
+@ 
+
+
+Note the deviation of the measured curve from the simulated curve, especially at high pH's (and high salinities)
+ as the titration procceeds, salinity drops due to dilution with non saline titrant (HCl solution) and the agreement between the curves gets better
+<<TAfit32a, fig=TRUE, echo=TRUE>>=
+plot(sample[,1], sample[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+@ 
+
+
+
+this shows that NBS pH values with initial salinities of more than 25 are not excellent input values for \texttt{TAfit}.\\
+
+
+\subparagraph{\texttt{sample1} to \texttt{sample3}}  $\;$ \\
+
+The datasets \texttt{sample2} and \texttt{sample3} are similar to \texttt{sample1} and their metadata can be found in their helpfiles.\\
+
+Preparing the input for \texttt{TAfit}
+
+<<TAfit34, fig=FALSE, echo=TRUE>>=
+sam1  <- cbind((sample1[,1] * 0.000001 * aquaenv(Tc=23.5, S=0.5)$density), sample1[,2])
+sam2  <- cbind((sample2[,1] * 0.000001 * aquaenv(Tc=22.9, S=0.5)$density), sample2[,2])
+sam3  <- cbind((sample3[,1] * 0.000001 * aquaenv(Tc=23.3, S=0.5)$density), sample3[,2])
+
+conc_titrant1 <- convert(0.01, "conc", "molar2molin", Tc=23.5, S=0.5)
+conc_titrant2 <- convert(0.01, "conc", "molar2molin", Tc=22.9, S=0.5)
+conc_titrant3 <- convert(0.01, "conc", "molar2molin", Tc=23.3, S=0.5)
+
+mass_sample1  <- 0.00001 * aquaenv(Tc=23.5, S=34.0)$density
+mass_sample2  <- 0.00001 * aquaenv(Tc=22.9, S=33.4)$density
+mass_sample3  <- 0.00001 * aquaenv(Tc=23.3, S=33.8)$density
+@
+
+Performing the fitting
+
+<<TAfit35, fig=FALSE, echo=TRUE>>=
+sample1_fit <- TAfit(aquaenv(Tc=23.5, S=34), sam1, conc_titrant1, mass_sample1, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, verbose=TRUE)
+tit1  <- tit
+calc1 <- calc
+sample2_fit <- TAfit(aquaenv(Tc=22.9, S=33.4), sam2, conc_titrant2, mass_sample2, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, verbose=TRUE)
+tit2  <- tit
+calc2 <- calc
+sample3_fit <- TAfit(aquaenv(Tc=23.3, S=33.8), sam3, conc_titrant3, mass_sample3, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, verbose=TRUE)
+tit3  <- tit
+calc3 <- calc
+@ 
+
+Visualizing the final fits
+
+\setkeys{Gin}{height=.25\textheight} 
+
+<<TAfit36, fig=TRUE, echo=TRUE, width=10, height=3.3>>=
+par(mfrow=c(1,3))
+
+plot(sam1[,1], sam1[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit1$delta_mass_titrant, calc1, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+
+plot(sam2[,1], sam2[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit2$delta_mass_titrant, calc2, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+
+plot(sam3[,1], sam3[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit3$delta_mass_titrant, calc3, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+@ 
+
+
+Comparing the resulting values to the values obtained with the graphical method (J. Peene)
+
+<<TAfit37, fig=FALSE, echo=TRUE>>=
+TA1peene <- convert(0.0058740, "conc", "molar2molin", Tc=23.5, S=34.0)
+TA2peene <- convert(0.0058560, "conc", "molar2molin", Tc=22.9, S=33.4)
+TA3peene <- convert(0.0057940, "conc", "molar2molin", Tc=23.3, S=33.8)
+ 
+SumCO21peene <- convert(0.052200/12, "conc", "molar2molin", Tc=23.5, S=34.0)
+SumCO22peene <- convert(0.043488/12, "conc", "molar2molin", Tc=22.9, S=33.4)
+SumCO23peene <- convert(0.053760/12, "conc", "molar2molin", Tc=23.3, S=33.8)
+
+c(TA1peene, sample1_fit$TA)
+c(TA2peene, sample2_fit$TA)
+c(TA3peene, sample3_fit$TA)
+ 
+c(SumCO21peene, sample1_fit$SumCO2)
+c(SumCO22peene, sample2_fit$SumCO2)
+c(SumCO23peene, sample3_fit$SumCO2)
+@ 
+
+
+\subparagraph{\texttt{sample1} to \texttt{sample3}: fitting K\_CO2 as well}  $\;$ \\
+
+Performing the fitting. Note that, with fitting K\_CO2 as well, it might be necessary to choose a small initial stepwidth-factor and/or bring the parameter
+\texttt{TASumCO2guess} close to expected values for [TA] and $\rm [\sum CO_2]$, otherwise the optimization routine might create an error, e.g. by
+``trying'' negative K\_CO2 values.
+<<TAfit38, fig=FALSE, echo=TRUE>>=
+sample1_fit <- TAfit(aquaenv(Tc=23.5, S=34), sam1, conc_titrant1, mass_sample1, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, K_CO2fit=TRUE, nlscontrol=nls.lm.control(factor=0.1), verbose=TRUE)
+tit1  <- tit
+calc1 <- calc
+sample2_fit <- TAfit(aquaenv(Tc=22.9, S=33.4), sam2, conc_titrant2, mass_sample2, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, K_CO2fit=TRUE, TASumCO2guess=0.006, nlscontrol=nls.lm.control(factor=0.1), verbose=TRUE)
+tit2  <- tit
+calc2 <- calc
+sample3_fit <- TAfit(aquaenv(Tc=23.3, S=33.8), sam3, conc_titrant3, mass_sample3, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, K_CO2fit=TRUE, nlscontrol=nls.lm.control(factor=0.1), verbose=TRUE)
+tit3  <- tit
+calc3 <- calc
+@ 
+
+Visualizing the resulting fits
+
+<<TAfit39, fig=TRUE, echo=TRUE>>=
+par(mfrow=c(1,3))
+
+plot(sam1[,1], sam1[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit1$delta_mass_titrant, calc1, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+
+plot(sam2[,1], sam2[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit2$delta_mass_titrant, calc2, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+
+plot(sam3[,1], sam3[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit3$delta_mass_titrant, calc3, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+@ 
+
+Comparing the resulting values to the values obtained with the graphical method (J. Peene)
+
+<<TAfit40, fig=FALSE, echo=TRUE>>=
+TA1peene <- convert(0.0058740, "conc", "molar2molin", Tc=23.5, S=34.0)
+TA2peene <- convert(0.0058560, "conc", "molar2molin", Tc=22.9, S=33.4)
+TA3peene <- convert(0.0057940, "conc", "molar2molin", Tc=23.3, S=33.8)
+ 
+SumCO21peene <- convert(0.052200/12, "conc", "molar2molin", Tc=23.5, S=34.0)
+SumCO22peene <- convert(0.043488/12, "conc", "molar2molin", Tc=22.9, S=33.4)
+SumCO23peene <- convert(0.053760/12, "conc", "molar2molin", Tc=23.3, S=33.8)
+
+c(TA1peene, sample1_fit$TA)
+c(TA2peene, sample2_fit$TA)
+c(TA3peene, sample3_fit$TA)
+ 
+c(SumCO21peene, sample1_fit$SumCO2)
+c(SumCO22peene, sample2_fit$SumCO2)
+c(SumCO23peene, sample3_fit$SumCO2)
+@ 
+
+
+
+\subparagraph{\texttt{sample1} to \texttt{sample3}: fitting $\approx$ 10 datapoints}  $\;$ \\
+
+To test if the fit wil be significantly worse if the amount of datapoints in the titration curve is reduced, we reduce the amount
+of datapoints in the curve to around 10.
+
+<<TAfit41, fig=FALSE, echo=TRUE>>=
+sam1  <- cbind((sample1[,1] * 0.000001 * aquaenv(Tc=23.5, S=0.5)$density), sample1[,2])[seq(1,length(sample1[,1]), 10),]
+sam2  <- cbind((sample2[,1] * 0.000001 * aquaenv(Tc=22.9, S=0.5)$density), sample2[,2])[seq(1,length(sample2[,1]), 10),]
+sam3  <- cbind((sample3[,1] * 0.000001 * aquaenv(Tc=23.3, S=0.5)$density), sample3[,2])[seq(1,length(sample3[,1]), 10),]
+@ 
+
+Performing the fitting
+
+<<TAfit42, fig=FALSE, echo=TRUE>>=
+sample1_fit <- TAfit(aquaenv(Tc=23.5, S=34), sam1, conc_titrant1, mass_sample1, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, verbose=TRUE)
+tit1  <- tit
+calc1 <- calc
+sample2_fit <- TAfit(aquaenv(Tc=22.9, S=33.4), sam2, conc_titrant2, mass_sample2, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, verbose=TRUE)
+tit2  <- tit
+calc2 <- calc
+sample3_fit <- TAfit(aquaenv(Tc=23.3, S=33.8), sam3, conc_titrant3, mass_sample3, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, verbose=TRUE)
+tit3  <- tit
+calc3 <- calc
+@ 
+
+Visualizing the resulting fit
+
+<<TAfit43, fig=TRUE, echo=TRUE>>=
+par(mfrow=c(1,3))
+
+plot(sam1[,1], sam1[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit1$delta_mass_titrant, calc1, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+
+plot(sam2[,1], sam2[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit2$delta_mass_titrant, calc2, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+
+plot(sam3[,1], sam3[,2], xlim=c(0,0.0066), ylim=c(3,9), type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit3$delta_mass_titrant, calc3, xlim=c(0,0.0066), ylim=c(3,9), type="l", col="red")
+@ 
+
+Comparing the resulting values to the values obtained with the graphical method (J. Peene)
+<<TAfit44, fig=FALSE, echo=TRUE>>=
+TA1peene <- convert(0.0058740, "conc", "molar2molin", Tc=23.5, S=34.0)
+TA2peene <- convert(0.0058560, "conc", "molar2molin", Tc=22.9, S=33.4)
+TA3peene <- convert(0.0057940, "conc", "molar2molin", Tc=23.3, S=33.8)
+ 
+SumCO21peene <- convert(0.052200/12, "conc", "molar2molin", Tc=23.5, S=34.0)
+SumCO22peene <- convert(0.043488/12, "conc", "molar2molin", Tc=22.9, S=33.4)
+SumCO23peene <- convert(0.053760/12, "conc", "molar2molin", Tc=23.3, S=33.8)
+
+c(TA1peene, sample1_fit$TA)
+c(TA2peene, sample2_fit$TA)
+c(TA3peene, sample3_fit$TA)
+ 
+c(SumCO21peene, sample1_fit$SumCO2)
+c(SumCO22peene, sample2_fit$SumCO2)
+c(SumCO23peene, sample3_fit$SumCO2)
+@ 
+
+That means using just $\approx$ 10 datapoints is feasible, as the fits do not get worse significantly
+
+
+
+
+\subparagraph{\texttt{sample4\_1} to \texttt{sample4\_2}: standard seawater} $\;$ \\
+
+\texttt{sample4\_1} to \texttt{sample4\_4} are titration curves of reference material (standard seawater) "Batch 82" (A. Dickson) for TA determination, obtained in the lab of the  NIOO-CEME, Yerseke, The Netherlands.
+Metadata can again be obtained from the helpfiles of the datasets.\\
+
+\noindent
+We  assume the salinity of the titrant solution is 0.5 (the salinity of a solution with a ionic strength of 0.01 mol/kg-solution (~0.01N) according to: I = (19.924 S) / (1000 - 1.005 S).
+We convert the x values to kg titrant, and assume the density of the titrant solution is aequivalent to the density of seawater with S=0.5. Finally, 1 ml = 0.000001 $\rm m^3$.
+
+<<TAfit45, fig=FALSE, echo=TRUE>>=
+sam4_1 <- cbind((sample4_1[,1] * 0.000001 * aquaenv(Tc=21, S=0.5)$density), sample4_1[,2])
+@ 
+
+We convert the concentration of the titrant from molarity (mol/l) to mol/kg-soln
+<<TAfit46, fig=FALSE, echo=TRUE>>=
+conc_titrant <- convert(0.01, "conc", "molar2molin", Tc=21, S=0.5)
+@ 
+
+We calculate the mass of the sample in kg (10 ml = 0.00001 m3)
+<<TAfit47, fig=FALSE, echo=TRUE>>=
+mass_sample  <- 0.00001 * aquaenv(Tc=21, S=35.356)$density
+@ 
+
+We perform the fitting procedure: note that the datapoints are NOT equally spaced and the pH scale of the measured pH values is the NBS scale,
+(\texttt{debug=TRUE} toggles the debug mode: the last simulated titration tit and the converted pH profile calc are made global variables for investigation and plotting)
+<<TAfit48, fig=FALSE, echo=TRUE>>=
+sample4_1_fit <- TAfit(aquaenv(Tc=21, S=34.356, SumH3PO4=0.0000003, SumSiOH4=0.000002, SumHNO2=0.00000001, SumHNO3=0.00000083), sam4_1, conc_titrant, mass_sample, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE)
+sample4_1_fit
+@ 
+
+The fit can be visualized
+\setkeys{Gin}{height=.6\textheight} 
+<<TAfit49, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_1[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_1[,2], calc)
+plot(sam4_1[,1], sam4_1[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+(Note that the fit is very good on the steep slopes and not so good inbetween. This is because the sample titration curve is not equally spaced.
+There are smaller titration steps in the steep parts, resulting in more points there. Since \aq$\,$ minimizes the sum of squares of all points without
+weigthing the points according to their density in a certain region of the curve, the regions with higher point density have implicitly a higher weight during 
+the fitting procedure.)
+
+and the results can be compared to results obtained with the graphical method (J.Peene)
+
+<<TAfit50, fig=FALSE, echo=TRUE>>=
+peeneTA     <- convert(0.002418, "conc", "molar2molin", Tc=21, S=35.356)
+peeneSumCO2 <- convert(0.025872/12, "conc", "molar2molin", Tc=21, S=35.356)
+
+c(peeneTA, sample4_1_fit$TA)
+c(peeneSumCO2, sample4_1_fit$SumCO2)
+@ 
+
+\noindent
+\texttt{sample4\_2} is a replica titration of \texttt{sample4\_1}.
+
+Preparations
+
+<<TAfit51, fig=FALSE, echo=TRUE>>=
+sam4_2 <- cbind((sample4_2[,1] * 0.000001 * aquaenv(Tc=22.8, S=0.5)$density), sample4_2[,2])
+conc_titrant <- convert(0.01, "conc", "molar2molin", Tc=22.8, S=0.5)
+mass_sample  <- 0.00001 * aquaenv(Tc=22.8, S=35.356)$density
+@ 
+
+Fitting
+<<TAfit52, fig=FALSE, echo=TRUE>>=
+sample4_2_fit <- TAfit(aquaenv(Tc=22.8, S=34.356, SumH3PO4=0.0000003, SumSiOH4=0.000002, SumHNO2=0.00000001, SumHNO3=0.00000083), sam4_2, conc_titrant, mass_sample, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE)
+sample4_2_fit
+@ 
+
+Visualisation
+<<TAfit53, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_2[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_2[,2], calc)
+plot(sam4_2[,1], sam4_2[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+Comparison to graphical method
+
+<<TAfit54, fig=FALSE, echo=TRUE>>=
+peeneTA <- convert(0.0023900, "conc", "molar2molin", Tc=22.8, S=35.356)
+peeneSumCO2 <- convert(0.025320/12, "conc", "molar2molin", Tc=22.8, S=35.356)
+peeneCalcSumCO2 <- convert(0.02625722/12, "conc", "molar2molin", Tc=22.8, S=35.356)
+
+c(peeneTA, sample4_2_fit$TA)
+c(peeneSumCO2, peeneCalcSumCO2, sample4_2_fit$SumCO2)
+@ 
+
+
+
+\subparagraph{\texttt{sample4\_3} to \texttt{sample4\_4}: E curves}$\;$ \\
+
+The datasets \texttt{sample4\_3} and \texttt{sample4\_4} have been obtained by manually titrating samples of the standard seawater mentioned above and 
+recording the ``raw'' potential (E) values coming from the electrode.
+
+Preparations
+<<TAfit55, fig=FALSE, echo=TRUE>>=
+sam4_3 <- cbind((sample4_3[,1] * 0.000001 * aquaenv(Tc=21, S=0.5)$density), sample4_3[,2]/1000)
+conc_titrant <- convert(0.01, "conc", "molar2molin", Tc=21, S=0.5)
+mass_sample  <- 0.00001 * aquaenv(Tc=21, S=0)$density
+@ 
+
+Fitting
+<<TAfit56, fig=FALSE, echo=TRUE>>=
+sample4_3_fit <- TAfit(aquaenv(Tc=21, S=34.356, SumH3PO4=0.0000003, SumSiOH4=0.000002, SumHNO2=0.00000001, SumHNO3=0.00000083),
+                       sam4_3, conc_titrant, mass_sample, S_titrant=0.5, Evals=TRUE, verbose=TRUE, electrode_polarity="neg", debug=TRUE)
+sample4_3_fit
+@ 
+
+Visualizing
+<<TAfit56a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_3[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_3[,2], calc)
+plot(sam4_3[,1], sam4_3[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+Fitting K\_CO2 as well
+<<TAfit57, fig=FALSE, echo=TRUE>>=
+sample4_3_fit_1 <- TAfit(aquaenv(Tc=21, S=34.356, SumH3PO4=0.0000003, SumSiOH4=0.000002, SumHNO2=0.00000001, SumHNO3=0.00000083),
+                         sam4_3, conc_titrant, mass_sample, S_titrant=0.5, Evals=TRUE, verbose=TRUE, electrode_polarity="neg", K_CO2fit=TRUE, debug=TRUE)
+sample4_3_fit_1
+@ 
+
+Visualizing
+<<TAfit57a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_3[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_3[,2], calc)
+plot(sam4_3[,1], sam4_3[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+
+Fitting with the K values from \cite{Dickson1981}
+
+<<TAfit58, fig=FALSE, echo=TRUE>>=
+sample4_3_fit_2 <- TAfit(aquaenv(Tc=21, S=34.356, SumH3PO4=0.0000003, SumSiOH4=0.000002, SumHNO2=0.00000001, SumHNO3=0.00000083,
+                                 k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2)),
+                         sam4_3, conc_titrant, mass_sample, S_titrant=0.5, Evals=TRUE, verbose=TRUE, electrode_polarity="neg",
+                         k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2), debug=TRUE)
+sample4_3_fit_2
+@ 
+
+Visualizing
+<<TAfit58a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_3[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_3[,2], calc)
+plot(sam4_3[,1], sam4_3[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+ 
+
+Fitting with titrant salinity assumed equal to sample salinity
+
+<<TAfit59, fig=FALSE, echo=TRUE>>=
+sample4_3_fit_3 <- TAfit(aquaenv(Tc=21, S=34.356, SumH3PO4=0.0000003, SumSiOH4=0.000002, SumHNO2=0.00000001, SumHNO3=0.00000083),
+                         sam4_3, conc_titrant, mass_sample, Evals=TRUE, verbose=TRUE, electrode_polarity="neg", debug=TRUE)
+sample4_3_fit_3
+@ 
+
+Visualizing
+<<TAfit59a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_3[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_3[,2], calc)
+plot(sam4_3[,1], sam4_3[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+
+Fitting with titrant concentration assumed to be exactly 0.01 mol/kg-soln
+
+<<TAfit60, fig=FALSE, echo=TRUE>>=
+sample4_3_fit_4<- TAfit(aquaenv(Tc=21, S=34.356, SumH3PO4=0.0000003, SumSiOH4=0.000002, SumHNO2=0.00000001, SumHNO3=0.00000083),
+                        sam4_3, conc_titrant=0.01, mass_sample, S_titrant=0.5, Evals=TRUE, verbose=TRUE, electrode_polarity="neg", debug=TRUE)
+sample4_3_fit_4
+@ 
+
+Visualizing
+<<TAfit60a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_3[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_3[,2], calc)
+plot(sam4_3[,1], sam4_3[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+
+Preparations for \texttt{sample4\_4}
+
+<<TAfit61, fig=FALSE, echo=TRUE>>=
+sam4_4 <- cbind((sample4_4[,1] * 0.000001 * aquaenv(Tc=21, S=0.5)$density), sample4_4[,2]/1000)
+conc_titrant <- convert(0.01, "conc", "molar2molin", Tc=21, S=0.5)
+mass_sample  <- 0.00001 * aquaenv(Tc=21, S=0)$density
+@ 
+
+Fitting
+<<TAfit62, fig=FALSE, echo=TRUE>>=
+sample4_4_fit <- TAfit(aquaenv(Tc=22.4, S=34.356, SumH3PO4=0.0000003, SumSiOH4=0.000002, SumHNO2=0.00000001, SumHNO3=0.00000083),
+                       sam4_4, conc_titrant, mass_sample, S_titrant=0.5, Evals=TRUE, verbose=TRUE, electrode_polarity="neg", debug=TRUE)
+sample4_4_fit
+@ 
+Visualizing
+<<TAfit62a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_4[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_4[,2], calc)
+plot(sam4_4[,1], sam4_4[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+
+Fitting with concentrations of summed quantities calculated from salinity
+<<TAfit63, fig=FALSE, echo=TRUE>>=
+sample4_4_fit_1 <- TAfit(aquaenv(Tc=22.4, S=34.356),
+                         sam4_4, conc_titrant, mass_sample, S_titrant=0.5, Evals=TRUE, verbose=TRUE, electrode_polarity="neg", debug=TRUE)
+sample4_4_fit_1
+@
+
+Visualizing
+<<TAfit63a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_4[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_4[,2], calc)
+plot(sam4_4[,1], sam4_4[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+ 
+Fitting K\_CO2 as well
+<<TAfit64, fig=FALSE, echo=TRUE>>=
+sample4_4_fit_2<- TAfit(aquaenv(Tc=22.4, S=34.356, SumH3PO4=0.0000003, SumSiOH4=0.000002, SumHNO2=0.00000001, SumHNO3=0.00000083),
+                        sam4_4, conc_titrant, mass_sample, S_titrant=0.5, Evals=TRUE, verbose=TRUE, electrode_polarity="neg", K_CO2fit=TRUE, debug=TRUE)
+sample4_4_fit_2
+@ 
+
+Visualizing
+<<TAfit64a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam4_4[,1],tit$delta_mass_titrant)
+ylim <- range(sam4_4[,2], calc)
+plot(sam4_4[,1], sam4_4[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+
+\subparagraph{Some rudimentary statistics on \texttt{sample4\_1} to \texttt{sample4\_4}} $\,$\\
+(Beware, these statistics are just ``back of the envelope'' calculations, since not all the measurements are independent and 
+for different quantities not the same number of measurements have been carried out.)\\
+
+
+\noindent
+The graphical method
+<<TAfitSam4Stat1, fig=FALSE, echo=TRUE>>=
+peeneTA  <- c(2353.904, 2326.871)
+peeneDIC <- c(2098.849, 2054.267, 2130.305)
+
+paste(mean(peeneTA), "+/-", sd(peeneTA))
+paste(mean(peeneDIC), "+/-", sd(peeneDIC))
+@ 
+
+pH curve fitting
+<<TAfitSam4Stat2, fig=FALSE, echo=TRUE>>=
+pHTA  <- c(sample4_1_fit$TA, sample4_2_fit$TA)*1e6
+pHDIC <- c(sample4_1_fit$SumCO2, sample4_2_fit$SumCO2)*1e6
+
+paste(mean(pHTA), "+/-", sd(pHTA))
+paste(mean(pHDIC), "+/-", sd(pHDIC))
+@ 
+
+
+E curve fitting
+<<TAfitSam4Stat3, fig=FALSE, echo=TRUE>>=
+ETA <- c(sample4_3_fit$TA, sample4_3_fit_1$TA, sample4_3_fit_2$TA, sample4_3_fit_3$TA, sample4_3_fit_4$TA, sample4_4_fit$TA, sample4_4_fit_1$TA, sample4_4_fit_2$TA)*1e6
+EDIC <- c(sample4_3_fit$SumCO2, sample4_3_fit_1$SumCO2, sample4_3_fit_2$SumCO2, sample4_3_fit_3$SumCO2, sample4_3_fit_4$SumCO2, sample4_4_fit$SumCO2, sample4_4_fit_1$SumCO2, sample4_4_fit_2$SumCO2)*1e6
+
+paste(mean(ETA), "+/-", sd(ETA))
+paste(mean(EDIC), "+/-", sd(EDIC))
+@ 
+
+pH and E curve fitting combined
+
+<<TAfitSam4Stat4, fig=FALSE, echo=TRUE>>=
+totalTA <- c(pHTA, ETA)
+totalDIC <- c(pHDIC, EDIC)
+
+paste(mean(totalTA), "+/-", sd(totalTA))
+paste(mean(totalDIC), "+/-", sd(totalDIC))
+@ 
+
+
+
+
+
+
+
+\subparagraph{\texttt{sample5\_1} to \texttt{sample5\_2}: freshwater samples}
+
+\texttt{sample5\_1} to \texttt{sample5\_3} are titration curves of freshwater samples obtained in the lab of the  NIOO-CEME, Yerseke, The Netherlands.
+\texttt{sample5\_1} and \texttt{sample5\_2} are pH curves.\\
+
+\noindent
+Preparations
+<<TAfit65, fig=FALSE, echo=TRUE>>=
+sam5_1 <- cbind((sample5_1[,1] * 0.000001 * aquaenv(Tc=21, S=0.5)$density), sample5_1[,2])
+conc_titrant <- convert(0.01, "conc", "molar2molin", Tc=21, S=0.5)
+mass_sample  <- 0.00001 * aquaenv(Tc=17.5, S=0)$density
+@
+
+Fitting
+<<TAfit66, fig=FALSE, echo=TRUE>>=
+sample5_1_fit <- TAfit(aquaenv(Tc=17.5, S=0), sam5_1, conc_titrant, mass_sample, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, verbose=TRUE)
+sample5_1_fit
+@ 
+Visualizing
+<<TAfit67, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam5_1[,1],tit$delta_mass_titrant)
+ylim <- range(sam5_1[,2], calc)
+plot(sam5_1[,1], sam5_1[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+Comparing to graphical method
+<<TAfit67, fig=FALSE, echo=TRUE>>=
+peeneTA <- convert(0.0033140, "conc", "molar2molin", Tc=17.5, S=0)
+c(peeneTA, sample5_1_fit$TA)
+@ 
+
+
+Preparations for \texttt{sample5\_2}
+<<TAfit68, fig=FALSE, echo=TRUE>>=
+sam5_2 <- cbind((sample5_2[,1] * 0.000001 * aquaenv(Tc=21, S=0.5)$density), sample5_2[,2])
+conc_titrant <- convert(0.01, "conc", "molar2molin", Tc=21, S=0.5)
+mass_sample  <- 0.00001 * aquaenv(Tc=18.3, S=0)$density
+@ 
+Fitting
+<<TAfit69, fig=FALSE, echo=TRUE>>=
+sample5_2_fit <- TAfit(aquaenv(Tc=18.3, S=0), sam5_2, conc_titrant, mass_sample, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", debug=TRUE, verbose=TRUE)
+sample5_2_fit
+@ 
+
+@ 
+Visualizing
+<<TAfit70, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam5_2[,1],tit$delta_mass_titrant)
+ylim <- range(sam5_2[,2], calc)
+plot(sam5_2[,1], sam5_2[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+Comparing to the graphical method
+<<TAfit71, fig=FALSE, echo=TRUE>>=
+peeneTA <- convert(0.0032900, "conc", "molar2molin", Tc=18.3, S=0)
+peeneSumCO2 <- convert(0.039647/12, "conc", "molar2molin", Tc=18.3, S=0)
+
+c(peeneTA, sample5_2_fit$TA)
+c(peeneSumCO2, sample5_2_fit$SumCO2)
+@ 
+
+Fitting K\_CO2 as well
+<<TAfit72, fig=FALSE, echo=TRUE>>=
+sample5_2_fit_1 <- TAfit(aquaenv(Tc=18.3, S=0), sam5_2, conc_titrant, mass_sample, S_titrant=0.5, equalspaced=FALSE, pHscale="nbs", verbose=TRUE, K_CO2fit=TRUE, debug=TRUE)
+sample5_2_fit_1
+@ 
+
+Visualizing
+<<TAfit72a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam5_2[,1],tit$delta_mass_titrant)
+ylim <- range(sam5_2[,2], calc)
+plot(sam5_2[,1], sam5_2[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+\subparagraph{\texttt{sample5\_3}: E curve}
+The dataset \texttt{sample5\_3} has been obtained by manually titrating samples of the freshwater sample mentioned above and 
+recording the ``raw'' potential (E) values coming from the electrode.\\
+
+\noindent
+Preparations
+<<TAfit73, fig=FALSE, echo=TRUE>>=
+sam5_3 <- cbind((sample5_3[,1] * 0.000001 * aquaenv(Tc=21, S=0.5)$density), sample5_3[,2]/1000)
+conc_titrant <- convert(0.01, "conc", "molar2molin", Tc=21, S=0.5)
+mass_sample  <- 0.00001 * aquaenv(Tc=21, S=0)$density
+@ 
+
+Fitting
+<<TAfit74, fig=FALSE, echo=TRUE>>=
+sample5_3_fit <- TAfit(aquaenv(Tc=21, S=0.1), sam5_3, conc_titrant, mass_sample, S_titrant=0.5, Evals=TRUE, verbose=TRUE, electrode_polarity="neg", debug=TRUE)
+sample5_3_fit
+@ 
+
+Visualizing
+<<TAfit74a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam5_3[,1],tit$delta_mass_titrant)
+ylim <- range(sam5_3[,2], calc)
+plot(sam5_3[,1], sam5_3[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+Fitting K\_CO2 as well
+<<TAfit75, fig=FALSE, echo=TRUE>>=
+sample5_3_fit_1 <- TAfit(aquaenv(Tc=21, S=0.1), sam5_3, conc_titrant, mass_sample, S_titrant=0.5, Evals=TRUE, verbose=TRUE, electrode_polarity="neg", K_CO2fit=TRUE, debug=TRUE)
+sample5_3_fit_1
+@ 
+
+Visualizing
+<<TAfit75a, fig=TRUE, echo=TRUE>>=
+xlim <- range(sam5_3[,1],tit$delta_mass_titrant)
+ylim <- range(sam5_3[,2], calc)
+plot(sam5_3[,1], sam5_3[,2], xlim=xlim, ylim=ylim, type="l", xlab="", ylab="")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red")
+@ 
+
+\subparagraph{Some rudimentary statistics on \texttt{sample5\_1} to \texttt{sample5\_4}} $\,$\\
+(Beware, these statistics are just ``back of the envelope'' calculations, since not all the measurements are independent and 
+for different quantities not the same number of measurements have been carried out.)\\
+
+\noindent
+The graphical method
+<<TAfitSam5Stat1, fig=FALSE, echo=TRUE>>=
+peeneTA  <- c(3310.61, 3286.456)
+peeneDIC <- c(3300.358)
+
+paste(mean(peeneTA), "+/-", sd(peeneTA))
+paste(mean(peeneDIC), "+/-", sd(peeneDIC))
+@ 
+
+pH curve fitting
+<<TAfitSam5Stat2, fig=FALSE, echo=TRUE>>=
+pHTA  <- c(sample5_1_fit$TA, sample5_2_fit$TA, sample5_2_fit_1$TA)*1e6
+pHDIC <- c(sample5_1_fit$SumCO2, sample5_2_fit$SumCO2, sample5_2_fit_1$SumCO2)*1e6
+
+paste(mean(pHTA), "+/-", sd(pHTA))
+paste(mean(pHDIC), "+/-", sd(pHDIC))
+@ 
+E curve fitting
+<<TAfitSam5Stat3, fig=FALSE, echo=TRUE>>=
+ETA  <- c(sample5_3_fit$TA,     sample5_3_fit_1$TA)*1e6
+EDIC <- c(sample5_3_fit$SumCO2, sample5_3_fit_1$SumCO2)*1e6
+
+paste(mean(ETA), "+/-", sd(ETA))
+paste(mean(EDIC), "+/-", sd(EDIC))
+@ 
+
+pH and E curve fitting combined
+<<TAfitSam5Stat4, fig=FALSE, echo=TRUE>>=
+totalTA <- c(pHTA, ETA)
+totalDIC <- c(pHDIC, EDIC)
+
+paste(mean(totalTA), "+/-", sd(totalTA))
+paste(mean(totalDIC), "+/-", sd(totalDIC))
+@ 
+
+
+\section{Extending \aq}
+
+It is very simple for the user to create own functions that use \aq$\,$ and extend its functionality.
+We will demonstrate that by creating simple analogons for the \aq$\,$ functions \texttt{titration} and \texttt{TAfit}.\\
+
+\noindent
+The function \texttt{simpletitration} will take the following arguments\\
+\begin{tabular}{lp{.7\textwidth}}
+\texttt{aquaenv} & an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc \\
+\texttt{volume}  & the volume of the (theoretical) titration vessel in l \\
+\texttt{amount}  & the amount of titrant added in mol\\
+\texttt{steps}   & the amount of steps the amount of titrant is added in \\
+\texttt{type}    & the type of titrant: either "HCl" or "NaOH"\\
+\end{tabular}
+
+The function is defined as
+<<extend1, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+simpletitration <- function(aquaenv,                # an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc 
+                            volume,                 # the volume of the (theoretical) titration vessel in l 
+                            amount,                 # the amount of titrant added in mol
+                            steps,                  # the amount of steps the amount of titrant is added in 
+                            type)                   # the type of titrant: either "HCl" or "NaOH"
+  {
+    directionTAchange   <- switch(type, HCl  = -1, NaOH = +1)
+    TAconcchangeperstep <- convert(((amount/steps)/volume), "conc", "molar2molin", aquaenv$Tc, aquaenv$S)
+
+    aquaenvtemp <- aquaenv
+    
+    for (i in 1:steps)
+      {
+        TA          <- aquaenvtemp$TA + (directionTAchange * TAconcchangeperstep)
+        aquaenvtemp <- cloneaquaenv(aquaenvtemp, TA=TA)
+        aquaenv     <- merge(aquaenv, aquaenvtemp)
+      }
+
+    aquaenv[["DeltaCTitrant"]] <- convert((amount/volume)/steps*(1:(steps+1)), "conc", "molar2molin", aquaenv$Tc, aquaenv$S)
+    return(aquaenv)                           # object of class aquaenv which contains a titration simulation
+  }
+@ 
+
+and can be used to create a bjerrum plot 
+<<extend2, fig=TRUE, echo=TRUE>>=
+ae <- simpletitration(aquaenv(Tc=15, S=35, SumCO2=0.003500, SumNH4=0.000020, pH=11.3), volume=100, amount=1.5, steps=100, type="HCl")
+what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]), newdevice=FALSE)
+@ 
+
+The function \texttt{simpletitration} in turn can be used to create a simple analogon to \texttt{TAfit} with the arguments\\
+\begin{tabular}{lp{.7\textwidth}}
+\texttt{ae} & an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc \\
+\texttt{pHmeasurements} & a table containing the titration curve: basically a series of pH values (pH on free proton scale)\\
+\texttt{volume} & the volume of the titration vessel\\
+\texttt{amount} & the total amount of the titrant added\\
+\texttt{TAguess}=0.0025 & a first guess for [TA] and [SumCO2] to be used as initial values for the optimization procedure\\
+\texttt{type}="HCl"& the type of titrant: either "HCl" or "NaOH"\\
+\end{tabular}\\
+
+\noindent
+defined as
+
+<<extend3, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+simpleTAfit <- function(ae,                         # an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc 
+      	          pHmeasurements,             # a table containing the titration curve: basically a series of pH values (pH on free proton scale)
+        	  volume,                     # the volume of the titration vessel
+                  amount,                     # the total amount of the titrant added
+                  TAguess=0.0025,             # a first guess for [TA] and [SumCO2] to be used as initial values for the optimization procedure
+                  type="HCl")                 # the type of titrant: either "HCl" or "NaOH"
+  {
+    ae$Na <- NULL   # make sure ae gets cloned as "skeleton": cloneaquaenv determines "skeleton" TRUE or FALSE from the presence of a value for Na
+    residuals <- function(state)
+      {
+        ae$SumCO2  <- state[[1]]
+        pHcalc     <- simpletitration(aquaenv(ae=ae, TA=state[[2]]), volume=volume, amount=amount, steps=(length(pHmeasurements)-1), type=type)$pH
+        residuals <- pHmeasurements-pHcalc
+       
+        return(residuals)
+      }
+
+    require(minpack.lm)
+    out <- nls.lm(fn=residuals, par=c(TAguess, TAguess))  #guess for TA is also used as guess for SumCO2
+  
+    result                    <- list(out$par[[2]], out$par[[1]], out$deviance)
+    attr(result[[1]], "unit") <- "mol/kg-soln"
+    attr(result[[2]], "unit") <- "mol/kg-soln"
+    names(result)             <- c("TA", "SumCO2", "sumofsquares")
+    return(result)                            # a list of three values ([TA] in mol/kg-solution, [SumCO2] in mol/kg-solution, sum of the squared residuals)
+  }
+@ 
+
+The function \texttt{simpleTAfit} can be used to calculate TA and SumCO2
+
+<<extend4, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+pHmeasurements <- ae$pH
+fit <- simpleTAfit(aquaenv(Tc=15, S=35, SumNH4=0.00002), pHmeasurements, volume=100, amount=1.5)
+fit
+@ 
 
 
 <<CleaningUp, fig=FALSE, echo=FALSE>>=
@@ -1656,6 +2508,35 @@ graphics.off()
 
 
 \appendix
+
+\section{Abbreviations for references used throughout the code and in the helpfiles}
+\begin{tabular}{ll}
+Atkins1996       & \cite{Atkins1996} \\
+Boudreau1996     & \cite{Boudreau1996}\\
+DOE1994          & \cite{DOE1994}\\
+Dickson1979a     & \cite{Dickson1979a}\\
+Dickson1981      & \cite{Dickson1981}\\
+Dickson1984      & \cite{Dickson1984}\\
+Dickson1987      & \cite{Dickson1987}\\
+Dickson1990      & \cite{Dickson1990}\\
+Emerson2008      & \cite{Emerson2008}\\
+Follows2006      & \cite{Follows2006}\\
+Hofmann2008      & \cite{Hofmann2008}\\
+Lewis1998        & \cite{Lewis1998}\\
+Millero1981      & \cite{Millero1981}\\
+Millero1988      & \cite{Millero1988}\\
+Millero1995      & \cite{Millero1995}\\
+Millero1995a     & \cite{Millero1995a}\\
+Mucci1983        & \cite{Mucci1983}\\
+Riordan2005      & \cite{Riordan}\\
+Roy1993b         & \cite{Roy1993b}\\
+Sundquist1979    & \cite{Sundquist1979}\\
+Weiss1970        & \cite{Weiss1970}\\
+Weiss1974        & \cite{Weiss1974}\\
+Wischmeyer2003   & \cite{Wischmeyer2003}\\
+Zeebe2001        & \cite{Zeebe2001}\\
+\end{tabular}
+
 
 \section{References for the elements of an object of class \textit{aquaenv}} \label{app: references}
 \begin{footnotesize}

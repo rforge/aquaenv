@@ -1,0 +1,8 @@
+basicfeatures				introducing the basic features of AquaEnv
+DSAdynamicmodel	 			an example of a dynamic pH model according to the DSA (Hofmann2008) and fractional stoichiometry (Hofmann et al. in prep.) using AquaEnv
+dynamicmodel				an example of a dynamic model using AquaEnv
+pHmodelling1_implicit_method		dynamic model using AquaEnv: implicit pH modelling 
+pHmodelling2_explicit_method		dynamic model using AquaEnv: explicit pH modelling (Hofmann2008, DSA)
+pHmodelling3_fractional_stoichiometry	dynamic model using AquaEnv: fractional stoichiometry (Hofmann et al. in prep.)
+TAfitting				examples for usage of the AquaEnv function TAfit
+titration				examples for the usage of the AquaEnv function titration

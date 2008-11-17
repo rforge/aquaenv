@@ -11,6 +11,10 @@
 \value{
   the dissociation constant of HF in mol/kg-solution on the free proton pH scale
 }
+\examples{
+K_HF(15, 35)
+K_HF(15, 35, 10)
+}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Dickson1979a, Dickson1987, Roy1993b, DOE1994, Millero1995, Zeebe2001}
 \keyword{misc}

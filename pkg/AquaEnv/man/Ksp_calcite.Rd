@@ -11,6 +11,10 @@
 \value{
   the solubility product for calcite in (mol/kg-solution)2
 }
+\examples{
+Ksp_calcite(15, 35)
+Ksp_calcite(15, 35, 10)
+}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Mucci1983, Boudreau1996}
 \keyword{misc}

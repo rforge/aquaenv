@@ -13,6 +13,11 @@
 \value{
   the dissociation constant of SiOOH3 in mol/kg-solution on the free proton pH scale
 }
+\examples{
+K_SiOOH3(15, 35)
+K_SiOOH3(15, 35, 10)
+K_SiOOH3(Tc=15, S=35, d=10, SumH2SO4=0.03)
+}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Wischmeyer2003 (incl. corrections)}
 \keyword{misc}

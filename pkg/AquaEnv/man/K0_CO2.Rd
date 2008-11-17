@@ -10,6 +10,7 @@
 \value{
   the Henry's constant for CO2 in mol/(kg-solution*atm)
 }
+\examples{K0_CO2(15, 35)}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Weiss1974, DOE1994, Millero1995, Zeebe2001}
 \keyword{misc}

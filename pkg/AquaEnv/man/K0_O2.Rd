@@ -10,6 +10,7 @@
 \value{
   the Henry's constant for CO2 in mol/(kg-solution*atm)
 }
+\examples{K0_O2(15, 35)}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{derived from a formulation for [O2]sat given in Weiss1970}
 \keyword{misc}

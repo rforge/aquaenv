@@ -13,6 +13,11 @@
 \value{
   the dissociation constant of NH4 in mol/kg-solution on the free proton pH scale
 }
+\examples{
+K_NH4(15, 35)
+K_NH4(15, 35, 10)
+K_NH4(Tc=15, S=35, d=10, SumH2SO4=0.03)
+}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Millero1995a, Millero1995, corrected by Lewis1998}
 \keyword{misc}

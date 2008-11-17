@@ -13,6 +13,11 @@
 \value{
   the dissociation constant of H2S in mol/kg-solution on the free proton pH scale
 }
+\examples{
+K_H2S(15, 35)
+K_H2S(15, 35, 10)
+K_H2S(Tc=15, S=35, d=10, SumH2SO4=0.03)
+}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Millero1988, Millero1995}
 \keyword{misc}

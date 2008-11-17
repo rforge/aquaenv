@@ -11,6 +11,10 @@
 \value{
   the dissociation constant of HSO4 in mol/kg-solution on the free proton pH scale
 }
+\examples{
+K_HSO4(15, 35)
+K_HSO4(15, 35, 10)
+}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Dickson1990, DOE1994, Zeebe2001}
 \keyword{misc}
