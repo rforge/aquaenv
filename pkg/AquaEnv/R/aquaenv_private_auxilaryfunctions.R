@@ -369,10 +369,6 @@ opendevice <- function(device,                 # either "x11", "eps", or "pdf"
   {
     if (device == "x11")
       {
-        if (.Platform$OS.type == "mac")
-          {
-            Sys.putenv("DISPLAY"=":0.0")
-          }
         x11(width=size[[1]], height=size[[2]])
       }
     else if (device == "eps")
