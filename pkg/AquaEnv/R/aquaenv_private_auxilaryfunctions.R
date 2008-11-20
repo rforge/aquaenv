@@ -76,7 +76,9 @@ merge.aquaenv <- function(x,           # object of class aquaenv: this is where 
 cloneaquaenv <- function(aquaenv,             # object of class aquaenv
                          TA=NULL,             # optional new value for TA
                          pH=NULL,             # optional new value for pH
-                         k_co2=NULL)          # used for TA fitting: give a K_CO2 and NOT calculate it from T and S: i.e. K_CO2 can be fitted in the routine as well
+                         k_co2=NULL,          # used for TA fitting: give a K_CO2 and NOT calculate it from T and S: i.e. K_CO2 can be fitted in the routine as well
+                         k1k2="roy",          # either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3
+                         khf="dickson")       # either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
   {
     if (is.null(TA) && is.null(pH))
       {
@@ -85,7 +87,7 @@ cloneaquaenv <- function(aquaenv,             # object of class aquaenv
     res <- aquaenv(Tc=aquaenv$Tc, S=aquaenv$S, d=aquaenv$d, SumCO2=aquaenv$SumCO2, SumNH4=aquaenv$SumNH4, SumH2S=aquaenv$SumH2S,SumH3PO4=aquaenv$SumH3PO4,
                    SumSiOH4=aquaenv$SumSiOH4, SumHNO3=aquaenv$SumHNO3, SumHNO2=aquaenv$SumHNO2, SumBOH3=aquaenv$SumBOH3, SumH2SO4=aquaenv$SumH2SO4,
                    SumHF=aquaenv$SumHF, pH=pH, TA=TA,
-                   speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), revelle=(!is.null(aquaenv$revelle)), dsa=(!is.null(aquaenv$dTAdH)))
+                   speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), revelle=(!is.null(aquaenv$revelle)), dsa=(!is.null(aquaenv$dTAdH)), k1k2=k1k2, khf=khf)
     if (!is.null(k_co2))
       {
         res$K_CO2                   <- rep(k_co2,length(res))
@@ -124,39 +126,40 @@ convert.standard <- function(x,               # the object to be converted (pH v
                              S,               # salinity (in practical salinity units: no unit)
                              d=0,             # depth in meters
                              SumH2SO4=NULL,   # total sulfate concentration in mol/kg-solution; if not supplied this is calculated from S
-                             SumHF=NULL)      # total fluoride concentration in mol/kg-solution; if not supplied this is calculated from S
+                             SumHF=NULL,      # total fluoride concentration in mol/kg-solution; if not supplied this is calculated from S
+                             khf="dickson")   # either "dickson" (default, Dickson1979a) or "perez" (using seacarb, Perez1987a) for K\_HF
   {
     result <- (switch
                (vartype,
                 pHscale = switch
                 (what,
-                 free2tot = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$free2tot),
-                 free2sws = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$free2sws),
-                 free2nbs = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$free2nbs),
-                 tot2free = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free),
-                 tot2sws  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2sws),
-                 tot2nbs  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2nbs),
-                 sws2free = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$sws2free),
-                 sws2tot  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$sws2tot),
-                 sws2nbs  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$sws2nbs),
-                 nbs2free = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$nbs2free),
-                 nbs2tot  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$nbs2tot),
-                 nbs2sws  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$nbs2sws)
+                 free2tot = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2tot),
+                 free2sws = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2sws),
+                 free2nbs = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2nbs),
+                 tot2free = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2free),
+                 tot2sws  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2sws),
+                 tot2nbs  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2nbs),
+                 sws2free = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2free),
+                 sws2tot  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2tot),
+                 sws2nbs  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2nbs),
+                 nbs2free = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2free),
+                 nbs2tot  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2tot),
+                 nbs2sws  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2sws)
                  ),
                 KHscale = switch
                 (what,
-                 free2tot = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$free2tot,
-                 free2sws = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$free2sws,
-                 free2nbs = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$free2nbs,
-                 tot2free = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free,
-                 tot2sws  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2sws,
-                 tot2nbs  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2nbs,
-                 sws2free = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$sws2free,
-                 sws2tot  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$sws2tot,
-                 sws2nbs  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$sws2nbs,
-                 nbs2free = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$nbs2free,
-                 nbs2tot  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$nbs2tot,
-                 nbs2sws  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF)$nbs2sws
+                 free2tot = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2tot,
+                 free2sws = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2sws,
+                 free2nbs = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2nbs,
+                 tot2free = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2free,
+                 tot2sws  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2sws,
+                 tot2nbs  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2nbs,
+                 sws2free = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2free,
+                 sws2tot  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2tot,
+                 sws2nbs  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2nbs,
+                 nbs2free = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2free,
+                 nbs2tot  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2tot,
+                 nbs2sws  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2sws
                  ),
                 conc = switch
                 (what,
@@ -258,7 +261,8 @@ scaleconvert <- function(Tc,                   # temperature in degrees centigra
                          S,                    # salinity S in practical salinity units (i.e. no unit)  
                          d=0,                  # depth in meters
                          SumH2SO4=NULL,        # total sulfate concentration in mol/kg-solution; if not supplied this is calculated from S
-                         SumHF=NULL)           # total fluoride concentration in mol/kg-solution; if not supplied this is calculated from S
+                         SumHF=NULL,           # total fluoride concentration in mol/kg-solution; if not supplied this is calculated from S
+                         khf="dickson")        # either "dickson" (Dickson1979a) or "perez" (Perez1987a) for K_HF
   {
     if (is.null(SumH2SO4))
       {
@@ -270,7 +274,14 @@ scaleconvert <- function(Tc,                   # temperature in degrees centigra
       }
 
     K_HSO4 <- K_HSO4(Tc, S, d)
-    K_HF   <- K_HF(Tc, S, d)
+    if (khf=="dickson")
+      {
+        K_HF  <- K_HF(Tc, S, d)
+      }
+    else if (khf=="perez")
+      {
+        K_HF  <- Kf(T=Tc, S=S, P=hydroP(d), kf="pf") / (1 + (SumH2SO4/K_HSO4)) # use seacarb and convert K_HF from total scale to free scale
+      }
     
     FreeToTot <- (1 + (SumH2SO4/K_HSO4))
     FreeToSWS <- (1 + (SumH2SO4/K_HSO4) + (SumHF/K_HF))

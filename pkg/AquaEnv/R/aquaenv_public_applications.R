@@ -13,7 +13,9 @@ titration <- function(aquaenv,                # an object of type aquaenv: minim
                       k_hco3=NULL,            # a fixed K_HCO3 can be specified
                       k_boh3=NULL,            # a fixed K_BOH3 can be specified
                       k_hso4=NULL,            # a fixed K_HSO4 can be specified
-                      k_hf=NULL)              # a fixed K_HF can be specified
+                      k_hf=NULL,              # a fixed K_HF can be specified
+                      k1k2="roy",             # either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3
+                      khf="dickson")          # either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
   {
     concstep <- function(conc, oldmass, newmass)
       {
@@ -66,7 +68,7 @@ titration <- function(aquaenv,                # an object of type aquaenv: minim
                aquaenvtemp <- aquaenv(Tc=Tc[[i]], S=S, d=d[[i]], SumCO2=SumCO2, SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2,
                                       SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=TA,
                                       speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), revelle=(!is.null(aquaenv$revelle)), dsa=(!is.null(aquaenv$dTAdH)),
-                                      k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf)
+                                      k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf, k1k2=k1k2, khf=khf)
 
                aquaenvtemp[["mass"]] <- newmass
                aquaenv               <<- merge(aquaenv, aquaenvtemp)              
@@ -106,7 +108,9 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
                   k_hso4=NULL,                # a fixed K_HSO4 can be specified
                   k_hf=NULL,                  # a fixed K_HF can be specified
                   nlscontrol=nls.lm.control(),# nls.lm.control() can be specified
-                  verbose=FALSE)              # verbose mode: show the traject of the fitting in a plot
+                  verbose=FALSE,              # verbose mode: show the traject of the fitting in a plot
+                  k1k2="roy",                 # either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3
+                  khf="dickson")              # either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
   {
     residuals <- function(state)
       {     
@@ -116,17 +120,17 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
                                  SumCO2=state[[1]], SumNH4=ae$SumNH4, SumH2S=ae$SumH2S, SumH3PO4=ae$SumH3PO4, SumSiOH4=ae$SumSiOH4, SumHNO3=ae$SumHNO3, SumHNO2=ae$SumHNO2,
                                  SumBOH3=ae$SumBOH3, SumH2SO4=ae$SumH2SO4, SumHF=ae$SumHF,
                                  TA=state[[2]], speciation=FALSE, skeleton=TRUE,
-                                 k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf),
+                                 k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf, k1k2=k1k2, khf=khf),
                          mass_sample=mass_sample, mass_titrant=titcurve[,1][[length(titcurve[,1])]], conc_titrant=conc_titrant,
                          S_titrant=S_titrant, steps=(length(titcurve[,1])-1), type=type, seawater_titrant=seawater_titrant,
-                         k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf)
+                         k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf, k1k2=k1k2, khf=khf)
 
         calc <- tit$pH
        
         if (Evals)
           {
             # The Nernst equation relates E to TOTAL [H+] (DOE1994, p.7, ch.4, sop.3), BUT if fluoride is present, its effect (as proton donor/acceptor) is measured, too! Hence we use SWS!
-            calc <- convert(calc, "pHscale", "free2sws", Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF)
+            calc <- convert(calc, "pHscale", "free2sws", Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF, khf=khf)
             
             # electrode polarity: E = E0 -(RT/F)ln([H+]) ("pos") or -E = E0 -(RT/F)ln([H+]) ("neg")
             if (electrode_polarity=="pos")
@@ -145,7 +149,7 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
           }
         else if (!(pHscale=="free"))
           {
-            calc <- convert(calc, "pHscale", paste("free2", pHscale, sep=""), Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF) #conversion done here not on data before call, since S changes along the titration!
+            calc <- convert(calc, "pHscale", paste("free2", pHscale, sep=""), Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF, khf=khf) #conversion done here not on data before call, since S changes along the titration!
 
             ylab <- paste("pH (", pHscale, " scale)", sep="")         
           }

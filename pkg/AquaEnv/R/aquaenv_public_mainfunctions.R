@@ -36,7 +36,9 @@ aquaenv <- function(Tc,S, d=0,
                     k_hco3=NULL,
                     k_boh3=NULL,
                     k_hso4=NULL,
-                    k_hf=NULL)
+                    k_hf=NULL,
+                    k1k2="roy",
+                    khf="dickson")
   { 
     if (from.data.frame)
       {
@@ -44,7 +46,7 @@ aquaenv <- function(Tc,S, d=0,
       }
     else if (!is.null(ae))
       {
-        return (cloneaquaenv(ae, TA=TA, pH=pH, k_co2=k_co2))
+        return (cloneaquaenv(ae, TA=TA, pH=pH, k_co2=k_co2, k1k2=k1k2, khf=khf))
       }
     else
       {
@@ -115,7 +117,7 @@ aquaenv <- function(Tc,S, d=0,
             
             aquaenv[["molal2molin"]] <- molal2molin(S)      ; attr(aquaenv[["molal2molin"]], "unit")  <- "(mol/kg-soln)/(mol/kg-H2O)"
             
-            scaleconvs <- scaleconvert(Tc, S, d, SumH2SO4, SumHF)
+            scaleconvs <- scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf=khf)
             aquaenv[["free2tot"]]    <- scaleconvs$free2tot ; attr(aquaenv[["free2tot"]], "pH scale") <- "free -> tot"
             aquaenv[["free2sws"]]    <- scaleconvs$free2sws ; attr(aquaenv[["free2sws"]], "pH scale") <- "free -> sws"
             aquaenv[["tot2free"]]    <- scaleconvs$tot2free ; attr(aquaenv[["tot2free"]], "pH scale") <- "total -> free"
@@ -153,7 +155,16 @@ aquaenv <- function(Tc,S, d=0,
 
         if (is.null(k_hf))
           {
-            aquaenv[["K_HF"]]        <- K_HF(Tc, S, d)
+            if (khf=="perez")  # "perez": using seacarb
+              {                        # To convert from the total to the free scale, only K_HSO4 is needed. That's why we do not need to call "convert" with
+                                       # the option khf="perez" here. Otherwise the cat would also bite its own tail
+                aquaenv[["K_HF"]]   <- convert(Kf(T=Tc, S=S, P=aquaenv[["hydroP"]], kf="pf"), "KHscale", "tot2free", S=S, Tc=Tc, d=d,
+                                               SumH2SO4=(SumH2SO4 + SumH2SO4_Koffset), SumHF=(SumHF + SumHF_Koffset))
+              }
+            else # if(khf=="dickson")
+              {
+                aquaenv[["K_HF"]]    <- K_HF(Tc, S, d)
+              }
           }
         else
         {
@@ -162,7 +173,16 @@ aquaenv <- function(Tc,S, d=0,
 
         if (is.null(k_co2))
           {
-            aquaenv[["K_CO2"]]       <- K_CO2 (Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
+            if (k1k2=="lueker") # "lueker": using seacarb 
+              {  # To convert from the total to the free scale, only K_HSO4 is needed. That's why we do not need to call "convert" with the option khf set
+                aquaenv[["K_CO2"]]   <- convert(K1(T=Tc, S=S, P=aquaenv[["hydroP"]], k1k2="l"), "KHscale", "tot2free", S=S, Tc=Tc, d=d,
+                                                SumH2SO4=(SumH2SO4 + SumH2SO4_Koffset), SumHF=(SumHF + SumHF_Koffset))
+              }
+            else #if (k1k2=="roy")
+              {
+                aquaenv[["K_CO2"]]    <- K_CO2 (Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
+              }
+            
           }
         else
           {
@@ -171,7 +191,15 @@ aquaenv <- function(Tc,S, d=0,
 
         if (is.null(k_hco3))
           {
-            aquaenv[["K_HCO3"]]      <- K_HCO3(Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
+            if (k1k2=="lueker") # "lueker" using seacarb
+              {
+                aquaenv[["K_HCO3"]]  <- convert(K2(T=Tc, S=S, P=aquaenv[["hydroP"]], k1k2="l"), "KHscale", "tot2free", S=S, T=Tc, d=d,
+                                                SumH2SO4=(SumH2SO4 + SumH2SO4_Koffset), SumHF=(SumHF + SumHF_Koffset))
+              }
+            else #if (k1k2=="roy")
+              {  # To convert from the total to the free scale, only K_HSO4 is needed. That's why we do not need to call "convert" with the option khf set
+                aquaenv[["K_HCO3"]]  <- K_HCO3(Tc, S, d, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
+              }
           }
         else
           {

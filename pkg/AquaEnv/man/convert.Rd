@@ -4,7 +4,7 @@
 \description{PUBLIC function: converts either a single value (the pH scale of a pH value, the pH scale of a dissociation constant (K*), the unit of a concentration value), or all elements of a special unit or pH scale in an object of class aquaenv}
 \details{Possible usages are
 \preformatted{
-convert(x, vartype, what, Tc, S, d, SumH2SO4, SumHF)
+convert(x, vartype, what, Tc, S, d, SumH2SO4, SumHF, khf)
 convert(x, from, to, factor, convattr)}}
 \arguments{
   \item{x }{object to be converted: either a single value (pH value, K* value, or concentration value) or an object of class aquaenv}
@@ -15,6 +15,7 @@ convert(x, from, to, factor, convattr)}}
   \item{d }{only valid if x is a single value: depth in meters}
   \item{SumH2SO4 }{only valid if x is a single value: total sulfate concentration in mol/kg-solution; if not supplied this is calculated from S}
   \item{SumHF }{only valid if x is a single value: total fluoride concentration in mol/kg-solution; if not supplied this is calculated from S}
+  \item{khf}{only valid if x is a single value: either "dickson" (default, Dickson1979a) or "perez" (using seacarb, Perez1987a) for K\_HF}
   \item{from }{only valid if x is an object of class aquaenv: the unit which needs to be converted (as a string; must be a perfect match)}
   \item{to }{only valid if x is an object of class aquaenv: the unit to which the conversion should go}
   \item{factor }{only valid if x is an object of class aquaenv: the conversion factor to be applied: can either be a number (e.g. 1000 to convert from mol to mmol), or any of the conversion factors given in an object of class  aquaenv}

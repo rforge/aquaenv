@@ -19,6 +19,8 @@ K_HCO3(15, 35, 10)
 K_HCO3(Tc=15, S=35, d=10, SumH2SO4=0.03)
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
-\references{Roy1993b, DOE1994, Millero1995, Zeebe2001}
+\references{Roy1993b, DOE1994, Millero1995, Zeebe2001
+(Note that for a constant calculated from Lueker2000, one needs to use
+either aquaenv(k1k2="lueker")\$K\_HCO3 or seacarb)}
 \keyword{misc}
 

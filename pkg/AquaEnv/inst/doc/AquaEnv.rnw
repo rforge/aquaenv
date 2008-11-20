@@ -1512,6 +1512,19 @@ fit1
 Thus, we see that \texttt{TAfit} calculates the correct SumCO2 and TA values.\\
 
 \noindent
+Trying the \cite{Lueker2000} (K\_CO2 and K\_HCO3) and \cite{Perez1987} (K\_HF) values
+<<TAfit6a, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+initial_ae_ <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, TA=TA,
+                       k1k2="lueker", khf="perez")
+ae_         <- titration(initial_ae_, mass_sample, mass_titrant, conc_titrant,
+                         S_titrant, steps, type, k1k2="lueker", khf="perez")
+titcurve_   <- cbind(ae_$delta_mass_titrant, ae_$pH)
+fit1_       <- TAfit(initial_ae_, titcurve_, conc_titrant, mass_sample,
+                     S_titrant, k1k2="lueker", khf="perez", verbose=TRUE)
+fit1_	      
+@ 
+
+\noindent
 \texttt{TAfit} can also take E (V) values as input variables, so we generate E values using E0=0.4 V and the Nernst equation.
 However, to do so we first need to convert our pH curve to the seawater pH scale. According to \cite[p.7, ch.4, sop.3]{DOE1994}, the Nernst equation relates E to 
 the total proton concentration, but, if fluoride is present, its effect (as proton donor/acceptor) is also measured. Hence, we use the seawater scale here.
@@ -2575,11 +2588,13 @@ Emerson2008      & \cite{Emerson2008}\\
 Follows2006      & \cite{Follows2006}\\
 Hofmann2008      & \cite{Hofmann2008}\\
 Lewis1998        & \cite{Lewis1998}\\
+Lueker2000       & \cite{Lueker2000}\\
 Millero1981      & \cite{Millero1981}\\
 Millero1988      & \cite{Millero1988}\\
 Millero1995      & \cite{Millero1995}\\
 Millero1995a     & \cite{Millero1995a}\\
 Mucci1983        & \cite{Mucci1983}\\
+Perez1987a       & \cite{Perez1987a}\\
 Riordan2005      & \cite{Riordan2005}\\
 Roy1993b         & \cite{Roy1993b}\\
 Sundquist1979    & \cite{Sundquist1979}\\

@@ -8,7 +8,7 @@
         speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,
         SumH2SO4_Koffset=0,SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE,
         k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
-        k_hf=NULL)}
+        k_hf=NULL, k1k2="roy", khf="dickson")}
 \arguments{
   \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}
@@ -29,7 +29,8 @@
   \item{CO2 }{concentration of CO2, can be used with either [TA], pH, or pCO2 to define the system }
   \item{speciation }{flag: TRUE = full speciation is calculated}
   \item{dsa }{flag: TRUE = all information necessary to build a pH model with the direct substitution approach (DSA, Hofmann2008) is calculated}
-  \item{ae }{either an object of class aquaenv used for the cloning functionality or a dataframe used for the from.data.frame functionality}
+  \item{ae }{either an object of class aquaenv used for the cloning functionality or a dataframe used for the from.data.frame
+    functionality. Note that for cloning the desired k1k2 and khf values need to be specified! (otherwise the default values are used for the cloned object)}
   \item{from.data.frame }{flag: TRUE = the object of class aquaenv is built from the data frame supplied in ae}
   \item{SumH2SO4_Koffset }{only used internally to calculate dTAdKdKdSumH2SO4}
   \item{SumHF_Koffset }{only used internally to calculate dTAdKdKdSumHF}
@@ -41,6 +42,8 @@
   \item{k_boh3}{a fixed K\_BOH3 can be specified}
   \item{k_hso4}{a fixed K\_HSO4 can be specified}
   \item{k_hf}{a fixed K\_HF can be specified}
+  \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3.}
+  \item{khf}{either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
 }
 \examples{
 ############################

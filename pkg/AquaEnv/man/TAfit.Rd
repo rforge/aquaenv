@@ -8,7 +8,8 @@
       equalspaced=TRUE, seawater_titrant=FALSE,
       pHscale="free", debug=FALSE, k_w=NULL, k_co2=NULL, k_hco3=NULL,
       k_boh3=NULL, k_hso4=NULL, k_hf=NULL,
-      nlscontrol=nls.lm.control(), verbose=FALSE)}
+      nlscontrol=nls.lm.control(), verbose=FALSE,
+      k1k2="roy", khf="dickson")}
 \arguments{
   \item{ae }{an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc (Note that it is possible to give values for SumBOH4, SumHSO4, and SumHF in the sample other than the ones calculated from salinity)}
   \item{titcurve }{a table containing the titration curve: basically a series of tuples of added titrant solution mass and pH values (pH on free proton scale) or E values in V}
@@ -34,7 +35,10 @@
   \item{k_hso4}{a fixed K\_HSO4 can be specified}
   \item{k_hf}{a fixed K\_HF can be specified}
   \item{nlscontrol}{nls.lm.control() can be specified}
-  \item{verbose}{verbose mode: show the traject of the fitting in a plot}
+  \item{verbose}{verbose mode: show the traject of the fitting in a
+    plot}
+  \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3.}
+  \item{khf}{either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
 }
 \value{
   a list of up to five values ([TA] in mol/kg-solution, [SumCO2] in mol/kg-solution, E0 in V, K1 in mol/kg-solution and on free scale, sum of the squared residuals)
@@ -86,6 +90,18 @@ titcurve <- cbind(ae$delta_mass_titrant, ae$pH)
 fit1 <- TAfit(initial_ae, titcurve, conc_titrant, mass_sample,
               S_titrant)
 fit1
+
+
+# trying the Lueker2000 and Perez1987 K's
+initial_ae_ <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, TA=TA,
+                       k1k2="lueker", khf="perez")
+ae_         <- titration(initial_ae_, mass_sample, mass_titrant, conc_titrant,
+                         S_titrant, steps, type, k1k2="lueker", khf="perez")
+titcurve_   <- cbind(ae_$delta_mass_titrant, ae_$pH)
+fit1_       <- TAfit(initial_ae_, titcurve_, conc_titrant, mass_sample,
+                     S_titrant, k1k2="lueker", khf="perez", verbose=TRUE)
+fit1_	      
+
 
 # E (V) values as input variables: generate E values using E0=0.4 V and
 # the nernst equation
