@@ -1516,10 +1516,10 @@ Trying the \cite{Lueker2000} (K\_CO2 and K\_HCO3) and \cite{Perez1987} (K\_HF) v
 <<TAfit6a, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
 initial_ae_ <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, TA=TA,
                        k1k2="lueker", khf="perez")
-ae_         <- titration(initial_ae_, mass_sample, mass_titrant, conc_titrant,
-                         S_titrant, steps, type, k1k2="lueker", khf="perez")
+ae_         <- titration(initial_ae_, mass_sample=0.01, mass_titrant=0.003, conc_titrant=0.01,
+                         S_titrant=0.5, steps=2, k1k2="lueker", khf="perez")
 titcurve_   <- cbind(ae_$delta_mass_titrant, ae_$pH)
-fit1_       <- TAfit(initial_ae_, titcurve_, conc_titrant, mass_sample,
+fit1_       <- TAfit(initial_ae_, titcurve_, conc_titrant=0.01, mass_sample=0.01,
                      S_titrant, k1k2="lueker", khf="perez", verbose=TRUE)
 fit1_	      
 @ 
