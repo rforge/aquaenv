@@ -9,7 +9,7 @@
       pHscale="free", debug=FALSE, k_w=NULL, k_co2=NULL, k_hco3=NULL,
       k_boh3=NULL, k_hso4=NULL, k_hf=NULL,
       nlscontrol=nls.lm.control(), verbose=FALSE,
-      k1k2="roy", khf="dickson")}
+      k1k2="roy", khf="dickson", datxbegin=0)}
 \arguments{
   \item{ae }{an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc (Note that it is possible to give values for SumBOH4, SumHSO4, and SumHF in the sample other than the ones calculated from salinity)}
   \item{titcurve }{a table containing the titration curve: basically a series of tuples of added titrant solution mass and pH values (pH on free proton scale) or E values in V}
@@ -38,7 +38,9 @@
   \item{verbose}{verbose mode: show the traject of the fitting in a
     plot}
   \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3.}
-  \item{khf}{either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
+  \item{khf}{either "dickson" (default, Dickson1979a) or "perez"
+    (Perez1987a, calculated with seacarb) for K\_HF}
+  \item{datxbegin=0}{at what x value (amount of titrant added) does the supplied curve start? (i.e. is the complete curve supplied or just a part?)}
 }
 \value{
   a list of up to five values ([TA] in mol/kg-solution, [SumCO2] in mol/kg-solution, E0 in V, K1 in mol/kg-solution and on free scale, sum of the squared residuals)
@@ -106,15 +108,22 @@ fit1_
 # E (V) values as input variables: generate E values using E0=0.4 V and
 # the nernst equation
 
-# Nernst equation relates E to TOTAL [H+] (DOE1994, p.7, ch.4, sop.3),
-# BUT, if fluoride is present, its SWS, so we use SWS!
-tottitcurve <- convert(titcurve[,2], "pHscale", "free2sws", Tc=Tc, S=S)
+#calculate a titration with a titrant with the same salinity as seawater
+#such that S does not change during the titration.
+#otherwise we would need to calculate the S profile for the titration
+#extra to use it to convert to the total scale in the following step
+ae <- titration(initial_ae, mass_sample, mass_titrant, conc_titrant,
+                steps=steps, seawater_titrant=TRUE)
+titcurveE <- cbind(ae$delta_mass_titrant, ae$pH)
+		
+# Nernst equation relates E to TOTAL [H+] (DOE1994, p.7, ch.4, sop.3, Dickson2007),
+tottitcurve <- convert(titcurveE[,2], "pHscale", "free2tot", Tc=Tc, S=S)
 
 # Nernst equation
 Etitcurve   <- cbind(titcurve[,1], (0.4 -
                      ((Constants$R/10)*initial_ae$Tk/Constants$F)*log(10^-tottitcurve)))
 fit2 <- TAfit(initial_ae, Etitcurve, conc_titrant,
-    	      mass_sample, S_titrant, Evals=TRUE, verbose=TRUE)     
+    	      mass_sample, Evals=TRUE, seawater_titrant=TRUE, verbose=TRUE)     
 fit2
           
 

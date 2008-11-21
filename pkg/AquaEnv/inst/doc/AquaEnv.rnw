@@ -1527,16 +1527,21 @@ fit1_
 
 \noindent
 \texttt{TAfit} can also take E (V) values as input variables, so we generate E values using E0=0.4 V and the Nernst equation.
-However, to do so we first need to convert our pH curve to the seawater pH scale. According to \cite[p.7, ch.4, sop.3]{DOE1994}, the Nernst equation relates E to 
-the total proton concentration, but, if fluoride is present, its effect (as proton donor/acceptor) is also measured. Hence, we use the seawater scale here.
+(But before that, we calculate a titration with a titrant with the same salinity as seawater such that S does not change during the titration.
+otherwise we would need to calculate the S profile for the titration extra to use it to convert to the total scale in the following step.)
+However, to do so we first need to convert our pH curve to the seawater pH scale. According to \cite[p.7, ch.4, sop.3]{DOE1994} and \cite{Dickson2007}, the Nernst equation relates E to 
+the total proton concentration.
 <<TAfit7, fig=FALSE, echo=TRUE>>=
-swstitcurve <- convert(titcurve[,2], "pHscale", "free2sws", Tc=15, S=35)  
-Etitcurve   <- cbind(titcurve[,1], (0.4 - ((Constants$R/10)*initial_ae$Tk/Constants$F)*log(10^-swstitcurve))) 
+ae <- titration(initial_ae, mass_sample=0.01, mass_titrant=0.003, conc_titrant=0.01,
+                steps=20, seawater_titrant=TRUE)
+titcurveE <- cbind(ae$delta_mass_titrant, ae$pH)
+tottitcurve <- convert(titcurveE[,2], "pHscale", "free2tot", Tc=15, S=35)  
+Etitcurve   <- cbind(titcurve[,1], (0.4 - ((Constants$R/10)*initial_ae$Tk/Constants$F)*log(10^-tottitcurve))) 
 @ 
 Again, \texttt{TAfit} can be executed, this time also calculating E0. Note that the flag \texttt{verbose=TRUE} causes
 \texttt{TAfit} to show the progress of the fitting procedure in a plot window.
 <<TAfit8, fig=FALSE, echo=TRUE>>=
-fit2 <- TAfit(initial_ae, Etitcurve, conc_titrant=0.01, mass_sample=0.01, S_titrant=0.5, Evals=TRUE, verbose=TRUE)
+fit2 <- TAfit(initial_ae, Etitcurve, conc_titrant=0.01, mass_sample=0.01, Evals=TRUE, verbose=TRUE, seawater_titrant=TRUE)
 fit2     
 @   
 

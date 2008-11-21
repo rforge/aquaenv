@@ -110,7 +110,8 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
                   nlscontrol=nls.lm.control(),# nls.lm.control() can be specified
                   verbose=FALSE,              # verbose mode: show the traject of the fitting in a plot
                   k1k2="roy",                 # either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3
-                  khf="dickson")              # either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
+                  khf="dickson",              # either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
+                  datxbegin=0)                # at what x value (amount of titrant added) does the supplied curve start? (i.e. is the complete curve supplied or just a part?)
   {
     residuals <- function(state)
       {     
@@ -122,16 +123,16 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
                                  TA=state[[2]], speciation=FALSE, skeleton=TRUE,
                                  k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf, k1k2=k1k2, khf=khf),
                          mass_sample=mass_sample, mass_titrant=titcurve[,1][[length(titcurve[,1])]], conc_titrant=conc_titrant,
-                         S_titrant=S_titrant, steps=(length(titcurve[,1])-1), type=type, seawater_titrant=seawater_titrant,
-                         k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf, k1k2=k1k2, khf=khf)
-
+                         S_titrant=S_titrant, steps=steps, type=type, seawater_titrant=seawater_titrant,
+                         k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf, k1k2=k1k2, khf=khf) 
+              
         calc <- tit$pH
        
         if (Evals)
           {
-            # The Nernst equation relates E to TOTAL [H+] (DOE1994, p.7, ch.4, sop.3), BUT if fluoride is present, its effect (as proton donor/acceptor) is measured, too! Hence we use SWS!
-            calc <- convert(calc, "pHscale", "free2sws", Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF, khf=khf)
-            
+            # The Nernst equation relates E to TOTAL [H+] (DOE1994, p.7, ch.4, sop.3, Dickson2007)
+            calc <- convert(calc, "pHscale", "free2tot", Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF, khf=khf)
+           
             # electrode polarity: E = E0 -(RT/F)ln([H+]) ("pos") or -E = E0 -(RT/F)ln([H+]) ("neg")
             if (electrode_polarity=="pos")
               {
@@ -143,8 +144,8 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
               }
             
             #Nernst Equation: E = E0 -(RT/F)ln([H+]); 83.14510 (bar*cm3)/(mol*K) = 8.314510 J/(mol*K): division by 10
-            calc <- pol*(state[[3]]*1e2 - (((Constants$R/10)*ae$Tk)/Constants$F)*log(10^(-calc))) 
-
+            calc <- pol*(state[[3]]*1e2 - (((Constants$R/10)*ae$Tk)/Constants$F)*log(10^(-calc)))
+           
             ylab <- "E/V"         
           }
         else if (!(pHscale=="free"))
@@ -161,13 +162,13 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
           {
             # to cope with not equally spaced delta values for the masses (i.e. per step of the titration, NOT the same amount of titrant has been added),
             # we fit a function through our calculated pH curve (NOT the data)
-            calcfun   <- approxfun(tit$delta_mass_titrant, calc, rule=2)
+            calcfun   <- approxfun(tit$delta_mass_titrant[(stepsbeforecurve+1):(steps+1)], calc[(stepsbeforecurve+1):(steps+1)], rule=2)
 
             residuals <- titcurve[,2]-calcfun(titcurve[,1])
           }
         else
           {
-            residuals <- (titcurve[,2]-calc)
+            residuals <- (titcurve[,2]-calc[(stepsbeforecurve+1):(steps+1)])
           }
         
         if (debug) # debug mode: make some variables global
@@ -187,7 +188,16 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
       }
 
     require(minpack.lm)
-  
+
+    # deal with just partially supplied curves
+    stepsbeforecurve <- 0
+    steps <- (length(titcurve[,1])-1)
+    if (!(datxbegin==0))
+      {
+        stepsbeforecurve <- (titcurve[,1][[1]] / ((titcurve[,1][[length(titcurve[,1])]] - titcurve[,1][[1]])/(length(titcurve[,1])-1)))
+        steps            <- stepsbeforecurve  + (length(titcurve[,1])-1)
+      }
+
     if (Evals && K_CO2fit)
       {
         out    <- nls.lm(fn=residuals, par=c(TASumCO2guess, TASumCO2guess, E0guess/1e2, ae$K_CO2*1e4), control=nlscontrol) #multiply K_CO2 with 1e4 to bring the variables to fit into the same order of magnitude
