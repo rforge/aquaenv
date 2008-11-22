@@ -40,7 +40,7 @@
   \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3.}
   \item{khf}{either "dickson" (default, Dickson1979a) or "perez"
     (Perez1987a, calculated with seacarb) for K\_HF}
-  \item{datxbegin=0}{at what x value (amount of titrant added) does the supplied curve start? (i.e. is the complete curve supplied or just a part?)}
+  \item{datxbegin}{at what x value (amount of titrant added) does the supplied curve start? (i.e. is the complete curve supplied or just a part?)}
 }
 \value{
   a list of up to five values ([TA] in mol/kg-solution, [SumCO2] in mol/kg-solution, E0 in V, K1 in mol/kg-solution and on free scale, sum of the squared residuals)
