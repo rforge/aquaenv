@@ -1,6 +1,6 @@
-\name{sample_dickson}
-\alias{sample_dickson}
-\title{sample\_dickson}
+\name{sample_dickson1981}
+\alias{sample_dickson1981}
+\title{sample\_dickson1981}
 \description{PUBLIC dataset: theoretical titration curve for TA determination as given in table 1 of Dickson1981}
 \details{Metadata:
   \item{x-value}{mass of titrant added (in g)}

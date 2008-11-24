@@ -99,15 +99,16 @@ calcH_TA <- function(aquaenv,                 # object of class aquaenv
       {
         aquaenvtemp <- as.list(as.data.frame(aquaenv)[z,])
         with (aquaenvtemp,
-              {                                  
+              {              
                 Htemp <- Technicals$Hstart;  i <- 1
                 while ((abs(calcTA(aquaenvtemp, Htemp) - aquaenvtemp$TA) > Technicals$Haccur) && (i <= Technicals$maxiter))
                   {
                     a <- TA - calcTAMinor(aquaenvtemp, Htemp)
                     b <- K_CO2*(a-SumCO2)
                     c <- K_CO2*K_HCO3*(a-2*SumCO2)
-                    
-                    Htemp <- (-b + sqrt(b^2 - (4*a*c)))/(2*a); i <- i + 1
+                   
+                    Htemp <- (-b + sqrt(b^2 - (4*a*c)))/(2*a); i <- i + 1             
+                    if (Htemp<0) {break}                   
                   }
                 if ((Htemp < 0) || (i > Technicals$maxiter))
                   {

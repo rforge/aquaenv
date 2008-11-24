@@ -9,7 +9,7 @@
       pHscale="free", debug=FALSE, k_w=NULL, k_co2=NULL, k_hco3=NULL,
       k_boh3=NULL, k_hso4=NULL, k_hf=NULL,
       nlscontrol=nls.lm.control(), verbose=FALSE,
-      k1k2="roy", khf="dickson", datxbegin=0)}
+      k1k2="roy", khf="dickson", datxbegin=0, SumCO2Zero=FALSE)}
 \arguments{
   \item{ae }{an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc (Note that it is possible to give values for SumBOH4, SumHSO4, and SumHF in the sample other than the ones calculated from salinity)}
   \item{titcurve }{a table containing the titration curve: basically a series of tuples of added titrant solution mass and pH values (pH on free proton scale) or E values in V}
@@ -40,7 +40,10 @@
   \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3.}
   \item{khf}{either "dickson" (default, Dickson1979a) or "perez"
     (Perez1987a, calculated with seacarb) for K\_HF}
-  \item{datxbegin}{at what x value (amount of titrant added) does the supplied curve start? (i.e. is the complete curve supplied or just a part?)}
+  \item{datxbegin}{at what x value (amount of titrant added) does the
+    supplied curve start? (i.e. is the complete curve supplied or just a
+    part?)}
+  \item{SumCO2Zero}{should SumCO2==0?}
 }
 \value{
   a list of up to five values ([TA] in mol/kg-solution, [SumCO2] in mol/kg-solution, E0 in V, K1 in mol/kg-solution and on free scale, sum of the squared residuals)
@@ -197,7 +200,7 @@ SumH2SO4 = 0.02824 # mol/kg-soln
 SumHF    = 0.00007 # mol/kg-soln
 
 # convert mass of titrant from g to kg
-sam <- cbind(sample_dickson[,1]/1000, sample_dickson[,2]) 
+sam <- cbind(sample_dickson1981[,1]/1000, sample_dickson1981[,2]) 
 
 
 dicksonfit <- TAfit(aquaenv(Tc=25, S=35, SumBOH3=SumBOH3,

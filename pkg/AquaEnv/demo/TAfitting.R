@@ -92,7 +92,7 @@ SumBOH3  = 0.00042 # mol/kg-soln
 SumH2SO4 = 0.02824 # mol/kg-soln
 SumHF    = 0.00007 # mol/kg-soln
 
-sam <- cbind(sample_dickson[,1]/1000, sample_dickson[,2]) # convert mass of titrant from g to kg
+sam <- cbind(sample_dickson1981[,1]/1000, sample_dickson1981[,2]) # convert mass of titrant from g to kg
 
 dicksonfit <- TAfit(aquaenv(Tc=25, S=35, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF), sam, conc_titrant, mass_sample, S_titrant=S_titrant, debug=TRUE)
 dicksonfit

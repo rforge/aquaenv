@@ -1621,7 +1621,7 @@ calculated from its ionic strenght of 0.3 mol/kg-soln.\\
 \noindent
 In the original dataset as represented in \texttt{sample\_dickson}, the mass of titrant is given in g which needs to be converted to kg
 <<TAfit16, fig=FALSE, echo=TRUE>>=
-sam <- cbind(sample_dickson[,1]/1000, sample_dickson[,2]) # convert mass of titrant from g to kg
+sam <- cbind(sample_dickson1981[,1]/1000, sample_dickson1981[,2]) # convert mass of titrant from g to kg
 @ 
 Then an attempt to recalculate the [TA] and $\rm [\sum CO_2]$ values given in \cite{Dickson1981} ([TA]=0.00245 mol/kg-soln and $\rm [\sum CO_2]$ 0.00220 mol/kg-soln)
 can be done
@@ -1701,6 +1701,63 @@ dicksonfit3 <- TAfit(aquaenv(Tc=25, S=35, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, Su
 dicksonfit3
 @ 
 reveals that now exactly the same values are calculated as are given in \cite{Dickson1981}.
+
+\paragraph{Test with data from literature}
+Fitting test data from \cite{Dickson2007} (SOP3b, page 11).
+
+<<TAfitDickson2007_01, fig=FALSE, keep.source=TRUE>>=
+mass_sample     <- 140.32 / 1000 #kg
+density_titrant <- 1.02393/1000  #kg/ml
+conc_titrant    <- 0.10046       #mol/kg-soln
+
+sample <- cbind(sample_dickson2007[,1] * density_titrant,  sample_dickson2007[,2])
+
+fit <- TAfit(aquaenv(Tc=24.25, S=33.923), sample, 
+             mass_sample=mass_sample, conc_titrant=conc_titrant,
+             datxbegin=sample[,1][[1]], verbose=TRUE, debug=TRUE, 
+             Evals=TRUE, electrode_polarity="neg", k1k2="lueker", 
+             khf="perez", seawater_titrant=TRUE,
+             SumCO2Zero=TRUE)
+fit
+@ 
+One can see that with the values given in \cite{Dickson2007} being 2260.06 umol/kg-soln and 394.401 mV that there is a small
+difference between the \cite{Dickson2007} values and the values obtained here. This is in spite of the fact that \aq$\;$ has been 
+checked for consistancy against \cite{Dickson2007} in terms of every constant, formula and K value.
+
+\noindent
+We can try to recreate the curve given in \cite{Dickson2007} with a theoretical titration in \aq$\;$
+<<TAfitDickson2007_02, fig=FALSE>>=
+testtit <- titration(aquaenv(Tc=24.25, S=33.923, SumCO2=0, TA=0.00226006, SumBOH3=0), mass_sample=mass_sample,
+                     conc_titrant=conc_titrant, k1k2="lueker", khf="perez", mass_titrant=sample[,1][[length(sample[,1])]], steps=90, seawater_titrant=TRUE)
+@ 
+
+E is related to total pH \citep{Dickson2007} via the Nerst equation
+<<TAfitDickson2007_02, fig=FALSE>>=
+testtotpH <- convert(testtit$pH, "pHscale", "free2tot", Tc=24.25, S=33.923)
+testE  <- -(-0.394401 - (((Constants$R/10)*testtit$Tk[[1]])/Constants$F)*log(10^(-testtotpH)))
+@ 
+That lets us visualize the whole curve
+<<TAfitDickson2007_03, fig=TRUE>>=
+ylim <- range(testE, sample[,2])
+xlim <- range(testtit$delta_mass_titrant, sample[,1])
+plot(testtit$delta_mass_titrant, testE, type="l", xlim=xlim, ylim=ylim, xlab="Delta mass titrant / kg", ylab="E/V")
+par(new=TRUE)
+plot(sample[,1], sample[,2], type="l", col="red", xlim=xlim, ylim=ylim, xlab="", ylab="")
+@
+just the part to be fitted
+<<TAfitDickson2007_04, fig=TRUE>>=
+ylim <- range(testE[71:91], sample[,2])
+xlim <- range(testtit$delta_mass_titrant[71:91], sample[,1])
+plot(testtit$delta_mass_titrant[71:91], testE[71:91], type="l", xlim=xlim, ylim=ylim, xlab="Delta mass titrant / kg", ylab="E/V")
+par(new=TRUE)
+plot(sample[,1], sample[,2], type="l", col="red", xlim=xlim, ylim=ylim, xlab="", ylab="")
+@ 
+and the difference between the curves
+<<TAfitDickson2007_05, fig=TRUE>>=
+plot(testE[71:91]-sample[,2], xlab="Delta mass titrant / kg", ylab="E/V")
+@ 
+That shows that the curves are slightly different. However, with an offset for E0 of 0.26 mV the fit would be rather good.
+It is unclear where this offset comes from.
 
 
 

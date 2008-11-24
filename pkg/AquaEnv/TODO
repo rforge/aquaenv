@@ -1,0 +1,5 @@
+ - implement the simple equation fitting from Dickson2007: is that the reason for the slight "misfit" between our values and the values of Dickson2007 (TAfit)
+
+ - include flag that allows for objects of class aquaenv without any attributes in their elements
+ - add attribute "description" for K's
+ - Gran procedure for "first guess" for TA fitting

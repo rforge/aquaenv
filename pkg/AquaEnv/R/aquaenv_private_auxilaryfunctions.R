@@ -1,4 +1,4 @@
-###################################################
+##################################################
 # operations on objects of type AQUAENV
 ###################################################
 
@@ -316,19 +316,18 @@ scaleconvert <- function(Tc,                   # temperature in degrees centigra
 seadensity <- function(Tc,                    # temperature in degrees centigrade
                        S)                     # salinity S in practical salinity units (i.e. no unit)  
   {
-    Tc2 <- T^2
+    Tc2 <- Tc^2
     Tc3 <- Tc2 * Tc
     Tc4 <- Tc3 * Tc
     Tc5 <- Tc4 * Tc
             
-    A <- 0.824493    - 4.0899e-3*Tc + 7.6438e-5*Tc2 - 8.2467e-7*Tc3 + 5.3875e-9*Tc4
+    A <- 8.24493e-1    - 4.0899e-3*Tc + 7.6438e-5*Tc2 - 8.2467e-7*Tc3 + 5.3875e-9*Tc4
     B <- -5.72466e-3 + 1.0227e-4*Tc - 1.6546e-6*Tc2
     C <- 4.8314e-4
-
+    
     densityWater <- 999.842594 + 6.793952e-2*Tc - 9.095290e-3*Tc2 + 1.001685e-4*Tc3 - 1.120083e-6*Tc4 + 6.536332e-9*Tc5
         
-    return(                                  # seawater density in kg/m3
-           densityWater + A*S + B*S*sqrt(S) + C*S^2) 
+    return(densityWater + A*S + B*S*sqrt(S) + C*S^2)  # seawater density in kg/m        
   }
 
 

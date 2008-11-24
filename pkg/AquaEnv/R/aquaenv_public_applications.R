@@ -111,11 +111,14 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
                   verbose=FALSE,              # verbose mode: show the traject of the fitting in a plot
                   k1k2="roy",                 # either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3
                   khf="dickson",              # either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
-                  datxbegin=0)                # at what x value (amount of titrant added) does the supplied curve start? (i.e. is the complete curve supplied or just a part?)
+                  datxbegin=0,                # at what x value (amount of titrant added) does the supplied curve start? (i.e. is the complete curve supplied or just a part?)
+                  SumCO2Zero=FALSE)           # should SumCO2==0 ?
   {
     residuals <- function(state)
       {     
         if (K_CO2fit) {if (Evals){k_co2 <- state[[4]]/1e4} else {k_co2 <- state[[3]]/1e4}} # devide by 1e4 since the parameter was scaled to obtain parameters in the same range 
+
+        if (SumCO2Zero) {state[[1]] <- 0} # should SumCO2==0?
         
         tit <- titration(aquaenv(Tc=ae$Tc, S=ae$S, d=ae$d,
                                  SumCO2=state[[1]], SumNH4=ae$SumNH4, SumH2S=ae$SumH2S, SumH3PO4=ae$SumH3PO4, SumSiOH4=ae$SumSiOH4, SumHNO3=ae$SumHNO3, SumHNO2=ae$SumHNO2,
@@ -196,8 +199,8 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
       {
         stepsbeforecurve <- (titcurve[,1][[1]] / ((titcurve[,1][[length(titcurve[,1])]] - titcurve[,1][[1]])/(length(titcurve[,1])-1)))
         steps            <- stepsbeforecurve  + (length(titcurve[,1])-1)
-      }
-
+      } 
+    
     if (Evals && K_CO2fit)
       {
         out    <- nls.lm(fn=residuals, par=c(TASumCO2guess, TASumCO2guess, E0guess/1e2, ae$K_CO2*1e4), control=nlscontrol) #multiply K_CO2 with 1e4 to bring the variables to fit into the same order of magnitude
@@ -232,6 +235,8 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
         
         names(result) <- c("TA","SumCO2","sumofsquares")
       }
+
+    if (SumCO2Zero) {result[[2]] <- 0} # should SumCO2==0?
     
     attr(result[[1]], "unit")     <- "mol/kg-soln"
     attr(result[[2]], "unit")     <- "mol/kg-soln"    
@@ -240,6 +245,6 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
       {
         out  <<- out
       }
-    
+   
     return(result)  # a list of up to five values ([TA] in mol/kg-solution, [SumCO2] in mol/kg-solution, E0 in V, K_CO2 in mol/kg-solution and on free scale, sum of the squared residuals)
   }

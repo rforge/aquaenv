@@ -16,7 +16,7 @@ Constants <- list(
 Technicals <- list(
                    Haccur   = 1e-12,               # accuracy for iterative (Follows2006) pH calculations (max. deviation in [H+])
                    Hstart   = 1e-8,                # start [H+] for an iterative pH calculation
-                   maxiter  = 1000,                # maximum number of iterations for iterative (Follows2006) pH calculation method as well as for the application of the standard R function uniroot
+                   maxiter  = 100,                 # maximum number of iterations for iterative (Follows2006) pH calculation method as well as for the application of the standard R function uniroot
                                                
                    unirootinterval = c(1e-18, 1),  # the interval (in terms of [H+]) for pH calculation using the standard R function uniroot
                    uniroottol      = 1e-20,        # the interval (in terms of [H+]) for pH calculation using the standard R function uniroot
