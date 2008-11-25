@@ -14,6 +14,7 @@
 \examples{
 K_HF(15, 35)
 K_HF(15, 35, 10)
+plot(K_HF(1:25, 35), xlab="temperature / degC")
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Dickson1979a, Dickson1987, Roy1993b, DOE1994, Millero1995,

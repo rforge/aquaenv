@@ -48,7 +48,7 @@
 \value{
   a list of up to five values ([TA] in mol/kg-solution, [SumCO2] in mol/kg-solution, E0 in V, K1 in mol/kg-solution and on free scale, sum of the squared residuals)
 }
-\examples{
+\examples{\dontrun{
 ####################################
 # Calculating TA from titration data
 ####################################
@@ -320,7 +320,7 @@ plot(sam[,1], sam[,2], xlim=c(0,0.0025), ylim=c(3,8.2), type="l")
 par(new=TRUE)
 plot(tit$delta_mass_titrant, calc, xlim=c(0,0.0025), ylim=c(3,8.2),
      type="l", col="red")
-}
+}}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}
 

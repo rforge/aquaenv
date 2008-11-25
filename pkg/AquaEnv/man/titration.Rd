@@ -33,7 +33,7 @@
 \value{
   object of class aquaenv which contains a titration simulation
 }
-\examples{
+\examples{\dontrun{
 ####################
 # Titration with HCl
 ####################
@@ -108,6 +108,6 @@ plot(ae, what=what, bjerrum=TRUE, log=TRUE, newdevice=FALSE)
 plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1),
      legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]),
      newdevice=FALSE)
-}
+}}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}

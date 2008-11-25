@@ -14,6 +14,7 @@
 \examples{
 Ksp_aragonite(15, 35)
 Ksp_aragonite(15, 35, 10)
+plot(Ksp_aragonite(1:25, 35), xlab="temperature / degC")
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Mucci1983, Boudreau1996}

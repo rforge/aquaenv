@@ -17,7 +17,7 @@
 K_SiOOH3(15, 35)
 K_SiOOH3(15, 35, 10)
 K_SiOOH3(Tc=15, S=35, d=10, SumH2SO4=0.03)
-}
+plot(K_SiOOH3(1:25, 35), xlab="temperature / degC")}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Wischmeyer2003 (incl. corrections)}
 \keyword{misc}

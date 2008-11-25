@@ -14,6 +14,7 @@
 \examples{
 K_HSO4(15, 35)
 K_HSO4(15, 35, 10)
+plot(K_HSO4(1:25, 35), xlab="temperature / degC")
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Dickson1990, DOE1994, Zeebe2001}

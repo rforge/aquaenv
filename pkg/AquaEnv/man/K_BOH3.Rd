@@ -17,6 +17,7 @@
 K_BOH3(15, 35)
 K_BOH3(15, 35, 10)
 K_BOH3(Tc=15, S=35, d=10, SumH2SO4=0.03)
+plot(K_BOH3(1:25, 35), xlab="temperature / degC")
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Dickson1990, DOE1994, Millero1995 (molality version given), Zeebe2001}

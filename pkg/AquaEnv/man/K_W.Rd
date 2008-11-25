@@ -17,6 +17,7 @@
 K_W(15, 35)
 K_W(15, 35, 10)
 K_W(Tc=15, S=35, d=10, SumH2SO4=0.03)
+plot(K_W(1:25, 35), xlab="temperature / degC")
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Millero1995 (SWS pH version), DOE1994 (cites Millero1995), Zeebe2001}

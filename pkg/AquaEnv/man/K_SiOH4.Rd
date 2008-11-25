@@ -17,6 +17,7 @@
 K_SiOH4(15, 35)
 K_SiOH4(15, 35, 10)
 K_SiOH4(Tc=15, S=35, d=10, SumH2SO4=0.03)
+plot(K_SiOH4(1:25, 35), xlab="temperature / degC")
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \references{Millero1988, DOE1994, Millero1995}

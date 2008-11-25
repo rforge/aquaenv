@@ -45,7 +45,7 @@
   \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3.}
   \item{khf}{either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
 }
-\examples{
+\examples{\dontrun{
 ############################
 # Minimal aquaenv definition
 ############################
@@ -221,7 +221,7 @@ ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, TA=TA, revelle=TRUE,
               dsa=TRUE)
 plot(ae, xval=d, xlab="depth/m", newdevice=FALSE)
 
-}
+}}
 \value{
   a list containing: 
 	      "Tc"               "Tk"               "S"               

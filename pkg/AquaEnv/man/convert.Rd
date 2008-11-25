@@ -21,6 +21,33 @@ convert(x, from, to, factor, convattr)}}
   \item{factor }{only valid if x is an object of class aquaenv: the conversion factor to be applied: can either be a number (e.g. 1000 to convert from mol to mmol), or any of the conversion factors given in an object of class  aquaenv}
   \item{convattr }{only valid if x is an object of class aquaenv: which attribute should be converted? can either be "unit" or "pH scale"}
 }
+\examples{\dontrun{
+### 1
+#####
+
+Tc <- 15
+S  <- 10
+
+pH_NBS      <- 8.142777
+SumCO2molar <- 0.002016803
+
+pH_free     <- convert(pH_NBS,      "pHscale", "nbs2free",    Tc=Tc, S=S)
+SumCO2molin <- convert(SumCO2molar, "conc",    "molar2molin", Tc=Tc, S=S)
+
+ae <- aquaenv(Tc, S, SumCO2=SumCO2molin, pH=pH_free)
+ae$pH
+ae$SumCO2
+
+
+
+### 2
+#####
+ae <- aquaenv(10,30)
+ae$SumBOH3
+ae <- convert(ae, "mol/kg-soln", "umol/kg-H2O", 1e6/ae$molal2molin, "unit")
+ae$SumBOH3
+
+}}
 \value{
   converted single value or object of class aquaenv with converted elements
 }
