@@ -204,7 +204,7 @@ convert.standard <- function(x,               # the object to be converted (pH v
 # calculates the hydrostatic pressure from the depth (the hydrostatic pressure increases per m depth by 1/10 of 1 atm)
 hydroP <- function(d)                         # depth in meters
   {
-    return(0.1*d*1.01326)                     # hydrostatic pressure in bars
+    return(0.1*d*1.01325)                     # hydrostatic pressure in bars
   }
 
 
