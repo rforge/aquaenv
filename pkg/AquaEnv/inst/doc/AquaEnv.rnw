@@ -165,143 +165,143 @@ Maximally, i.e., if the enough input data is supplied to define the pH of the sy
 \begin{footnotesize}
 \begin{longtable}{l|l|p{7cm}}
 \textbf{element}& \textbf{unit}            & \textbf{explanation} \\ \hline 
-Tc          & \textdegree C                & temperature          \\
-Tk          & K                            & absolute temperature \\
-S           & ``psu'' (no unit)            & salinity             \\
-Cl          & \textperthousand             & chlorinity           \\
-I           & mol/kg-$\rm H_2O$            & ionic strength       \\
-d           & m                            & depth                \\ 
-hydroP      & bar                          & hydrostatic pressure \\
-density     & kg/$\rm m^3$                 & (seawater) density   \\
-SumCO2      & mol/kg-soln                  & $[\rm \sum CO_2]$, total dissolved inorganic carbon concentration \\         
-SumNH4      & mol/kg-soln                  & $[\rm \sum NH_4^+]$, total ammonium concentration\\
-SumH2S      & mol/kg-soln                  & $[\rm \sum H_2S]$, total sulfide concentration\\
-SumHNO3     & mol/kg-soln                  & $[\rm \sum HNO_3]$, total nitrate concentration\\
-SumHNO2     & mol/kg-soln                  & $[\rm \sum HNO_2]$, total nitrite concentration\\
-SumH3PO4    & mol/kg-soln                  & $[\rm \sum H_3PO_4]$, total phosphate concentration\\
-SumSiOH4    & mol/kg-soln                  & $[\rm \sum Si(OH)_4]$, total silicate concentration\\       
-SumBOH3     & mol/kg-soln                  & $[\rm \sum B(OH)_3]$, total borates concentration\\
-SumH2SO4    & mol/kg-soln                  & $[\rm \sum H_2SO_4]$, total sulfate concentration\\
-SumHF       & mol/kg-soln                  & $[\rm \sum HF]$, total fluoride concentration\\
-SumBr       & mol/kg-soln                  & $[\rm \sum HBr]$, total bromide concentration\\
-ClConc      & mol/kg-soln                  & $[\rm Cl^-]$, chloride concentration\\
-Na          & mol/kg-soln                  & $[\rm Na^{+}]$, sodium concentration\\
-Mg          & mol/kg-soln                  & $[\rm Mg^{2+}]$, magnesium concentration\\
-Ca          & mol/kg-soln                  & $[\rm Ca^{2+}]$, calcium concentration\\
-K           & mol/kg-soln                  & $[\rm K^+]$, potassium concentration\\               
-Sr          & mol/kg-soln                  & $[\rm Sr^{2+}]$, strontium concentration\\    
-molal2molin & (mol/kg-soln)/(mol/kg-H2O)   & concentration conversion factor: from molality to molinity\\
-free2tot    & -                            & pH conversion factor: free scale to total scale\\
-free2sws    & -                            & pH conversion factor: free scale to sawater scale\\
-tot2free    & -                            & pH conversion factor: total scale to free scale\\ 
-tot2sws     & -                            & pH conversion factor: total scale to seawater scale\\ 
-sws2free    & -                            & pH conversion factor: seawater scale to  free scale\\ 
-sws2tot     & -                            & pH conversion factor: seawater scale to total scale\\ 
-K0\_CO2     & mol/(kg-soln*atm)            & Henry's constant for $\rm CO_2$\\ 
-K0\_O2      & mol/(kg-soln*atm)            & Henry's constant for $\rm O_2$\\ 
-CO2\_sat    & mol/kg-soln                  & $\rm CO_2$ saturation concentration at an atmospheric partial pressure/fugacity of Fugacity\$CO2\\
-O2\_sat     & mol/kg-soln                  & $\rm O_2$ saturation concentration at an atmospheric partial pressure/fugacity of Fugacity\$O2\\
-K\_W        &(mol/kg-soln)$^2$, free pH scale & stoichiometric equilibrium ion product of \\
+\texttt{Tc}          & \textdegree C                & temperature          \\
+\texttt{Tk}          & K                            & absolute temperature \\
+\texttt{S}           & ``psu'' (no unit)            & salinity             \\
+\texttt{Cl}          & \textperthousand             & chlorinity           \\
+\texttt{I}           & mol/kg-$\rm H_2O$            & ionic strength       \\
+\texttt{d}           & m                            & depth                \\ 
+\texttt{hydroP}      & bar                          & hydrostatic pressure \\
+\texttt{density}     & kg/$\rm m^3$                 & (seawater) density   \\
+\texttt{SumCO2}      & mol/kg-soln                  & $[\rm \sum CO_2]$, total dissolved inorganic carbon concentration \\         
+\texttt{SumNH4}      & mol/kg-soln                  & $[\rm \sum NH_4^+]$, total ammonium concentration\\
+\texttt{SumH2S}      & mol/kg-soln                  & $[\rm \sum H_2S]$, total sulfide concentration\\
+\texttt{SumHNO3}     & mol/kg-soln                  & $[\rm \sum HNO_3]$, total nitrate concentration\\
+\texttt{SumHNO2}     & mol/kg-soln                  & $[\rm \sum HNO_2]$, total nitrite concentration\\
+\texttt{SumH3PO4}    & mol/kg-soln                  & $[\rm \sum H_3PO_4]$, total phosphate concentration\\
+\texttt{SumSiOH4}    & mol/kg-soln                  & $[\rm \sum Si(OH)_4]$, total silicate concentration\\       
+\texttt{SumBOH3}     & mol/kg-soln                  & $[\rm \sum B(OH)_3]$, total borates concentration\\
+\texttt{SumH2SO4}    & mol/kg-soln                  & $[\rm \sum H_2SO_4]$, total sulfate concentration\\
+\texttt{SumHF}       & mol/kg-soln                  & $[\rm \sum HF]$, total fluoride concentration\\
+\texttt{SumBr}       & mol/kg-soln                  & $[\rm \sum HBr]$, total bromide concentration\\
+\texttt{ClConc}      & mol/kg-soln                  & $[\rm Cl^-]$, chloride concentration\\
+\texttt{Na}          & mol/kg-soln                  & $[\rm Na^{+}]$, sodium concentration\\
+\texttt{Mg}          & mol/kg-soln                  & $[\rm Mg^{2+}]$, magnesium concentration\\
+\texttt{Ca}          & mol/kg-soln                  & $[\rm Ca^{2+}]$, calcium concentration\\
+\texttt{K}           & mol/kg-soln                  & $[\rm K^+]$, potassium concentration\\               
+\texttt{Sr}          & mol/kg-soln                  & $[\rm Sr^{2+}]$, strontium concentration\\    
+\texttt{molal2molin} & (mol/kg-soln)/(mol/kg-H2O)   & concentration conversion factor: from molality to molinity\\
+\texttt{free2tot}    & -                            & pH conversion factor: free scale to total scale\\
+\texttt{free2sws}    & -                            & pH conversion factor: free scale to sawater scale\\
+\texttt{tot2free}    & -                            & pH conversion factor: total scale to free scale\\ 
+\texttt{tot2sws}     & -                            & pH conversion factor: total scale to seawater scale\\ 
+\texttt{sws2free}    & -                            & pH conversion factor: seawater scale to  free scale\\ 
+\texttt{sws2tot}     & -                            & pH conversion factor: seawater scale to total scale\\ 
+\texttt{K0\_CO2}     & mol/(kg-soln*atm)            & Henry's constant for $\rm CO_2$\\ 
+\texttt{K0\_O2}      & mol/(kg-soln*atm)            & Henry's constant for $\rm O_2$\\ 
+\texttt{CO2\_sat}    & mol/kg-soln                  & $\rm CO_2$ saturation concentration at an atmospheric partial pressure/fugacity of Fugacity\$CO2\\
+\texttt{O2\_sat}     & mol/kg-soln                  & $\rm O_2$ saturation concentration at an atmospheric partial pressure/fugacity of Fugacity\$O2\\
+\texttt{K\_W}        &(mol/kg-soln)$^2$, free pH scale & stoichiometric equilibrium ion product of \\
             &                              & $\rm H_2O$: $\rm K^*_W = [H^+][OH-]$\\
-K\_HSO4     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+\texttt{K\_HSO4}     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
             &                              & $\rm K^*_{HSO_4^-} = [H^+][SO_4^{2-}] / [HSO_4^-]$\\
-K\_HF       &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+\texttt{K\_HF}       &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
             &                                 & $\rm K^*_{HF} = [H^+][F^{-}] / [HF]$\\
-K\_CO2      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+\texttt{K\_CO2}      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
             &                                 & $\rm K^*_{CO_2} = [H^+][HCO_3^{-}] / [CO_2]$\\
-K\_HCO3     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+\texttt{K\_HCO3}     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
             &                                 & $\rm K^*_{HCO_3^{-}} = [H^+][CO_3^{2-}] / [HCO_3^{-}]$\\
-K\_BOH3     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+\texttt{K\_BOH3}     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
             &                                 & $\rm K^*_{B(OH)_3} = [H^+][B(OH)_4^-] / [B(OH)_3]$\\          
-K\_NH4      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+\texttt{K\_NH4}      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
             &                                 & $\rm K^*_{NH_4^+} = [H^+][NH_3] / [NH_4^+]$\\
-K\_H2S      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+\texttt{K\_H2S}      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
             &                                 & $\rm K^*_{H_2S} = [H^+][HS^-] / [H_2S]$\\
-K\_H3PO4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+\texttt{K\_H3PO4}    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
             &                                 & $\rm K^*_{H_3PO_4} = [H^+][H_2PO_4^-] / [H_3PO_4]$\\         
-K\_H2PO4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+\texttt{K\_H2PO4}    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
             &                                 & $\rm K^*_{H_2PO_4^-} = [H^+][HPO_4^{2-}] / [H_2PO_4^-]$\\
-K\_HPO4     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+\texttt{K\_HPO4}     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
             &                                 & $\rm K^*_{HPO_4^{2-}} = [H^+][PO_4^{3-}] / [HPO_4^{2-}]$\\
-K\_SiOH4    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+\texttt{K\_SiOH4}    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
             &                                 & $\rm K^*_{Si(OH)_4} = [H^+][SiO(OH)_3^-] / [Si(OH)_4]$\\         
-K\_SiOOH3   &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+\texttt{K\_SiOOH3}   &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
             &                                 & $\rm K^*_{SiO(OH)_3^-} = [H^+][SiO_2(OH)_2^{2-}] / [SiO(OH)_3^-]$\\         
-K\_HNO2     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+\texttt{K\_HNO2}     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
             &                                 & $\rm K^*_{HNO_2} = [H^+][NO_2^-] / [HNO_2]$\\         
-K\_HNO3     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+\texttt{K\_HNO3}     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
             &                                 & $\rm K^*_{HNO_3} = [H^+][NO_3^-] / [HNO_3]$\\              
-K\_H2SO4    &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+\texttt{K\_H2SO4}    &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
             &                                 & $\rm K^*_{H_2SO_4} = [H^+][HSO_4^-] / [H_2SO_4]$\\    
-K\_HS       & mol/kg-soln; mol/kg-H2O; mol/l  & approximate value for equilibrium constant \\
+\texttt{K\_HS}       & mol/kg-soln; mol/kg-H2O; mol/l  & approximate value for equilibrium constant \\
             &                                 & $\rm K^*_{HS^-} = [H^+][S^{2-}] / [HS^-]$\\
-Ksp\_calcite& (mol/kg-soln)$^2$               & stoichiometric equilibrium solubility product of calcite\\
+\texttt{Ksp\_calcite}& (mol/kg-soln)$^2$               & stoichiometric equilibrium solubility product of calcite\\
             &                                 & $\rm Ksp^*_{cal} = [Ca^{2+}][CO_3^{2-}]$\\
-Ksp\_aragonite &(mol/kg-soln)$^2$             & stoichiometric equilibrium solubility product of aragonite\\
+\texttt{Ksp\_aragonite} &(mol/kg-soln)$^2$             & stoichiometric equilibrium solubility product of aragonite\\
             &                                 & $\rm Ksp^*_{ara} = [Ca^{2+}][CO_3^{2-}]$\\
-TA          & mol/kg-soln                     & [TA], total alkalinity\\
-pH          & -, free scale                   & pH\\              
-pCO2        & atm,                            & partial pressure (~fugacity) of $\rm CO_2$ in the water\\
-CO2         & mol/kg-soln                     & $[\rm CO_2]$\\         
-HCO3        & mol/kg-soln                     & $[\rm HCO_3^-]$\\         
-CO3         & mol/kg-soln                     & $[\rm CO_3^{2-}]$\\         
-BOH3        & mol/kg-soln                     & $[\rm B(OH)_3]$\\         
-BOH4        & mol/kg-soln                     & $[\rm B(OH)_4^-]$\\                     
-OH          & mol/kg-soln                     & $[\rm OH^-]$\\         
-H3PO4       & mol/kg-soln                     & $[\rm H_3PO_4]$\\         
-H2PO4       & mol/kg-soln                     & $[\rm H2PO_4^-]$\\                    
-HPO4        & mol/kg-soln                     & $[\rm HPO_4^{2-}]$\\         
-PO4         & mol/kg-soln                     & $[\rm PO_4^{3-}]$\\         
-SiOH4       & mol/kg-soln                     & $[\rm Si(OH)_4]$\\                    
-SiOOH3      & mol/kg-soln                     & $[\rm SiO(OH)_3^-]$\\         
-SiO2OH2     & mol/kg-soln                     & $[\rm SiO_2(OH)_2^{2-}]$\\         
-H2S         & mol/kg-soln                     & $[\rm H_2S]$\\                      
-HS          & mol/kg-soln                     & $[\rm HS^-]$\\         
-S2min       & mol/kg-soln                     & $[\rm S^{2-}]$\\         
-NH4         & mol/kg-soln                     & $[\rm NH_4^+]$\\                      
-NH3         & mol/kg-soln                     & $[\rm NH_3]$\\         
-H2SO4       & mol/kg-soln                     & $[\rm H_2SO_4]$\\         
-HSO4        & mol/kg-soln                     & $[\rm HSO_4^-]$\\                     
-SO4         & mol/kg-soln                     & $[\rm SO_4^{2-}]$\\         
-HF          & mol/kg-soln                     & $[\rm HF]$\\         
-F           & mol/kg-soln                     & $[\rm F^-]$\\                        
-HNO3        & mol/kg-soln                     & $[\rm HNO_3]$\\
-NO3         & mol/kg-soln                     & $[\rm NO_3^-]$\\         
-HNO2        & mol/kg-soln                     & $[\rm HNO_2]$\\                     
-NO2         & mol/kg-soln                     & $[\rm NO_2^-]$\\         
-omega\_calcite   & -                          & saturation state $\Omega$ with respect to calcite\\
-omega\_aragonite & -                          & saturation state $\Omega$ with respect to aragonite\\
-revelle     & -                               & Revelle factor\\    
-c1          & -                               & ionization fraction $c_1 = [\rm CO_2]/[\rm \sum CO_2]$\\
-c2          & -                               & ionization fraction $c_2 = [\rm HCO_3^-]/[\rm \sum CO_2]$\\
-c3          & -                               & ionization fraction $c_3 = [\rm CO_3^{2-}]/[\rm \sum CO_2]$\\
-dTAdSumCO2  & -                               & $\rm \frac{\partial [TA]}{[\partial \sum CO_2]}$\\
+\texttt{TA}          & mol/kg-soln                     & [TA], total alkalinity\\
+\texttt{pH}          & -, free scale                   & pH\\              
+\texttt{pCO2}        & atm,                            & partial pressure (~fugacity) of $\rm CO_2$ in the water\\
+\texttt{CO2}         & mol/kg-soln                     & $[\rm CO_2]$\\         
+\texttt{HCO3}        & mol/kg-soln                     & $[\rm HCO_3^-]$\\         
+\texttt{CO3}         & mol/kg-soln                     & $[\rm CO_3^{2-}]$\\         
+\texttt{BOH3}        & mol/kg-soln                     & $[\rm B(OH)_3]$\\         
+\texttt{BOH4}        & mol/kg-soln                     & $[\rm B(OH)_4^-]$\\                     
+\texttt{OH}          & mol/kg-soln                     & $[\rm OH^-]$\\         
+\texttt{H3PO4}       & mol/kg-soln                     & $[\rm H_3PO_4]$\\         
+\texttt{H2PO4}       & mol/kg-soln                     & $[\rm H2PO_4^-]$\\                    
+\texttt{HPO4}        & mol/kg-soln                     & $[\rm HPO_4^{2-}]$\\         
+\texttt{PO4}         & mol/kg-soln                     & $[\rm PO_4^{3-}]$\\         
+\texttt{SiOH4}       & mol/kg-soln                     & $[\rm Si(OH)_4]$\\                    
+\texttt{SiOOH3}      & mol/kg-soln                     & $[\rm SiO(OH)_3^-]$\\         
+\texttt{SiO2OH2}     & mol/kg-soln                     & $[\rm SiO_2(OH)_2^{2-}]$\\         
+\texttt{H2S}         & mol/kg-soln                     & $[\rm H_2S]$\\                      
+\texttt{HS}          & mol/kg-soln                     & $[\rm HS^-]$\\         
+\texttt{S2min}       & mol/kg-soln                     & $[\rm S^{2-}]$\\         
+\texttt{NH4}         & mol/kg-soln                     & $[\rm NH_4^+]$\\                      
+\texttt{NH3}         & mol/kg-soln                     & $[\rm NH_3]$\\         
+\texttt{H2SO4}       & mol/kg-soln                     & $[\rm H_2SO_4]$\\         
+\texttt{HSO4}        & mol/kg-soln                     & $[\rm HSO_4^-]$\\                     
+\texttt{SO4}         & mol/kg-soln                     & $[\rm SO_4^{2-}]$\\         
+\texttt{HF}          & mol/kg-soln                     & $[\rm HF]$\\         
+\texttt{F}           & mol/kg-soln                     & $[\rm F^-]$\\                        
+\texttt{HNO3}        & mol/kg-soln                     & $[\rm HNO_3]$\\
+\texttt{NO3}         & mol/kg-soln                     & $[\rm NO_3^-]$\\         
+\texttt{HNO2}        & mol/kg-soln                     & $[\rm HNO_2]$\\                     
+\texttt{NO2}         & mol/kg-soln                     & $[\rm NO_2^-]$\\         
+\texttt{omega\_calcite}   & -                          & saturation state $\Omega$ with respect to calcite\\
+\texttt{omega\_aragonite} & -                          & saturation state $\Omega$ with respect to aragonite\\
+\texttt{revelle}     & -                               & Revelle factor\\    
+\texttt{c1}          & -                               & ionization fraction $c_1 = [\rm CO_2]/[\rm \sum CO_2]$\\
+\texttt{c2}          & -                               & ionization fraction $c_2 = [\rm HCO_3^-]/[\rm \sum CO_2]$\\
+\texttt{c3}          & -                               & ionization fraction $c_3 = [\rm CO_3^{2-}]/[\rm \sum CO_2]$\\
+\texttt{dTAdSumCO2}  & -                               & $\rm \frac{\partial [TA]}{[\partial \sum CO_2]}$\\
             &                                 & with $\rm[TA] = f([H^+], [\sum CO_2], ...)$\\
-b1          & -                               & ionization fraction $b_1 = [\rm B(OH)_3]/[\rm \sum B(OH)_3]$\\               
-b2          & -                               & ionization fraction $b_2 = [\rm B(OH)_4^-]/[\rm \sum B(OH)_3]$\\               
-dTAdSumBOH3 & -                               & $\rm \frac{\partial [TA]}{[\partial \sum B(OH)_3]}$\\
+\texttt{b1}          & -                               & ionization fraction $b_1 = [\rm B(OH)_3]/[\rm \sum B(OH)_3]$\\               
+\texttt{b2}          & -                               & ionization fraction $b_2 = [\rm B(OH)_4^-]/[\rm \sum B(OH)_3]$\\               
+\texttt{dTAdSumBOH3} & -                               & $\rm \frac{\partial [TA]}{[\partial \sum B(OH)_3]}$\\
             &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\
-so1         & -                               & ionization fraction $so_1 = [\rm H_2SO_4]/[\rm \sum H_2SO_4]$\\               
-so2         & -                               & ionization fraction $so_2 = [\rm HSO_4^-]/[\rm \sum H_2SO_4]$\\               
-so3         & -                               & ionization fraction $so_3 = [\rm SO_4^{2-}]/[\rm \sum H_2SO_4]$\\               
-dTAdSumH2SO4& -                               & $\rm \frac{\partial [TA]}{[\partial \sum H_2SO_4]}$\\
+\texttt{so1}         & -                               & ionization fraction $so_1 = [\rm H_2SO_4]/[\rm \sum H_2SO_4]$\\               
+\texttt{so2}         & -                               & ionization fraction $so_2 = [\rm HSO_4^-]/[\rm \sum H_2SO_4]$\\               
+\texttt{so3}         & -                               & ionization fraction $so_3 = [\rm SO_4^{2-}]/[\rm \sum H_2SO_4]$\\               
+\texttt{dTAdSumH2SO4}& -                               & $\rm \frac{\partial [TA]}{[\partial \sum H_2SO_4]}$\\
             &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\   
-f1          & -                               & ionization fraction $f_1 = [\rm HF]/[\rm \sum HF]$\\               
-f2          & -                               & ionization fraction $f_1 = [\rm F^-]/[\rm \sum HF]$\\               
-dTAdSumHF   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum HF]}$\\
+\texttt{f1}          & -                               & ionization fraction $f_1 = [\rm HF]/[\rm \sum HF]$\\               
+\texttt{f2}          & -                               & ionization fraction $f_1 = [\rm F^-]/[\rm \sum HF]$\\               
+\texttt{dTAdSumHF}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum HF]}$\\
             &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
-dTAdH       & -                               & $\rm \frac{\partial [TA]}{[\partial [H^+]}$: buffer factor\\
+\texttt{dTAdH}       & -                               & $\rm \frac{\partial [TA]}{[\partial [H^+]}$: buffer factor\\
             &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
-dTAdKdKdS   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial S}$\\
+\texttt{dTAdKdKdS}   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial S}$\\
             &                                 &  with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\        
-dTAdKdKdT   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial T}$\\
+\texttt{dTAdKdKdT}   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial T}$\\
             &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\     
-dTAdKdKdd   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial d}$\\
+\texttt{dTAdKdKdd}   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial d}$\\
             &                                 &  with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\ 
-dTAdKdKdSumH2SO4 & -                          & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial [\sum H_2SO_4]}$\\
+\texttt{dTAdKdKdSumH2SO4} & -                          & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial [\sum H_2SO_4]}$\\
             &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\ 
-dTAdKdKdSumHF & -                             & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial [\sum HF]}$\\
-            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\   
+\texttt{dTAdKdKdSumHF} & -                             & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial [\sum HF]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\    \hline
 \end{longtable}
 \end{footnotesize}
 
@@ -1915,68 +1915,65 @@ Zeebe2001        & \cite{Zeebe2001}\\
 \begin{footnotesize}
 \begin{longtable}{p{.15\textwidth}|p{.9\textwidth}}
 \textbf{element}& \textbf{references} \\ \hline 
-Cl          & \cite[ chapter 5, p. 11]{DOE1994}, and \cite[p. 100, footnote 3]{Zeebe2001}\\
-I           & \cite[chapter 5, p. 13, 15]{DOE1994},  \cite[ p.12]{Zeebe2001}, and \cite[ p.257]{Roy1993b}. 
-Note that the approximation I/(mol/kg-solution) $\approx$ 0.0199201 \; S is given in \cite[  p. 428.]{Millero1982}.
+\texttt{Cl}          & \citet[ chapter 5, p. 11]{DOE1994}, and \citet[p. 100, footnote 3]{Zeebe2001}\\
+\texttt{I}           & \citet[chapter 5, p. 13, 15]{DOE1994},  \citet[ p.12]{Zeebe2001}, and \citet[ p.257]{Roy1993b}. 
+Note that the approximation I/(mol/kg-solution) $\approx$ 0.0199201 \; \texttt{S} is given in \citet[  p. 428.]{Millero1982}.
 This relationship converted into mol/kg-$\rm H_2O$ and the last digits adjusted (from 0.0199201 to 0.019924) results in the formula used here.\\
-density     & \cite{Millero1981} and \cite[chapter 5, p. 6f]{DOE1994}.\\
-SumBr, ClConc, Na, Mg, Ca, K, Sr & \cite[ chapter 5, p.11]{DOE1994}\\    
-molal2molin & \cite[ p.257]{Roy1993b}, and  \cite[chapter 5, p. 15]{DOE1994}\\
-free2tot, tot2free  & \cite[p.2302]{Dickson1984}, \cite[ chapter 4, p.16]{DOE1994}, \cite[p.57, 261]{Zeebe2001}\\
-free2sws, tot2sws, sws2free, sws2tot &  \cite[p.2303]{Dickson1984}, \cite[ p.57]{Zeebe2001}\\
-K0\_CO2     & \cite{Weiss1974}, \cite[chapter 5, p. 13]{DOE1994} (here it is stated that the unit is mol/(kg-solution*atm)), \cite[ p.663]{Millero1995}, \cite[ p.257]{Zeebe2001}\\
-K0\_O2      & derived from  a formula for the oxygen saturation concentration in ml-$\rm O_2$/kg-solution by \cite{Weiss1970} using the first virial coefficient
+density     & \citet{Millero1981} and \citet[chapter 5, p. 6f]{DOE1994}.\\
+\texttt{SumBr}, \texttt{ClConc}, \texttt{Na}, \texttt{Mg}, \texttt{Ca}, \texttt{K}, \texttt{Sr} & \citet[ chapter 5, p.11]{DOE1994}\\    
+\texttt{molal2molin} & \citet[ p.257]{Roy1993b}, and  \citet[chapter 5, p. 15]{DOE1994}\\
+\texttt{free2tot}, \texttt{tot2free}  & \citet[p.2302]{Dickson1984}, \citet[ chapter 4, p.16]{DOE1994}, \citet[p.57, 261]{Zeebe2001}\\
+\texttt{free2sws}, \texttt{tot2sws}, \texttt{sws2free}, \texttt{sws2tot} &  \citet[p.2303]{Dickson1984}, \citet[ p.57]{Zeebe2001}\\
+\texttt{K0\_CO2}     & \citet{Weiss1974}, \citet[chapter 5, p. 13]{DOE1994} (here it is stated that the unit is mol/(kg-solution*atm)), \citet[ p.663]{Millero1995}, \citet[ p.257]{Zeebe2001}\\
+\texttt{K0\_O2}      & derived from  a formula for the oxygen saturation concentration in ml-$\rm O_2$/kg-solution by \citet{Weiss1970} using the first virial coefficient
 of oxygen \citep[][p. 41, 1029]{Atkins1996} and the atmospheric oxygen fugacity \citep{Williams2004}\\
-K\_W        & \cite[p.670]{Millero1995} (\textbf{original reference}, but slightly different formula for seawater pH), \cite[chapter 5, p. 18]{DOE1994} (NOT the original reference! \cite{DOE1994} cites in an update from 1997 \cite{Millero1995}! 
-However the version of the formula used here is the one converted to total pH scale given in \cite{DOE1994}), and \cite[p. 258]{Zeebe2001}. Constant type (stoichiometric), 
+\texttt{K\_W}       & \citet[p.670]{Millero1995} (\textbf{original reference}, but slightly different formula for seawater pH), \citet[chapter 5, p. 18]{DOE1994} (NOT the original reference! \citet{DOE1994} cites in an update from 1997 \citet{Millero1995}! 
+However the version of the formula used here is the one converted to total pH scale given in \citet{DOE1994}), and \citet[p. 258]{Zeebe2001}. Constant type (stoichiometric), 
 pH scale (total, converted to free here) , and 
-concentration unit (mol/kg-solution squared): \cite[chapter 5, p. 12,18]{DOE1994}, pH scale also in \cite[p. 258]{Zeebe2001}.\\
-K\_HSO4     & \cite[chapter 5 page 13]{DOE1994}, \cite[p. 260]{Zeebe2001}, \cite{Dickson1990a} (original reference). Constant type (stoichiometric), pH scale (free) , and 
-concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \cite[chapter 5, p. 13]{DOE1994}.\\
-K\_HF       & \cite[p. 91]{Dickson1979} (original reference), \cite[c. 5, p. 15]{DOE1994}, \cite[p. 257]{Roy1993b}, \cite[p. 1783]{Dickson1987}, \cite[p. 664]{Millero1995}, \cite[p. 260]{Zeebe2001} 
+concentration unit (mol/kg-solution squared): \citet[chapter 5, p. 12,18]{DOE1994}, pH scale also in \citet[p. 258]{Zeebe2001}.\\
+\texttt{K\_HSO4}     & \citet[chapter 5 page 13]{DOE1994}, \citet[p. 260]{Zeebe2001}, \citet{Dickson1990a} (original reference). Constant type (stoichiometric), pH scale (free) , and 
+concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \citet[chapter 5, p. 13]{DOE1994}.\\
+\texttt{K\_HF}       & \citet[p. 91]{Dickson1979} (original reference), \citet[c. 5, p. 15]{DOE1994}, \citet[p. 257]{Roy1993b}, \citet[p. 1783]{Dickson1987}, \citet[p. 664]{Millero1995}, \citet[p. 260]{Zeebe2001} 
 (converted to molinty and total scale).  Constant type (stoichiometric), pH scale (free) , and 
-concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \cite[chapter 5, p. 15, 16]{DOE1994}. \\
-K\_CO2, K\_HCO3  & \cite[p. 254]{Roy1993b} (original reference), \cite[chapter 5, p.14]{DOE1994} (in a version converted to mol/kg-$\rm H_2O$), \cite[p. 664]{Millero1995}, \cite[p. 255]{Zeebe2001}.
-Constant type (stoichiometric) and  concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \cite[chapter 5, p. 14, 15]{DOE1994}, pH scale (total, converted to free here): 
-In \cite[chapter 5, p. 12]{DOE1994} the total scale is stated for the formula for high salinities and thus can be inferred for the formula for low salinities. 
-The scale is also indirectly stated for both formulations in the original reference \cite{Roy1993b}. Note that in \cite{Roy1993b} a function for
-pure water \citep{Millero1979} is cited and a function for seawater is derived. In \cite{Millero1995} it is stated that for S$<$5 the fresh water formula
-of \citep{Millero1979} should be used and for S$>=$5 the seawater formula derived in \cite{Roy1993b}. However, both formulations do not always 
-intersect at S=5. The true intersection with respect to salinity S is a function of temperature Tk. Here, we first calculate this intersection by
-numerical root finding and then decide which formulation to use. This practise results in a continuous function with respect to S.
-(Note that \cite{Millero1979} is restated wrongly in \cite{Roy1993b}: one of the numerical values for the function for $\rm K^*_{CO_2}$ is given as 310.48919, but correct is 2310.48919. However, in 
-\cite{Millero1995} this value is stated correctly.) \\
-K\_BOH3     & \cite[p. 763]{Dickson1990} (original, but mol/kg-$\rm H_2O$ version), \cite[ch. 5, p. 14]{DOE1994}, \cite[p. 262]{Zeebe2001}, \cite[p.669]{Millero1995} (mol/kg-$\rm H_2O$ version) , agrees with data in \cite{Roy1993a}.
-Constant type (stoichiometric) and  concentration unit (mol/kg-solution): \cite[chapter 5, p. 14]{DOE1994}, pH scale (total): \cite[chapter 5, p. 12]{DOE1994} and \cite[p.263]{Zeebe2001}.\\
-K\_NH4      & \cite{Millero1995a} (original reference), \cite[p.671]{Millero1995}. Constant type (stoichiometric) and concentration unit (mol/kg-solution): \cite[p.671]{Millero1995}, pH scale (seawater, converted to free here):  
-\cite{Lewis1998} (in corrections of \cite{Millero1995}).\\
-K\_H2S      & \cite{Millero1988} (original reference), \cite[p.671]{Millero1995}. Constant type (stoichiometric) and concentration unit (mol/kg-solution): \cite[p.671]{Millero1995}, pH scale (seawater, converted to free here):  
-\cite{Lewis1998} (in corrections of \cite{Millero1995}).\\
-K\_H3PO4, K\_H2PO4, K\_HPO4 & \cite[p.670]{Millero1995} (original reference, but formula for seawater scale pH), \cite[ch. 5, p 16,17]{DOE1994}, agrees with data in \cite{Dickson1979a}.
- Constant type (stoichiometric), concentration unit (mol/kg-solution), and pH scale (total, converted to free here): \cite[chapter 5, p. 12, 16, 17]{DOE1994}.\\
-K\_SiOH4    & \cite{Millero1988} (original reference), \cite[chapter 5, p 17]{DOE1994}, \cite[p.671]{Millero1995} (formula for seawater scale pH)
- Constant type (stoichiometric), concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here by omitting the conversion summand ln(1-0.001005 S)), and pH scale (total, converted to free here): \cite[chapter 5, p. 12, 17]{DOE1994}.\\
-K\_SiOOH3   & \cite{Wischmeyer2003} (original reference), corrected due to personal communication with Dieter Wolf-Gladrow (one of the authors). The corrected version can be obtained from either Dieter Wolf-Gladrow or Andreas F Hofmann 
-(a.hofmann@nioo.knaw.nl).  Constant type (stoichiometric), concentration unit (mol/kg-solution), and pH scale (total, converted to free here): \cite{Wischmeyer2003}.\\
-K\_HNO2     & Constant value, not a function of temperature and salinity! Obtained as a hybrid pk value (featuring the activity of the proton but the concentration of other species (see \cite{Zeebe2001} for a treatment of different types of
-equilibrium constants) in molar concentration (mol/l) on the NBS pH scale \citep{Durst1975} from \cite{Riordan2005}. Used as an approximation for the stoichiometric $\rm K^*_{\rm HNO_2}$ in mol/kg-solution on the free proton pH scale here.\\
-K\_H2SO4    & Constant value, not a function of temperature and salinity! Obtained as a standard pK value from \cite[p. 1045]{Atkins1996}. Used as an approximation for the stoichiometric $\rm K^*_{\rm H_2SO_4}$ in mol/kg-solution on the free proton pH scale here.\\
-K\_HS       & Constant value, not a function of temperature and salinity! Obtained as a standard pK value from \cite[p. 1045]{Atkins1996}. Used as an approximation for the stoichiometric $\rm K^*_{\rm Hs^-}$ in mol/kg-solution on the free proton pH scale here.\\
-Ksp\_calcite, Ksp\_aragonite  & \cite{Mucci1983} (original reference), \cite{Boudreau1996}. Note that in there are errors in \cite{Boudreau1996}: $b_0$ for calcite is not 0.7712 but 0.77712 and $b_1$ for 
+concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \citet[chapter 5, p. 15, 16]{DOE1994}. In \textsf{AquaEnv}, it is also possible to use the constant according to \cite{Perez1987a}. \\
+\texttt{K\_CO2}, \texttt{K\_HCO3}  & \citet[p. 254]{Roy1993b} (original reference), \citet[chapter 5, p.14]{DOE1994} (in a version converted to mol/kg-$\rm H_2O$), \citet[p. 664]{Millero1995}, \citet[p. 255]{Zeebe2001}.
+Constant type (stoichiometric) and  concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \citet[chapter 5, p. 14, 15]{DOE1994}, pH scale (total, converted to free here): 
+In \citet[chapter 5, p. 12]{DOE1994} the total scale is stated for the formula for high salinities and thus can be inferred for the formula for low salinities. 
+The scale is also indirectly stated for both formulations in the original reference \citet{Roy1993b}. Note that in \citet{Roy1993b} a function for fresh water (based on \cite{Millero1979} which in turn is on a temperature relationship from \cite{Harned1943} and \cite{Harned1941} respectively) and a function for seawater is derived. In \citet{Millero1995} it is stated that for S$<$5 the fresh water formula (based on \cite{Millero1979}) should be used and for S$>=$5 the seawater formula derived in \citet{Roy1993b}. However, both formulations do not always 
+intersect at \texttt{S}=5. The true intersection with respect to salinity \texttt{S} is a function of temperature \texttt{Tc}. Here, we first calculate this intersection by
+numerical root finding and then decide which formulation to use. This practise results in a continuous function with respect to \texttt{S}. (Note that there is a typesetting error in \citet{Roy1993b}: one of the numerical values for the function for $\rm K^*_{CO_2}$ is given as 310.48919, but correct is 2310.48919. However, in \citet{Millero1995} this value is stated correctly.) In \textsf{AquaEnv}, it is also possible to use the constants according to \cite{Lueker2000}.\\
+\texttt{K\_BOH3}     & \citet[p. 763]{Dickson1990} (original, but mol/kg-$\rm H_2O$ version), \citet[ch. 5, p. 14]{DOE1994}, \citet[p. 262]{Zeebe2001}, \citet[p.669]{Millero1995} (mol/kg-$\rm H_2O$ version) , agrees with data in \citet{Roy1993a}.
+Constant type (stoichiometric) and  concentration unit (mol/kg-solution): \citet[chapter 5, p. 14]{DOE1994}, pH scale (total): \citet[chapter 5, p. 12]{DOE1994} and \citet[p.263]{Zeebe2001}. \\
+\texttt{K\_NH4}      & \citet{Millero1995a} (original reference), \citet[p.671]{Millero1995}. Constant type (stoichiometric) and concentration unit (mol/kg-solution): \citet[p.671]{Millero1995}, pH scale (seawater, converted to free here):  
+\citet{Lewis1998} (in corrections of \citet{Millero1995}).\\
+\texttt{K\_H2S}      & \citet{Millero1988} (original reference), \citet[p.671]{Millero1995}. Constant type (stoichiometric) and concentration unit (mol/kg-solution): \citet[p.671]{Millero1995}, pH scale (seawater, converted to free here):  
+\citet{Lewis1998} (in corrections of \citet{Millero1995}).\\
+\texttt{K\_H3PO4}, \texttt{K\_H2PO4}, \texttt{K\_HPO4} & \citet[p.670]{Millero1995} (original reference, but formula for seawater scale pH), \citet[ch. 5, p 16,17]{DOE1994}, agrees with data in \citet{Dickson1979a}.
+ Constant type (stoichiometric), concentration unit (mol/kg-solution), and pH scale (total, converted to free here): \citet[chapter 5, p. 12, 16, 17]{DOE1994}.\\
+\texttt{K\_SiOH4}    & \citet{Millero1988} (original reference), \citet[chapter 5, p 17]{DOE1994}, \citet[p.671]{Millero1995} (formula for seawater scale pH)
+ Constant type (stoichiometric), concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here by omitting the conversion summand ln(1-0.001005 S)), and pH scale (total, converted to free here): \citet[chapter 5, p. 12, 17]{DOE1994}.\\
+\texttt{K\_SiOOH3}   & \citet{Wischmeyer2003} (original reference), corrected due to personal communication with Dieter Wolf-Gladrow (one of the authors). The corrected version can be obtained from either Dieter Wolf-Gladrow or Andreas F Hofmann 
+(a.hofmann@nioo.knaw.nl).  Constant type (stoichiometric), concentration unit (mol/kg-solution), and pH scale (total, converted to free here): \citet{Wischmeyer2003}.\\
+\texttt{K\_HNO2}     & Constant value, not a function of temperature and salinity! Obtained as a hybrid pk value (featuring the activity of the proton but the concentration of other species (see \citet{Zeebe2001} for a treatment of different types of
+equilibrium constants) in molar concentration (mol/l) on the NBS pH scale \citep{Durst1975} from \citet{Riordan2005}. Used as an approximation for the stoichiometric $\rm K^*_{\rm HNO_2}$ in mol/kg-solution on the free proton pH scale here.\\
+\texttt{K\_H2SO4}    & Constant value, not a function of temperature and salinity! Obtained as a standard pK value from \citet[p. 1045]{Atkins1996}. Used as an approximation for the stoichiometric $\rm K^*_{\rm H_2SO_4}$ in mol/kg-solution on the free proton pH scale here.\\
+\texttt{K\_HS}       & Constant value, not a function of temperature and salinity! Obtained as a standard pK value from \citet[p. 1045]{Atkins1996}. Used as an approximation for the stoichiometric $\rm K^*_{\rm Hs^-}$ in mol/kg-solution on the free proton pH scale here.\\
+\texttt{Ksp\_calcite}, \texttt{Ksp\_aragonite}  & \citet{Mucci1983} (original reference), \citet{Boudreau1996}. Note that in there are errors in \citet{Boudreau1996}: $b_0$ for calcite is not 0.7712 but 0.77712 and $b_1$ for 
 aragonite is not 0.001727 but 0.0017276.\\
-pH  & As given in \cite{Dickson1984}, p. 2303 (use of "m") and \cite{Dickson1979a}, p. 91f all concentrations appearing in the definition 
-of the total and the seawater pH scale are \textbf{molal} (mol/kg-$\rm H_2O$) concentrations. But in \cite{Roy1993b}, p. 257  and in \cite{DOE1994}, 
+\texttt{pH}  & As given in \citet{Dickson1984}, p. 2303 (use of "m") and \citet{Dickson1979a}, p. 91f all concentrations appearing in the definition 
+of the total and the seawater pH scale are \textbf{molal} (mol/kg-$\rm H_2O$) concentrations. But in \citet{Roy1993b}, p. 257  and in \citet{DOE1994}, 
 chapter 4, SOP 6, p. 1 it is stated, that concentrations for the seawater and total pH scale are in mol/kg-solution.
-To be consistent with \cite{DOE1994} \textbf{molin} concentrations (mol/kg-solution) are chosen for calculating the pH.\\
-revelle     & \cite[p.73]{Zeebe2001}\\  
-dTAdH,  dTAdSumCO2, dTAdSumBOH3, dTAdSumH2SO4, dTAdSumHF   & \cite{Hofmann2008}\\
-c1, c2, c3,  b1, b2, so1, so2, so3, f1, f2 & \cite{Skoog1982}, \cite{Stumm1996}, \cite{Hofmann2008c}\\
-dTAdKdKdS, dTAdKdKdT, dTAdKdKdd, dTAdKdKdSumH2SO4, dTAdKdKdSumHF & \cite{Hofmann2008b}\\
+To be consistent with \citet{DOE1994} \textbf{molin} concentrations (mol/kg-solution) are chosen for calculating the pH.\\
+\texttt{revelle}     & \citet[p.73]{Zeebe2001}\\    
+\texttt{dTAdH},  \texttt{dTAdSumCO2}, \texttt{dTAdSumBOH3}, \texttt{dTAdSumH2SO4}, \texttt{dTAdSumHF}   & \citet{Hofmann2008}\\
+\texttt{c1}, \texttt{c2}, \texttt{c3},  \texttt{b1}, \texttt{b2}, \texttt{so1}, \texttt{so2}, \texttt{so3}, \texttt{f1}, \texttt{f2} & \citet{Skoog1982}, \citet{Stumm1996}, \citet{Hofmann2008c}\\
+\texttt{dTAdKdKdS}, \texttt{dTAdKdKdT}, \texttt{dTAdKdKdd}, \texttt{dTAdKdKdSumH2SO4}, \texttt{dTAdKdKdSumHF} & \citet{Hofmann2008b}\\ \hline
 \end{longtable}
 \end{footnotesize}
-The values for K\_W, K\_HSO4, K\_HF, K\_CO2, K\_HCO3, K\_BOH3,  K\_NH4,  K\_H2S,  K\_H3PO4, K\_H2PO4, K\_HPO4, K\_SiOH4, K\_SiOOH3,  Ksp\_calcite, Ksp\_aragonite obtained as functions of 
-salinity S and temperature Tc from the above references are pressure corrected using the given depth d and the calculated hydrostatic pressure hydroP according to \cite{Millero1995} 
-with corrections by \cite{Lewis1998}.\\
+\noindent
+The values for \texttt{K\_W},\texttt{K\_HSO4}, \texttt{K\_HF}, \texttt{K\_CO2}, \texttt{K\_HCO3}, \texttt{K\_BOH3},  \texttt{K\_NH4},  \texttt{K\_H2S},  \texttt{K\_H3PO4}, \texttt{K\_H2PO4}, \texttt{K\_HPO4}, \texttt{K\_SiOH4}, \texttt{K\_SiOOH3},  \texttt{Ksp\_calcite}, \texttt{Ksp\_aragonite} obtained as functions of 
+salinity \texttt{S} and temperature \texttt{Tc} from the above references are pressure corrected using the given depth \texttt{d} and the calculated hydrostatic pressure \texttt{hydroP} according to \citet{Millero1995} 
+with corrections by \citet{Lewis1998}.\\
 
 \noindent
 In general it is to be said that all corrections from \cite{Lewis1998} have been applied.
