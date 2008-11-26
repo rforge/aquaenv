@@ -1,4 +1,4 @@
-all: vignette_AquaEnv vignette_AquaEnv-PrivateFunctions clean
+all: vignette_AquaEnv vignette_AquaEnv-PrivateFunctions vignette_AquaEnv-ConstantsAndFormulae clean
 
 
 vignette_AquaEnv:
@@ -7,16 +7,26 @@ vignette_AquaEnv:
 	pdflatex AquaEnv.tex
 	pdflatex AquaEnv.tex
 
-
 vignette_AquaEnv-PrivateFunctions:
 	pdflatex AquaEnv-PrivateFunctions.tex
 
+vignette_AquaEnv-ConstantsAndFormulae:
+	pdflatex AquaEnv-ConstantsAndFormulae.tex
+	bibtex AquaEnv-ConstantsAndFormulae
+	pdflatex AquaEnv-ConstantsAndFormulae.tex
+	pdflatex AquaEnv-ConstantsAndFormulae.tex
 
 clean:
 	rm -f *~
 	rm -f AquaEnv-PrivateFunctions.out
 	rm -f AquaEnv-PrivateFunctions.log
 	rm -f AquaEnv-PrivateFunctions.aux
+	rm -f AquaEnv-ConstantsAndFormulae.out
+	rm -f AquaEnv-ConstantsAndFormulae.log
+	rm -f AquaEnv-ConstantsAndFormulae.aux
+	rm -f AquaEnv-ConstantsAndFormulae.bbl
+	rm -f AquaEnv-ConstantsAndFormulae.blg
+	rm -f AquaEnv-ConstantsAndFormulae.brf
 	rm -f AquaEnv.aux
 	rm -f AquaEnv.bbl
 	rm -f AquaEnv.blg

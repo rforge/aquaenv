@@ -1968,7 +1968,9 @@ pH  & As given in \cite{Dickson1984}, p. 2303 (use of "m") and \cite{Dickson1979
 of the total and the seawater pH scale are \textbf{molal} (mol/kg-$\rm H_2O$) concentrations. But in \cite{Roy1993b}, p. 257  and in \cite{DOE1994}, 
 chapter 4, SOP 6, p. 1 it is stated, that concentrations for the seawater and total pH scale are in mol/kg-solution.
 To be consistent with \cite{DOE1994} \textbf{molin} concentrations (mol/kg-solution) are chosen for calculating the pH.\\
-revelle     & \cite[p.73]{Zeebe2001}\\    
+revelle     & \cite[p.73]{Zeebe2001}\\  
+dTAdH,  dTAdSumCO2, dTAdSumBOH3, dTAdSumH2SO4, dTAdSumHF   & \cite{Hofmann2008}\\
+c1, c2, c3,  b1, b2, so1, so2, so3, f1, f2 & \cite{Skoog1982}, \cite{Stumm1996}, \cite{Hofmann2008c}\\
 dTAdKdKdS, dTAdKdKdT, dTAdKdKdd, dTAdKdKdSumH2SO4, dTAdKdKdSumHF & \cite{Hofmann2008b}\\
 \end{longtable}
 \end{footnotesize}
