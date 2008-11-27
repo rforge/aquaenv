@@ -289,7 +289,36 @@ Maximally, i.e., if the enough input data is supplied to define the pH of the sy
 \texttt{f1}          & -                               & ionization fraction $f_1 = [\rm HF]/[\rm \sum HF]$\\               
 \texttt{f2}          & -                               & ionization fraction $f_1 = [\rm F^-]/[\rm \sum HF]$\\               
 \texttt{dTAdSumHF}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum HF]}$\\
-            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\    
+\texttt{p1}         & -                                 & ionization fraction $p_1 [\rm H_3PO_4]/[\rm \sum H_3PO_4]$\\
+\texttt{p2}         & -                                & ionization fraction $p_2 [\rm H_2PO_4^-]/[\rm \sum H_3PO_4]$\\
+\texttt{p3}        & -                                & ionization fraction $p_3 [\rm HPO_4^{2-}]/[\rm \sum H_3PO_4]$\\
+\texttt{p4}         & -                                & ionization fraction $p_4 [\rm PO_4^{3-}]/[\rm \sum H_3PO_4]$\\
+\texttt{dTAdSumH3PO4}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum H_3PO_4]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
+\texttt{si1}        & -                               & ionization fraction $si_1 = [\rm Si(OH)_4]  / [\rm \sum Si(OH)_4]$\\
+\texttt{si2}        & -                               & ionization fraction $si_2 = [\rm SiO(OH)_3]  / [\rm \sum Si(OH)_4]$\\
+\texttt{si3}        & -                               & ionization fraction $si_3 = [\rm SiO_2(OH)_2]  / [\rm \sum Si(OH)_4]$\\
+\texttt{dTAdSumSumSiOH4}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum Si(OH)_4]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
+\texttt{s1}       & -                                & ionization fraction $s_1 = [\rm H_2S]  / [\rm \sum H_2S]$\\
+\texttt{s2}       & -                                & ionization fraction $s_2 = [\rm HS^-]  / [\rm \sum H_2S]$\\
+\texttt{s3}       & -                                & ionization fraction $s_3 = [\rm S^{2-}]  / [\rm \sum H_2S]$ \\
+            &                                        & Note that we do assume $\rm S^{2-}$ does exist. However, $s_3$ is very small.\\
+\texttt{dTAdSumH2S}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum H_2S]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\     
+\texttt{n1}       & -                                & ionization fraction $n_1 = [\rm NH_4^+] / [\rm \sum NH_4^+]$\\
+\texttt{n2}       & -                                & ionization fraction $n_2 = [\rm NH_3] / [\rm \sum NH_4^+]$\\
+\texttt{dTAdSumNH4}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum NH_4^+]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\     
+\texttt{na1}      & -                                 & ionization fraction $na_1 = [\rm HNO_3] / [\sum HNO_3]$\\
+\texttt{na2}      & -                                 & ionization fraction $na_2 = [\rm NO_3^-] / [\sum HNO_3]$\\
+\texttt{dTAdSumHNO3}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum HNO_3]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\     
+\texttt{ni1}       & -                               & ionization fraction $ni_1 = [\rm [HNO_2] / [\rm \sum HNO_2]$\\
+\texttt{ni2}       & -                               & ionization fraction $ni_2 = [\rm [NO_2^-] / [\rm \sum HNO_2]$\\
+\texttt{dTAdSumHNO2}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum HNO_2]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\         
 \texttt{dTAdH}       & -                               & $\rm \frac{\partial [TA]}{[\partial [H^+]}$: buffer factor\\
             &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
 \texttt{dTAdKdKdS}   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial S}$\\
@@ -1417,8 +1446,8 @@ plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what="pH", 
 par(new=TRUE)
 plot(ae$delta_mass_titrant[1:100], diff(ae$pH), type="l", col="red", xlim=c(0,0.015), ylab="", xlab="", yaxt="n")
 par(new=TRUE)
-plot(ae$delta_mass_titrant[2:100], diff(diff(ae$pH)), type="l", col="green", xlim=c(0,0.015), ylab="", xlab="", yaxt="n")
-abline(h=0, col="green")
+plot(ae$delta_mass_titrant[2:100], diff(diff(ae$pH)), type="l", col="blue", xlim=c(0,0.015), ylab="", xlab="", yaxt="n")
+abline(h=0, col="blue")
 abline(v=ae$TA[[1]])            
 abline(v=ae$TA[[1]] - ae$SumCO2[[1]]) 
 @
@@ -1964,10 +1993,13 @@ aragonite is not 0.001727 but 0.0017276.\\
 of the total and the seawater pH scale are \textbf{molal} (mol/kg-$\rm H_2O$) concentrations. But in \citet{Roy1993b}, p. 257  and in \citet{DOE1994}, 
 chapter 4, SOP 6, p. 1 it is stated, that concentrations for the seawater and total pH scale are in mol/kg-solution.
 To be consistent with \citet{DOE1994} \textbf{molin} concentrations (mol/kg-solution) are chosen for calculating the pH.\\
-\texttt{revelle}     & \citet[p.73]{Zeebe2001}\\    
-\texttt{dTAdH},  \texttt{dTAdSumCO2}, \texttt{dTAdSumBOH3}, \texttt{dTAdSumH2SO4}, \texttt{dTAdSumHF}   & \citet{Hofmann2008}\\
-\texttt{c1}, \texttt{c2}, \texttt{c3},  \texttt{b1}, \texttt{b2}, \texttt{so1}, \texttt{so2}, \texttt{so3}, \texttt{f1}, \texttt{f2} & \citet{Skoog1982}, \citet{Stumm1996}, \citet{Hofmann2008c}\\
-\texttt{dTAdKdKdS}, \texttt{dTAdKdKdT}, \texttt{dTAdKdKdd}, \texttt{dTAdKdKdSumH2SO4}, \texttt{dTAdKdKdSumHF} & \citet{Hofmann2008b}\\ \hline
+\texttt{revelle}     & \citet[p.73]{Zeebe2001}\\   
+\texttt{dTAdH},  \texttt{dTAdSumCO2}, \texttt{dTAdSumBOH3}, \texttt{dTAdSumH2SO4}, \texttt{dTAdSumHF},  \texttt{dTAdSumH3PO4}, \texttt{dTAdSumSumSiOH4}, \texttt{dTAdSumH2S}, \texttt{dTAdSumNH4}, \texttt{dTAdSumHNO3},  \texttt{dTAdSumHNO2}   & \citet{Hofmann2008}\\
+\texttt{c1}, \texttt{c2}, \texttt{c3},  \texttt{b1}, \texttt{b2}, \texttt{so1}, \texttt{so2}, \texttt{so3}, \texttt{f1}, \texttt{f2}, \texttt{p1}, \texttt{p2}, \texttt{p3}, \texttt{p4} 
+\texttt{si1}, \texttt{si2}, \texttt{si3}, \texttt{s1}, \texttt{s2}, \texttt{s3}, \texttt{n1}, \texttt{n2}, \texttt{na1}, \texttt{na2}, \texttt{ni1}, \texttt{ni2}
+  & \citet{Skoog1982}, \citet{Stumm1996}, \citet{Hofmann2008c}\\
+\texttt{dTAdKdKdS}, \texttt{dTAdKdKdT}, \texttt{dTAdKdKdd}, \texttt{dTAdKdKdSumH2SO4}, \texttt{dTAdKdKdSumHF}
+& \citet{Hofmann2008b}\\ \hline
 \end{longtable}
 \end{footnotesize}
 \noindent

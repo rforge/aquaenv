@@ -1,8 +1,15 @@
- - implement the simple equation fitting from Dickson2007: is that the reason for the slight "misfit" between our values and the values of Dickson2007 (TAfit)
+Before release:
+	- check if all vignettes work (can be accessed via the command vignette etc.)
+	- edit the CITATION file according to the paper and journal
 
- - include flag that allows for objects of class aquaenv without any attributes in their elements
- - add attribute "description" for K's
- - Gran procedure for "first guess" for TA fitting
- 
- - add the possibility to add ARBITRARY acids/bases with arbitrary pK's: 
-	-> to factor out the effect of various (unknown) organic acids
+Maybe:
+	- implement the simple equation fitting from Dickson2007: is that the reason for the slight "misfit" between our values and the values of Dickson2007 (TAfit)
+
+
+In the future:
+	- include flag that allows for objects of class aquaenv without any attributes in their elements
+	- add attribute "description" for K's
+	- Gran procedure for "first guess" for TA fitting
+
+	- add the possibility to add ARBITRARY acids/bases with arbitrary pK's: 
+		-> to factor out the effect of various (unknown) organic acids
