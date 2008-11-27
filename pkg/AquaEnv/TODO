@@ -3,3 +3,6 @@
  - include flag that allows for objects of class aquaenv without any attributes in their elements
  - add attribute "description" for K's
  - Gran procedure for "first guess" for TA fitting
+ 
+ - add the possibility to add ARBITRARY acids/bases with arbitrary pK's: 
+	-> to factor out the effect of various (unknown) organic acids
