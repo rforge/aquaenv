@@ -18,15 +18,6 @@ vignette_AquaEnv-ConstantsAndFormulae:
 
 clean:
 	rm -f *~
-	rm -f AquaEnv-PrivateFunctions.out
-	rm -f AquaEnv-PrivateFunctions.log
-	rm -f AquaEnv-PrivateFunctions.aux
-	rm -f AquaEnv-ConstantsAndFormulae.out
-	rm -f AquaEnv-ConstantsAndFormulae.log
-	rm -f AquaEnv-ConstantsAndFormulae.aux
-	rm -f AquaEnv-ConstantsAndFormulae.bbl
-	rm -f AquaEnv-ConstantsAndFormulae.blg
-	rm -f AquaEnv-ConstantsAndFormulae.brf
 	rm -f AquaEnv.aux
 	rm -f AquaEnv.bbl
 	rm -f AquaEnv.blg
@@ -35,8 +26,12 @@ clean:
 	rm -f AquaEnv.toc
 	mv AquaEnv-PrivateFunctions.pdf dummy.pdf
 	mv AquaEnv-PrivateFunctions.tex dummy.tex
+	mv AquaEnv-ConstantsAndFormulae.pdf dummy1.pdf
+	mv AquaEnv-ConstantsAndFormulae.tex dummy1.tex
 	rm -f AquaEnv-*
 	mv dummy.pdf AquaEnv-PrivateFunctions.pdf 
 	mv dummy.tex AquaEnv-PrivateFunctions.tex 
+	mv dummy1.pdf AquaEnv-ConstantsAndFormulae.pdf 
+	mv dummy1.tex AquaEnv-ConstantsAndFormulae.tex 
 	rm -f Rplots.pdf
 	rm -f test*
