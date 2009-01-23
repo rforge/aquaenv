@@ -84,7 +84,7 @@ cloneaquaenv <- function(aquaenv,             # object of class aquaenv
       {
         pH <- aquaenv$pH
       }
-    res <- aquaenv(Tc=aquaenv$Tc, S=aquaenv$S, d=aquaenv$d, SumCO2=aquaenv$SumCO2, SumNH4=aquaenv$SumNH4, SumH2S=aquaenv$SumH2S,SumH3PO4=aquaenv$SumH3PO4,
+    res <- aquaenv(S=aquaenv$S, t=aquaenv$t, p=aquaenv$p, SumCO2=aquaenv$SumCO2, SumNH4=aquaenv$SumNH4, SumH2S=aquaenv$SumH2S,SumH3PO4=aquaenv$SumH3PO4,
                    SumSiOH4=aquaenv$SumSiOH4, SumHNO3=aquaenv$SumHNO3, SumHNO2=aquaenv$SumHNO2, SumBOH3=aquaenv$SumBOH3, SumH2SO4=aquaenv$SumH2SO4,
                    SumHF=aquaenv$SumHF, pH=pH, TA=TA,
                    speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), revelle=(!is.null(aquaenv$revelle)), dsa=(!is.null(aquaenv$dTAdH)), k1k2=k1k2, khf=khf)
@@ -122,9 +122,9 @@ from.data.frame <- function(df)               # data frame
 convert.standard <- function(x,               # the object to be converted (pH value, K* value, or concentration value)
                              vartype,         # the type of x, either "pHscale", "KHscale", or "conc"
                              what,            # the type of conversion to be done, for pH scales one of "free2tot", "free2sws", "free2nbs", ... (any combination of "free", "tot", "sws", and "nbs"); for concentrations one of "molar2molal", "molar2molin", ... (any combination of "molar" (mol/l), "molal" (mol/kg-H2O), and "molin" (mol/kg-solution))
-                             Tc,              # temperature in degrees centigrade
                              S,               # salinity (in practical salinity units: no unit)
-                             d=0,             # depth in meters
+                             t,               # temperature in degrees centigrade 
+                             p=0,             # gauge pressure (total pressure minus atmospheric pressure) in bars
                              SumH2SO4=NULL,   # total sulfate concentration in mol/kg-solution; if not supplied this is calculated from S
                              SumHF=NULL,      # total fluoride concentration in mol/kg-solution; if not supplied this is calculated from S
                              khf="dickson")   # either "dickson" (default, Dickson1979a) or "perez" (using seacarb, Perez1987a) for K\_HF
@@ -133,41 +133,41 @@ convert.standard <- function(x,               # the object to be converted (pH v
                (vartype,
                 pHscale = switch
                 (what,
-                 free2tot = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2tot),
-                 free2sws = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2sws),
-                 free2nbs = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2nbs),
-                 tot2free = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2free),
-                 tot2sws  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2sws),
-                 tot2nbs  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2nbs),
-                 sws2free = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2free),
-                 sws2tot  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2tot),
-                 sws2nbs  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2nbs),
-                 nbs2free = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2free),
-                 nbs2tot  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2tot),
-                 nbs2sws  = x - log10(scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2sws)
+                 free2tot = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$free2tot),
+                 free2sws = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$free2sws),
+                 free2nbs = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$free2nbs),
+                 tot2free = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$tot2free),
+                 tot2sws  = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$tot2sws),
+                 tot2nbs  = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$tot2nbs),
+                 sws2free = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$sws2free),
+                 sws2tot  = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$sws2tot),
+                 sws2nbs  = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$sws2nbs),
+                 nbs2free = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$nbs2free),
+                 nbs2tot  = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$nbs2tot),
+                 nbs2sws  = x - log10(scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$nbs2sws)
                  ),
                 KHscale = switch
                 (what,
-                 free2tot = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2tot,
-                 free2sws = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2sws,
-                 free2nbs = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$free2nbs,
-                 tot2free = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2free,
-                 tot2sws  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2sws,
-                 tot2nbs  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$tot2nbs,
-                 sws2free = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2free,
-                 sws2tot  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2tot,
-                 sws2nbs  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$sws2nbs,
-                 nbs2free = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2free,
-                 nbs2tot  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2tot,
-                 nbs2sws  = x * scaleconvert(Tc, S, d, SumH2SO4, SumHF, khf)$nbs2sws
+                 free2tot = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$free2tot,
+                 free2sws = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$free2sws,
+                 free2nbs = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$free2nbs,
+                 tot2free = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$tot2free,
+                 tot2sws  = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$tot2sws,
+                 tot2nbs  = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$tot2nbs,
+                 sws2free = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$sws2free,
+                 sws2tot  = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$sws2tot,
+                 sws2nbs  = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$sws2nbs,
+                 nbs2free = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$nbs2free,
+                 nbs2tot  = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$nbs2tot,
+                 nbs2sws  = x * scaleconvert(S, t, p, SumH2SO4, SumHF, khf)$nbs2sws
                  ),
                 conc = switch
                 (what,
-                 molar2molal = x * (1/((seadensity(Tc,S)/1e3)* molal2molin(S))),
-                 molar2molin = x * (1/((seadensity(Tc,S))/1e3))                ,
-                 molal2molar = x * (molal2molin(S) * (seadensity(Tc,S))/1e3)   ,
+                 molar2molal = x * (1/((seadensity(S,t)/1e3)* molal2molin(S))),
+                 molar2molin = x * (1/((seadensity(S,t))/1e3))                ,
+                 molal2molar = x * (molal2molin(S) * (seadensity(S,t))/1e3)   ,
                  molal2molin = x * (molal2molin(S))                            ,
-                 molin2molar = x * (seadensity(Tc,S)/1e3)                      ,
+                 molin2molar = x * (seadensity(S,t)/1e3)                      ,
                  molin2molal = x * (1/molal2molin(S))
                  )
                 )
@@ -200,11 +200,49 @@ convert.standard <- function(x,               # the object to be converted (pH v
   }
 
 
-# PRIVATE function:
-# calculates the hydrostatic pressure from the depth (the hydrostatic pressure increases per m depth by 1/10 of 1 atm)
-hydroP <- function(d)                         # depth in meters
+# PUBLIC function:
+# calculates the depth (in m) from the gauge pressure p (or the total pressure P) and the latitude (in degrees: -90 to 90) and the atmospheric pressure (in bar)
+# references Fofonoff1983
+watdepth <- function(P=Pa, p=pmax(0, P-Pa), lat=0, Pa=1.013253) 
+{
+  gravity <- function(lat) 
+    {
+      X <- sin(lat * pi/180)
+      X <- X * X
+      grav = 9.780318 * (1 + (0.0052788 + 2.36e-05 * X) * X)
+      return(grav)
+    }
+
+    P <- p * 10
+    denom = gravity(lat) + 1.092e-06 * P
+    nom = (9.72659 + (-2.2512e-05 + (2.279e-10 - 1.82e-15 * P) * 
+        P) * P) * P
+    return(nom/denom)
+}
+
+
+# PUBLIC function:
+# calculates the gauge pressure from the depth (in m) and the latitude (in degrees: -90 to 90) and the atmospheric pressure (in bar) 
+# references Fofonoff1983
+gauge_p <- function(d, lat=0, Pa=1.01325)
   {
-    return(0.1*d*1.01325)                     # hydrostatic pressure in bars
+    gauge_p <- c()
+    for (de in d)
+      {
+        if (de==0)
+          {
+            gauge_p <- c(gauge_p,0)
+          }
+        else
+          {
+            xx <- function(x)
+              {
+                return(de - watdepth(P=x+Pa, lat=lat))
+              }
+            gauge_p <- c(gauge_p, (uniroot(f=xx, interval=c(0,1300), tol=Technicals$uniroottol, maxiter=Technicals$maxiter)$root))
+          }
+      }
+    return(gauge_p)
   }
 
 
@@ -229,11 +267,11 @@ Cl <- function(S)                             # salinity S in practical salinity
 # PRIVATE function:
 # calculates concentrations of constituents of natural seawater from a given salinity S
 # reference: DOE1994
-seaconc <- function(spec,                     # constituent of seawater (chemical species) of which the concentration should be calculated. can be any name of the vectors ConcRelCl and MeanMolecularWeight: "Cl", "SO4", "Br", "F", "Na", "Mg", "Ca", "K", "Sr", "B", "S"
+seaconc <- function(spec,                     # constituent of seawater (chemical species) of which the concentration should be calculated. can be any name of the vectors ConcRelCl and MeanMolecularMass: "Cl", "SO4", "Br", "F", "Na", "Mg", "Ca", "K", "Sr", "B", "S"
                     S)                        # salinity S in practical salinity units (i.e. no unit)
   {
-    return(                                   # concentration of the constituent of seawater speciefied in spec in mol/kg-solution (molinity): this is determined by the data in ConcRelCl and MeanMolecularWeight
-           ConcRelCl[[spec]]/MeanMolecularWeight[[spec]]*Cl(S))   
+    return(                                   # concentration of the constituent of seawater speciefied in spec in mol/kg-solution (molinity): this is determined by the data in ConcRelCl and MeanMolecularMass
+           ConcRelCl[[spec]]/MeanMolecularMass[[spec]]*Cl(S))   
   }
                     
 
@@ -248,18 +286,18 @@ molal2molin <- function(S)                    # salinity S in practical salinity
 
 # PRIVATE function:
 # calculates the temperature in Kelvin from the temperature in degrees centigrade
-Tk <- function(Tc)                            # temperature in degrees centigrade
+T <- function(t)                            # temperature in degrees centigrade
   {
-    return(Tc - Constants$absZero)            # temperature in Kelvin
+    return(t - PhysChemConst$absZero)            # temperature in Kelvin
   }
 
 
 # PRIVATE function:
 # provides pH scale conversion factors (caution: the activity coefficient for H+ (needed for NBS scale conversions) is calculated with the Davies equation (Zeebe2001) which is only accurate up to ionic strengthes of I = 0.5)
 # references: Dickson1984, DOE1994, Zeebe2001
-scaleconvert <- function(Tc,                   # temperature in degrees centigrade
-                         S,                    # salinity S in practical salinity units (i.e. no unit)  
-                         d=0,                  # depth in meters
+scaleconvert <- function(S,                    # salinity S in practical salinity units (i.e. no unit)  
+                         t,                    # temperature in degrees centigrade
+                         p=0,                  # gauge pressure (total pressure minus atmospheric pressure) in bars
                          SumH2SO4=NULL,        # total sulfate concentration in mol/kg-solution; if not supplied this is calculated from S
                          SumHF=NULL,           # total fluoride concentration in mol/kg-solution; if not supplied this is calculated from S
                          khf="dickson")        # either "dickson" (Dickson1979a) or "perez" (Perez1987a) for K_HF
@@ -273,14 +311,14 @@ scaleconvert <- function(Tc,                   # temperature in degrees centigra
         SumHF = seaconc("F", S)
       }
 
-    K_HSO4 <- K_HSO4(Tc, S, d)
+    K_HSO4 <- K_HSO4(S, t, p)
     if (khf=="dickson")
       {
-        K_HF  <- K_HF(Tc, S, d)
+        K_HF  <- K_HF(S, t, p)
       }
     else if (khf=="perez")
       {
-        K_HF  <- Kf(T=Tc, S=S, P=hydroP(d), kf="pf") / (1 + (SumH2SO4/K_HSO4)) # use seacarb and convert K_HF from total scale to free scale
+        K_HF  <- Kf(S=S, T=t, P=p, kf="pf") / (1 + (SumH2SO4/K_HSO4)) # use seacarb and convert K_HF from total scale to free scale
       }
     
     FreeToTot <- (1 + (SumH2SO4/K_HSO4))
@@ -289,8 +327,8 @@ scaleconvert <- function(Tc,                   # temperature in degrees centigra
     attributes(FreeToSWS) <- NULL
 
     SQRTI     <- sqrt(I(S))
-    eTk       <- Constants$e*Tk(Tc)
-    A         <- 1.82e6/(eTk*sqrt(eTk))
+    eT        <- PhysChemConst$e*T(t)
+    A         <- 1.82e6/(eT*sqrt(eT))
     NBSToFree <- 10^(A*((SQRTI/(1+SQRTI)) - 0.2*I(S))) #davies equation: only valid up to I=0.5
  
     return(list(                              # list of conversion factors "free2tot", "free2sws", etc.
@@ -313,19 +351,20 @@ scaleconvert <- function(Tc,                   # temperature in degrees centigra
 # PRIVATE function:
 # calculates seawater density (in kg/m3) from temperature (in degrees centigrade) and salinity
 # references: Millero1981, DOE1994
-seadensity <- function(Tc,                    # temperature in degrees centigrade
-                       S)                     # salinity S in practical salinity units (i.e. no unit)  
+seadensity <- function(S,                    # salinity S in practical salinity units (i.e. no unit)  
+                       t)                    # temperature in degrees centigrade
+
   {
-    Tc2 <- Tc^2
-    Tc3 <- Tc2 * Tc
-    Tc4 <- Tc3 * Tc
-    Tc5 <- Tc4 * Tc
+    t2 <- t^2
+    t3 <- t2 * t
+    t4 <- t3 * t
+    t5 <- t4 * t
             
-    A <- 8.24493e-1    - 4.0899e-3*Tc + 7.6438e-5*Tc2 - 8.2467e-7*Tc3 + 5.3875e-9*Tc4
-    B <- -5.72466e-3 + 1.0227e-4*Tc - 1.6546e-6*Tc2
+    A <- 8.24493e-1    - 4.0899e-3*t + 7.6438e-5*t2 - 8.2467e-7*t3 + 5.3875e-9*t4
+    B <- -5.72466e-3 + 1.0227e-4*t - 1.6546e-6*t2
     C <- 4.8314e-4
     
-    densityWater <- 999.842594 + 6.793952e-2*Tc - 9.095290e-3*Tc2 + 1.001685e-4*Tc3 - 1.120083e-6*Tc4 + 6.536332e-9*Tc5
+    densityWater <- 999.842594 + 6.793952e-2*t - 9.095290e-3*t2 + 1.001685e-4*t3 - 1.120083e-6*t4 + 6.536332e-9*t5
         
     return(densityWater + A*S + B*S*sqrt(S) + C*S^2)  # seawater density in kg/m        
   }

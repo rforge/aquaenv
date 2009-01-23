@@ -1,5 +1,5 @@
 # a list of physical-chemical constants used in AquaEnv
-Constants <- list(
+PhysChemConst <- list(
                   R         = 83.14472,        # (bar*cm3)/(mol*K) the gas constant (corrected after Lewis1998, in Millero1995: R = 83.131; digits extended after DOE1994, Dickson2007)
                   F         = 96485.3399,      # C/mol the Faraday constant (charge per mol of electrons) (N_A*e-) (Dickson2007)
                   uMolToMol = 1e-6,            # conversion factor from umol to mol
@@ -53,8 +53,8 @@ DeltaPcoeffs <- data.frame(
                            )
 
 
-# mean molecular weight of key chemical species in seawater in g/mol (DOE1994, Dickson2007)
-MeanMolecularWeight <- data.frame(
+# mean molecular mass of key chemical species in seawater in g/mol (DOE1994, Dickson2007)
+MeanMolecularMass <- data.frame(
                                   Cl  = 35.453,
                                   SO4 = (32.065+4*(15.999)),
                                   Br  = 79.904,

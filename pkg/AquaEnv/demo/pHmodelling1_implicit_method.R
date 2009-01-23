@@ -1,3 +1,6 @@
+par(ask=TRUE)
+
+
 what   <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH")
 mfrow  <- c(2,3)
 size   <- c(15,7)
@@ -5,7 +8,7 @@ size   <- c(15,7)
 
 parameters <- list(             
                    S           = 35        , # psu       
-                   Tc          = 15        , # degrees C
+                   t           = 15        , # degrees C
 
                    SumCO2_t0   = 0.002     , # mol/kg-soln  (comparable to Wang2005)
                    TA_t0       = 0.0022    , # mol/kg-soln  (comparable to Millero1998)
@@ -24,7 +27,7 @@ boxmodel <- function(timestep, currentstate, parameters)
   with (
         as.list(c(currentstate,parameters)),
         {        
-          ae    <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, TA=TA, SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0)      
+          ae    <- aquaenv(S=S, t=t, SumCO2=SumCO2, TA=TA, SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0)      
           
           Rc    <- kc * ((ae$CO2_sat) - (ae$CO2)) 
           Rp    <- kp * (1-ae$omega_calcite)^n               

@@ -1,6 +1,6 @@
-\name{Constants}
-\alias{Constants}
-\title{Constants}
+\name{PhysChemConst}
+\alias{PhysChemConst}
+\title{PhysChemConst}
 \description{PUBLIC list: a collection of physical and chemical constants}
 \value{A list containing:
         \item{R}{(bar*cm3)/(mol*K) the gas constant (corrected after

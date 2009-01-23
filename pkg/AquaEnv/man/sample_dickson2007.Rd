@@ -5,7 +5,7 @@
 \details{Metadata:
   \item{x-value}{mass of titrant added (in cubic centimeters)}
   \item{y-value}{E in V}
-  \item{Tc}{24.25 degC}
+  \item{t}{24.25 degC}
   \item{S}{33.923}
   \item{mass\_sample}{140.32 g}
   \item{conc\_titrant}{0.10046 mol/kg-soln}

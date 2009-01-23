@@ -4,9 +4,8 @@ par(ask=TRUE)
 # Parameters
 ######################################################################################
 parameters <- list(             
+                   t          = 15    , # degrees C
                    S          = 25    , # psu       
-                   Tc         = 15    , # degrees C
-                   d          = 10    , # m
                    
                    k          = 0.4       , # 1/d	    proportionality factor for air-water exchange
                    rOx        = 0.0000003 , # mol-N/(kg*d)  maximal rate of oxic mineralisation
@@ -40,7 +39,7 @@ boxmodel <- function(timestep, currentstate, parameters)
   with (
         as.list(c(currentstate,parameters)),
         {        
-          ae <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, SumNH4=SumNH4, TA=TA, dsa=TRUE)
+          ae <- aquaenv(S=S, t=t, SumCO2=SumCO2, SumNH4=SumNH4, TA=TA, dsa=TRUE)
                                     
           ECO2    <- k * (ae$CO2_sat - ae$CO2)            
           EO2     <- k * (ae$O2_sat  - O2)                    
@@ -101,7 +100,7 @@ boxmodel <- function(timestep, currentstate, parameters)
 ######################################################################################
 with (as.list(parameters),
       {
-        H_init       <<- 10^(-(aquaenv(Tc=Tc, S=S, SumCO2=SumCO2_io, SumNH4=SumNH4_io, TA=TA_io, speciation=FALSE)$pH))
+        H_init       <<- 10^(-(aquaenv(S=S, t=t, SumCO2=SumCO2_io, SumNH4=SumNH4_io, TA=TA_io, speciation=FALSE)$pH))
         initialstate <<- c(O2=O2_io, NO3=NO3_io, SumNH4=SumNH4_io, SumCO2=SumCO2_io, TA=TA_io, H=H_init, H_stoich=H_init)
         times        <<- c(0:modeltime)
         output       <<- as.data.frame(vode(initialstate, times, boxmodel, parameters, hmax=1))[-1,]        
@@ -119,6 +118,7 @@ what <- c("SumCO2", "TA", "SumNH4", "NO3", "ECO2", "EO2", "RNit", "ROx", "RPP", 
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, what=what,  xlab="time/d", mfrow=c(6,5), size=c(20,13), newdevice=FALSE) 
 
 # cumulative plot of the influences of the processes on the pH
+par(mfrow=c(1,2))
 what <- c("dH_ECO2", "dH_RNit", "dH_ROx", "dH_RPP")
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, what=what, xlab="time/d", size=c(7,5), ylab="mol-H/(kg-soln*d)", legendposition="bottomright", cumulative=TRUE, newdevice=FALSE) 
  

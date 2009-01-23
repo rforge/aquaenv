@@ -3,7 +3,7 @@ citHeader("To cite package 'AquaEnv' in publications use:")
 citEntry(entry="Article",
          title  = "AquaEnv - Aquatic modelling Environment in R\n",
          author = personList(as.person("Andreas F. Hofmann"), as.person("Karline Soetaert"), as.person("Filip J. R. Meysman")),
-         year   = 2008,
+         year   = 2009,
          url    = "to be filled in",
          
          textVersion = 

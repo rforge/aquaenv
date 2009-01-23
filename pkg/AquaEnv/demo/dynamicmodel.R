@@ -5,8 +5,8 @@ par(ask=TRUE)
 ######################################################################################
 parameters <- list(             
                    S          = 25    , # psu       
-                   Tc_min     = 5     , # degrees C
-                   Tc_max     = 25    , # degrees C
+                   t_min      = 5     , # degrees C
+                   t_max      = 25    , # degrees C
                    d          = 10    , # m
                    
                    k          = 0.4       , # 1/d	      proportionality factor for air-water exchange
@@ -42,9 +42,9 @@ Waddenzeebox <- function(timestep, currentstate, parameters)
   with (
         as.list(c(currentstate,parameters)),
         {
-          Tc <- c(seq(Tc_min, Tc_max, (Tc_max-Tc_min)/(modeltime/2)), seq(Tc_max, Tc_min, -(Tc_max-Tc_min)/(modeltime/2)))[[round(timestep)+1]]
+          t <- c(seq(t_min, t_max, (t_max-t_min)/(modeltime/2)), seq(t_max, t_min, -(t_max-t_min)/(modeltime/2)))[[round(timestep)+1]]
           
-          ae <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, SumNH4=SumNH4, TA=TA)
+          ae <- aquaenv(S=S, t=t, SumCO2=SumCO2, SumNH4=SumNH4, TA=TA)
                                     
           ECO2    <- k * (ae$CO2_sat - ae$CO2)            
           EO2     <- k * (ae$O2_sat  - O2)             
@@ -107,7 +107,7 @@ with (as.list(parameters),
 ######################################################################################
 # Output
 ######################################################################################
-plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(10,10), newdevice=FALSE) 
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(10,11), newdevice=FALSE) 
 
 
 

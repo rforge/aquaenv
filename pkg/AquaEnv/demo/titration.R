@@ -3,8 +3,8 @@ par(ask=TRUE)
 #######################################################################################################
 # Titration with HCl
 #######################################################################################################
-Tc <- 15
 S  <- 35
+t  <- 15
 
 SumCO2 <- 0.003500
 SumNH4 <- 0.000020
@@ -19,7 +19,7 @@ type         <- "HCl"
 pHstart <- 11.3
 
 
-ae <- titration(aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, SumNH4=SumNH4, pH=pHstart), mass_sample, mass_titrant, conc_titrant, S_titrant, steps, type)
+ae <- titration(aquaenv(S=S, t=t, SumCO2=SumCO2, SumNH4=SumNH4, pH=pHstart), mass_sample, mass_titrant, conc_titrant, S_titrant, steps, type)
 
 
 # plotting everything
@@ -42,6 +42,7 @@ plot(ae, xval=ae$delta_moles_titrant, xlab="HCl added [mol]", what=what, size=si
 
 
 # bjerrum plots
+par(mfrow=c(1,1))
 plot(ae, bjerrum=TRUE, newdevice=FALSE)
 
 what  <- c("CO2", "HCO3", "CO3")
@@ -60,8 +61,8 @@ plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3,
 #######################################################################################################
 # Titration with NaOH
 #######################################################################################################
-Tc <- 15
 S  <- 35
+t  <- 15
 
 SumCO2 <- 0.003500
 SumNH4 <- 0.000020
@@ -75,7 +76,7 @@ type         <- "NaOH"
 
 pHstart <- 2
 
-ae <- titration(aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, SumNH4=SumNH4, pH=pHstart), mass_sample, mass_titrant, conc_titrant, S_titrant, steps, type)
+ae <- titration(aquaenv(S=S, t=t, SumCO2=SumCO2, SumNH4=SumNH4, pH=pHstart), mass_sample, mass_titrant, conc_titrant, S_titrant, steps, type)
 
 
 
@@ -94,6 +95,7 @@ plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=size, mfrow=mfrow, ne
 
 
 # bjerrum plots
+par(mfrow=c(1,1))
 what  <- c("CO2", "HCO3", "CO3")
 plot(ae, what=what, bjerrum=TRUE, newdevice=FALSE)
 
@@ -106,8 +108,8 @@ plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3,
 #########################################################################################################################################################################
 # titration with a titrant with very high concentrations and a very large sample volume: the volume and salinity corrections do not matter: looks like "simpletitration"
 #########################################################################################################################################################################
-Tc <- 15
-S  <- 35
+S <- 35
+t <- 15
 
 SumCO2 <- 0.003500
 SumNH4 <- 0.000020
@@ -122,7 +124,7 @@ type         <- "HCl"
 pHstart <- 11.3
 
 
-ae <- titration(aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, SumNH4=SumNH4, pH=pHstart), mass_sample, mass_titrant, conc_titrant, S_titrant, steps, type)
+ae <- titration(aquaenv(S=S, t=t, SumCO2=SumCO2, SumNH4=SumNH4, pH=pHstart), mass_sample, mass_titrant, conc_titrant, S_titrant, steps, type)
 
 
 
@@ -146,6 +148,7 @@ plot(ae, xval=ae$delta_moles_titrant, xlab="HCl added [mol]", what=what, size=si
 
 
 # bjerrum plots
+par(mfrow=c(1,1))
 plot(ae, bjerrum=TRUE, newdevice=FALSE)
 
 what  <- c("CO2", "HCO3", "CO3")

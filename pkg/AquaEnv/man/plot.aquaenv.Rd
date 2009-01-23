@@ -59,18 +59,18 @@
 SumCO2 <- 0.0020
 pH     <- 8
 
-Tc     <- 1:15
 S      <- 30
-d      <- 10
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=Tc, xlab="T/(deg C)", newdevice=FALSE)
+t      <- 1:15
+p      <- 10
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=t, xlab="T/(deg C)", newdevice=FALSE)
 
 
 
 ### 2
 #####
-Tc <- 15
-S  <- 35
+S <- 35
+t <- 15
 
 SumCO2 <- 0.003500
 SumNH4 <- 0.000020
@@ -90,14 +90,14 @@ type         <- "HCl"
 pHstart <- 11.3
 
 
-ae <- titration(aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, SumNH4=SumNH4,
+ae <- titration(aquaenv(S=S, t=t, SumCO2=SumCO2, SumNH4=SumNH4,
                 pH=pHstart), mass_sample, mass_titrant, conc_titrant,
                 S_titrant, steps, type)
 
 
 # plotting everything
 plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]",
-mfrow=c(10,10), newdevice=FALSE)
+mfrow=c(10,10))
 
 
 # plotting selectively
@@ -108,28 +108,27 @@ what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH",
 
 
 plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]",
-     what=what, size=size, mfrow=mfrow, newdevice=FALSE)
+     what=what, size=size, mfrow=mfrow)
 
 plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=size,
-     mfrow=mfrow, newdevice=FALSE)
+     mfrow=mfrow)
 
 
 # different x values
 plot(ae, xval=ae$delta_conc_titrant, xlab="[HCl] offset added
-     [mol/kg-soln]", what=what, size=size, mfrow=mfrow, newdevice=FALSE)
+     [mol/kg-soln]", what=what, size=size, mfrow=mfrow)
 
 plot(ae, xval=ae$delta_moles_titrant, xlab="HCl added [mol]", what=what,
      size=size, mfrow=mfrow, newdevice=FALSE)
 
 
 # bjerrum plots
-plot(ae, bjerrum=TRUE, newdevice=FALSE)
+plot(ae, bjerrum=TRUE)
 
 what  <- c("CO2", "HCO3", "CO3")
-plot(ae, what=what, bjerrum=TRUE, newdevice=FALSE)
+plot(ae, what=what, bjerrum=TRUE)
 plot(ae, what=what, bjerrum=TRUE, lwd=4, palette=c("cyan", "magenta",
-     "yellow"), bg="gray", legendinset=0.1, legendposition="topleft",
-     newdevice=FALSE)
+     "yellow"), bg="gray", legendinset=0.1, legendposition="topleft")
 
 
 
@@ -138,15 +137,14 @@ what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3",
 
 plot(ae, what=what, bjerrum=TRUE, log=TRUE, newdevice=FALSE)
 plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1),
-     legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]),
-     newdevice=FALSE)
+     legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]))
 
 
 ### 3
 #####
 parameters <- list(             
+    t           = 15        , # degrees C
     S           = 35        , # psu       
-    Tc          = 15        , # degrees C
 
     SumCO2_t0   = 0.002     , # mol/kg-soln  (comparable to Wang2005)
     TA_t0       = 0.0022    , # mol/kg-soln  (comparable to Millero1998)
@@ -167,7 +165,7 @@ boxmodel <- function(timestep, currentstate, parameters)
   with (
         as.list(c(currentstate,parameters)),
         {        
-          ae    <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, pH=-log10(H), SumSiOH4=0, 
+          ae    <- aquaenv(S=S, t=t, SumCO2=SumCO2, pH=-log10(H), SumSiOH4=0, 
                            SumBOH3=0, SumH2SO4=0, SumHF=0, dsa=TRUE)
                    
           Rc    <- kc * ((ae$CO2_sat) - (ae$CO2)) 
@@ -191,7 +189,7 @@ boxmodel <- function(timestep, currentstate, parameters)
 
 with (as.list(parameters),
       {
-        aetmp <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2_t0,
+        aetmp <- aquaenv(S=S, t=t, SumCO2=SumCO2_t0,
                          TA=TA_t0, SumSiOH4=0, SumBOH3=0,
                          SumH2SO4=0, SumHF=0)
         H_t0  <- 10^(-aetmp$pH)
@@ -205,12 +203,12 @@ with (as.list(parameters),
 what   <- c("SumCO2", "TA", "Rc", "Rp",
             "omega_calcite", "pH", "dHRc", "dHRp")
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time,
-     xlab="time/d", mfrow=c(3,3), size=c(15,10), what=what, newdevice=FALSE) 
+     xlab="time/d", mfrow=c(3,3), size=c(15,10), what=what) 
 
 what <- c("dHRc", "dHRp")
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time,
      xlab="time/d", what=what, ylab="mol-H/(kg-soln*d)",
-     legendposition="topright", cumulative=TRUE, newdevice=FALSE) 
+     legendposition="topright", cumulative=TRUE) 
 }}
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
 \keyword{misc}

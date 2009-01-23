@@ -2,7 +2,9 @@
 \alias{aquaenv}
 \title{aquaenv}
 \description{PUBLIC function: the main function of the package AquaEnv: creates an object of class aquaenv}
-\usage{aquaenv(Tc, S, d=0, SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0,
+\usage{aquaenv(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)),
+        P=Pa, Pa=1.01325, d=0, lat=0,
+        SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0,
         SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL,
         SumH2SO4=NULL,SumHF=NULL, TA=NULL, pH=NULL, pCO2=NULL, CO2=NULL,
         speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,
@@ -10,9 +12,17 @@
         k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
         k_hf=NULL, k1k2="roy", khf="dickson")}
 \arguments{
-  \item{Tc }{temperature in degrees centigrade}
   \item{S }{salinity in practical salinity units (i.e. no unit)}
-  \item{d }{depth in meters}
+  \item{t }{temperature in degrees centigrade}
+  \item{p }{gauge pressure (total pressure minus atmospheric pressure)
+            in bars, standard is calculated either from the given P,
+            or the given d, lat, and Pa}
+  \item{P }{total pressure in bars, standard: Pa (at the surface)}
+  \item{Pa }{atmospheric pressure in bars, standard: 1 atm (at sea-level) }
+  \item{d }{depth below the surface in meters, standard: 0 (at the surface)}
+  \item{lat }{latitude in degrees (-90 to +90) to calculate the
+    gravitational constant g for calculating the water depth from the
+    pressure and vice versa, standard: 0}
   \item{SumCO2 }{total carbonate concentration in mol/kg-solution, if NULL is supplied it is calculated}
   \item{SumNH4 }{total ammonium concentration in mol/kg-solution, optional}
   \item{SumH2S }{total sulfide concentration in mol/kg-solution, optional}
@@ -49,14 +59,16 @@
 ############################
 # Minimal aquaenv definition
 ############################
-ae <- aquaenv(Tc=15, S=30)
+ae <- aquaenv(S=30, t=15)
 ae$K_CO2
 
 ae$Ksp_calcite
 ae$Ksp_aragonite
 
-
-ae <- aquaenv(Tc=15, S=30, d=10)
+ae <- aquaenv(S=30, t=15, p=10)
+ae <- aquaenv(S=30, t=15, P=11)
+ae <- aquaenv(S=30, t=15, d=100)
+ae <- aquaenv(S=30, t=15, d=100, Pa=0.5)
 ae$K_CO2
 
 ae$Ksp_calcite
@@ -68,46 +80,45 @@ ae
 ########################################################
 # Defining the complete aquaenv system in different ways
 ########################################################
-Tc     <- 15
 S      <- 30
-d      <- 10
+t      <- 15
+p      <- gauge_p(d=10)  # ~ p <- 0.1*10*1.01325
 SumCO2 <- 0.0020
 pH     <- 8
-TA     <- 0.002140323
-pCO2   <- 0.000533576
-CO2    <- 2.055419e-05
+TA     <- 0.002140798
+pCO2   <- 0.0005326744
+CO2    <- 2.051946e-05
 
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH)
 ae$TA
 
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA)
 ae$pH
 
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, CO2=CO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2)
 ae$pH
 
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pCO2=pCO2)
 ae$pH
 
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, CO2=CO2, pCO2=pCO2)
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, TA=TA)
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, CO2=CO2)
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, pCO2=pCO2)
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, CO2=CO2)
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, pCO2=pCO2)
-
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, TA=TA)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, CO2=CO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, CO2=CO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, pCO2=pCO2)
 
 
 ################################################################
 # Cloning the aquaenv system: 1 to 1 and with different pH or TA
 ################################################################
-Tc     <- 15
 S      <- 30
+t      <- 15
 SumCO2 <- 0.0020
 TA     <- 0.00214
 
 
-ae <- aquaenv(Tc, S, SumCO2=SumCO2, TA=TA)
+ae <- aquaenv(S, t, SumCO2=SumCO2, TA=TA)
 
 aeclone1 <- aquaenv(ae=ae)
 
@@ -124,6 +135,8 @@ aeclone1$pH
 aeclone2$TA
 aeclone3$pH
 
+
+
 #########################################################################
 # Vectors as input variables (only ONE input variable may be a vector)
 # (with full output: including the Revelle factor and the DSA properties)
@@ -131,41 +144,42 @@ aeclone3$pH
 SumCO2 <- 0.0020
 pH     <- 8
 
-Tc     <- 1:15
 S      <- 30
-d      <- 10
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=Tc, xlab="T/(deg C)", newdevice=FALSE)
+t      <- 1:15
+p      <- gauge_p(10)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=t, xlab="T/(deg C)", newdevice=FALSE)
 
-Tc <- 15
 S  <- 1:30
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
+t  <- 15
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
 plot(ae, xval=S, xlab="S", newdevice=FALSE)
 
-S <- 30
-d <- seq(1,1000, 100)
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=d, xlab="depth/m", newdevice=FALSE)
+S  <- 30
+p  <- gauge_p(seq(1,1000, 100))
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=p, xlab="gauge pressure/bar", newdevice=FALSE)
 
 
 
-TA     <- 0.0023
+TA <- 0.0023
 
-Tc     <- 1:15
-S      <- 30
-d      <- 10
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=Tc, xlab="T/(deg C)", newdevice=FALSE)
+S  <- 30
+t  <- 1:15
+d  <- gauge_p(10)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=t, xlab="T/(deg C)", newdevice=FALSE)
 
-Tc <- 15
 S  <- 1:30
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
+t  <- 15
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
 plot(ae, xval=S, xlab="S", newdevice=FALSE)
 
-S <- 30
-d <- seq(1,1000, 100)
-ae <- aquaenv(Tc, S, d, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
-plot(ae, xval=d, xlab="depth/m", newdevice=FALSE)
+S  <- 30
+p  <- gauge_p(seq(1,1000, 100))
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=p, xlab="gauge pressure/bar", newdevice=FALSE)
+
 
 
 ##################################################################
@@ -173,60 +187,56 @@ plot(ae, xval=d, xlab="depth/m", newdevice=FALSE)
 # TA&CO2, or TA&pCO2
 ##################################################################
 pCO2   <- 0.0006952296
-CO2    <- 2.678134e-05
-pH     <- 7.888569
+CO2    <- 2.678137e-05
+pH     <- 7.888573
 TA     <- 0.0021
 
-Tc <- 15
 S  <- 30
-d  <- 10
+t  <- 15
+p  <- gauge_p(10)
 
-ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, CO2=CO2, dsa=TRUE,
-              revelle=TRUE)
-
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, CO2=CO2, dsa=TRUE, revelle=TRUE)
 ae$SumCO2
 ae$revelle
 ae$dTAdH
 
-ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, pCO2=pCO2)
 ae$SumCO2
 
-ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, TA=TA)
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, TA=TA)
 ae$SumCO2
 
-ae <- aquaenv(Tc, S, d, SumCO2=NULL, TA=TA, CO2=CO2)
+ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, CO2=CO2)
 ae$SumCO2
 
-ae <- aquaenv(Tc, S, d, SumCO2=NULL, TA=TA, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, pCO2=pCO2)
 ae$SumCO2
 
 
-Tc     <- 1:15
-ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, CO2=CO2)
-plot(ae, xval=Tc, xlab="T/(deg C)", mfrow=c(9,10), newdevice=FALSE)
+t  <- 1:15
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, CO2=CO2)
+plot(ae, xval=t, xlab="T/(deg C)", mfrow=c(9,10), newdevice=FALSE)
 
-ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, CO2=CO2, revelle=TRUE,
-              dsa=TRUE)
-plot(ae, xval=Tc, xlab="T/(deg C)", newdevice=FALSE)
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, CO2=CO2, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=t, xlab="T/(deg C)", newdevice=FALSE)
 
-Tc     <- 15
-S      <- 1:30
-ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, pCO2=pCO2, revelle=TRUE,
-              dsa=TRUE)
+S  <- 1:30
+t  <- 15
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, pCO2=pCO2, revelle=TRUE, dsa=TRUE)
 plot(ae, xval=S, xlab="S", newdevice=FALSE)
 
-S <- 30
-d <- seq(1,1000, 100)
-ae <- aquaenv(Tc, S, d, SumCO2=NULL, pH=pH, TA=TA, revelle=TRUE,
-              dsa=TRUE)
-plot(ae, xval=d, xlab="depth/m", newdevice=FALSE)
+S  <- 30
+p  <- gauge_p(seq(1,1000, 100))
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, TA=TA, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=p, xlab="gauge pressure/bar", newdevice=FALSE)
 
 }}
 \value{
   a list containing: 
-	      "Tc"               "Tk"               "S"               
-	      "Cl"               "I"                "d"               
-	      "hydroP"           "density"          "SumCO2"          
+              "S"                "t"                "p"
+              "T"                "Cl"               "I"
+              "P"                "Pa"               "d"               
+	      "density"          "SumCO2"          
 	      "SumNH4"           "SumH2S"           "SumHNO3"         
 	      "SumHNO2"          "SumH3PO4"         "SumSiOH4"        
    	      "SumBOH3"          "SumH2SO4"         "SumHF"           

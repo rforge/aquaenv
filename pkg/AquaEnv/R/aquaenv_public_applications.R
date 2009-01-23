@@ -65,7 +65,7 @@ titration <- function(aquaenv,                # an object of type aquaenv: minim
                
                TA          <- (TA[[i]]*mass[[i]] + (directionTAchange * TAmolchangeperstep))/newmass
 
-               aquaenvtemp <- aquaenv(Tc=Tc[[i]], S=S, d=d[[i]], SumCO2=SumCO2, SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2,
+               aquaenvtemp <- aquaenv(S=S, t=t[[i]], p=p[[i]], SumCO2=SumCO2, SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2,
                                       SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=TA,
                                       speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), revelle=(!is.null(aquaenv$revelle)), dsa=(!is.null(aquaenv$dTAdH)),
                                       k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf, k1k2=k1k2, khf=khf)
@@ -120,7 +120,7 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
 
         if (SumCO2Zero) {state[[1]] <- 0} # should SumCO2==0?
         
-        tit <- titration(aquaenv(Tc=ae$Tc, S=ae$S, d=ae$d,
+        tit <- titration(aquaenv(S=ae$S, t=ae$t, p=ae$p,
                                  SumCO2=state[[1]], SumNH4=ae$SumNH4, SumH2S=ae$SumH2S, SumH3PO4=ae$SumH3PO4, SumSiOH4=ae$SumSiOH4, SumHNO3=ae$SumHNO3, SumHNO2=ae$SumHNO2,
                                  SumBOH3=ae$SumBOH3, SumH2SO4=ae$SumH2SO4, SumHF=ae$SumHF,
                                  TA=state[[2]], speciation=FALSE, skeleton=TRUE,
@@ -134,7 +134,7 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
         if (Evals)
           {
             # The Nernst equation relates E to TOTAL [H+] (DOE1994, p.7, ch.4, sop.3, Dickson2007)
-            calc <- convert(calc, "pHscale", "free2tot", Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF, khf=khf)
+            calc <- convert(calc, "pHscale", "free2tot", S=tit$S, t=tit$t, p=tit$p, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF, khf=khf)
            
             # electrode polarity: E = E0 -(RT/F)ln([H+]) ("pos") or -E = E0 -(RT/F)ln([H+]) ("neg")
             if (electrode_polarity=="pos")
@@ -147,13 +147,13 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
               }
             
             #Nernst Equation: E = E0 -(RT/F)ln([H+]); 83.14510 (bar*cm3)/(mol*K) = 8.314510 J/(mol*K): division by 10
-            calc <- pol*(state[[3]]*1e2 - (((Constants$R/10)*ae$Tk)/Constants$F)*log(10^(-calc)))
+            calc <- pol*(state[[3]]*1e2 - (((PhysChemConst$R/10)*ae$T)/PhysChemConst$F)*log(10^(-calc)))
            
             ylab <- "E/V"         
           }
         else if (!(pHscale=="free"))
           {
-            calc <- convert(calc, "pHscale", paste("free2", pHscale, sep=""), Tc=tit$Tc, S=tit$S, d=tit$d, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF, khf=khf) #conversion done here not on data before call, since S changes along the titration!
+            calc <- convert(calc, "pHscale", paste("free2", pHscale, sep=""), S=tit$S, t=tit$t, p=tit$p, SumH2SO4=tit$SumH2SO4, SumHF=tit$SumHF, khf=khf) #conversion done here not on data before call, since S changes along the titration!
 
             ylab <- paste("pH (", pHscale, " scale)", sep="")         
           }
@@ -189,8 +189,6 @@ TAfit <- function(ae,                         # an object of type aquaenv: minim
           }
         return(residuals)
       }
-
-    require(minpack.lm)
 
     # deal with just partially supplied curves
     stepsbeforecurve <- 0

@@ -306,17 +306,17 @@ a list containing:
 Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
 \end{Author}
 
-\HeaderA{Tk}{Tk}{Tk}
-\keyword{misc}{Tk}
+\HeaderA{T}{T}{T}
+\keyword{misc}{T}
 \begin{Description}\relax
 PRIVATE function: calculates the temperature in Kelvin from the temperature in degrees centigrade
 \end{Description}
 \begin{Usage}
-\begin{verbatim}Tk(Tc)\end{verbatim}
+\begin{verbatim}T(t)\end{verbatim}
 \end{Usage}
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{Tc }] temperature in degrees centigrade
+\item[\code{t }] temperature in degrees centigrade
 \end{ldescription}
 \end{Arguments}
 \begin{Value}
@@ -602,7 +602,7 @@ Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
 PRIVATE function: converts either the pH scale of a pH value, the pH scale of a dissociation constant (K*), or the unit of a concentration value
 \end{Description}
 \begin{Usage}
-\begin{verbatim}convert.standard(x, vartype, what, Tc, S, d=0, SumH2SO4=NULL,
+\begin{verbatim}convert.standard(x, vartype, what, S, t, p=0, SumH2SO4=NULL,
                   SumHF=NULL, khf="dickson")\end{verbatim}
 \end{Usage}
 \begin{Arguments}
@@ -610,9 +610,9 @@ PRIVATE function: converts either the pH scale of a pH value, the pH scale of a 
 \item[\code{x }] the object to be converted (pH value, K* value, or concentration value)
 \item[\code{vartype }] the type of x, either "pHscale", "KHscale", or "conc"
 \item[\code{what }] the type of conversion to be done, for pH scales one of "free2tot", "free2sws", "free2nbs", ... (any combination of "free", "tot", "sws", and "nbs"); for concentrations one of "molar2molal", "molar2molin", ... (any combination of "molar" (mol/l), "molal" (mol/kg-H2O), and "molin" (mol/kg-solution))
-\item[\code{Tc }] temperature in degrees centigrade
 \item[\code{S }] salinity (in practical salinity units: no unit)
-\item[\code{d }] depth in meters
+\item[\code{t }] temperature in degrees centigrade
+\item[\code{p }] gauge pressure (total pressure minus atmospheric pressure) in bars
 \item[\code{SumH2SO4 }] total sulfate concentration in mol/kg-solution; if not supplied this is calculated from S
 \item[\code{SumHF }] total fluoride concentration in mol/kg-solution; if not supplied this is calculated from S
 \item[\code{khf}] either "dickson" (default, Dickson1979a) or "perez" (using seacarb, Perez1987a) for K\_HF
@@ -951,13 +951,13 @@ derivative of [TA] with respect to changes in the dissociation constants (Ks) ti
 Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
 \end{Author}
 
-\HeaderA{dTAdKdKdd}{dTAdKdKdd}{dTAdKdKdd}
-\keyword{misc}{dTAdKdKdd}
+\HeaderA{dTAdKdKdp}{dTAdKdKdp}{dTAdKdKdp}
+\keyword{misc}{dTAdKdKdp}
 \begin{Description}\relax
-PRIVATE function: calculates the derivative of [TA] with respect to changes in the dissociation constants (Ks) times the derivative of the dissociation constants with respect to depth d
+PRIVATE function: calculates the derivative of [TA] with respect to changes in the dissociation constants (Ks) times the derivative of the dissociation constants with respect to gauge pressure p
 \end{Description}
 \begin{Usage}
-\begin{verbatim}dTAdKdKdd(ae)\end{verbatim}
+\begin{verbatim}dTAdKdKdp(ae)\end{verbatim}
 \end{Usage}
 \begin{Arguments}
 \begin{ldescription}
@@ -965,7 +965,7 @@ PRIVATE function: calculates the derivative of [TA] with respect to changes in t
 \end{ldescription}
 \end{Arguments}
 \begin{Value}
-derivative of [TA] with respect to changes in the dissociation constants (Ks) times the derivative of the dissociation constants with respect to depth d
+derivative of [TA] with respect to changes in the dissociation constants (Ks) times the derivative of the dissociation constants with respect to gauge pressure p 
 \end{Value}
 \begin{Author}\relax
 Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
@@ -977,11 +977,11 @@ Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
 PRIVATE function: the generic function for the pressure correction for dissociation constants and solubility products according to Millero1995
 \end{Description}
 \begin{Usage}
-\begin{verbatim}deltaPlnK(Tk, d, coeff)\end{verbatim}
+\begin{verbatim}deltaPlnK(T, d, coeff)\end{verbatim}
 \end{Usage}
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{Tk }] temperature in Kelvin
+\item[\code{T }] temperature in Kelvin
 \item[\code{d }] the depth in meters
 \item[\code{coeff }] a vector containing the coefficients a0, a1, a2, b0, b1, b2 for the respective dissociation constant or solubility product
 \end{ldescription}
@@ -1013,26 +1013,6 @@ object of class aquaenv
 Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
 \end{Author}
 
-\HeaderA{hydroP}{hydroP}{hydroP}
-\keyword{misc}{hydroP}
-\begin{Description}\relax
-PRIVATE function: calculates the hydrostatic pressure from the depth (the hydrostatic pressure increases per m depth by 1/10 of 1 atm)
-\end{Description}
-\begin{Usage}
-\begin{verbatim}hydroP(d)\end{verbatim}
-\end{Usage}
-\begin{Arguments}
-\begin{ldescription}
-\item[\code{d }] depth in meters
-\end{ldescription}
-\end{Arguments}
-\begin{Value}
-hydrostatic pressure in bars
-\end{Value}
-\begin{Author}\relax
-Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
-\end{Author}
-
 
 \HeaderA{lnK}{lnK}{lnK}
 \keyword{misc}{lnK}
@@ -1040,7 +1020,7 @@ Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
 PRIVATE function: generic formula (see publication associated with AquaEnv) for K calculations that use the natural logarithm (ln)
 \end{Description}
 \begin{Usage}
-\begin{verbatim}lnK(A, B, C, D, E, Tk)\end{verbatim}
+\begin{verbatim}lnK(A, B, C, D, E, T)\end{verbatim}
 \end{Usage}
 \begin{Arguments}
 \begin{ldescription}
@@ -1049,7 +1029,7 @@ PRIVATE function: generic formula (see publication associated with AquaEnv) for 
 \item[\code{C }] coefficient C
 \item[\code{D }] coefficient D
 \item[\code{E }] coefficient E
-\item[\code{Tk }] temperature in Kelvin
+\item[\code{T }] temperature in Kelvin
 \end{ldescription}
 \end{Arguments}
 \begin{Value}
@@ -1065,7 +1045,7 @@ Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
 PRIVATE function: generic formula (see publication associated with AquaEnv) for K calculations that use the decadal logarithm (log)
 \end{Description}
 \begin{Usage}
-\begin{verbatim}logK(A, B, C, D, E, Tk)\end{verbatim}
+\begin{verbatim}logK(A, B, C, D, E, T)\end{verbatim}
 \end{Usage}
 \begin{Arguments}
 \begin{ldescription}
@@ -1074,7 +1054,7 @@ PRIVATE function: generic formula (see publication associated with AquaEnv) for 
 \item[\code{C }] coefficient C
 \item[\code{D }] coefficient D
 \item[\code{E }] coefficient E
-\item[\code{Tk }] temperature in Kelvin
+\item[\code{T }] temperature in Kelvin
 \end{ldescription}
 \end{Arguments}
 \begin{Value}
@@ -1177,13 +1157,13 @@ Sundquist1979, Zeebe2001, Emerson2008
 PRIVATE function: provides pH scale conversion factors (caution: the activity coefficient for H+ (needed for NBS scale conversions) is calculated with the Davies equation (Zeebe2001) which is only accurate up to ionic strengthes of I = 0.5)
 \end{Description}
 \begin{Usage}
-\begin{verbatim}scaleconvert(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL, khf="dickson")\end{verbatim}
+\begin{verbatim}scaleconvert(S, t, p=0, SumH2SO4=NULL, SumHF=NULL, khf="dickson")\end{verbatim}
 \end{Usage}
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{Tc }] temperature in degrees centigrade
 \item[\code{S }] salinity S in practical salinity units (i.e. no unit)
-\item[\code{d }] depth in meters
+\item[\code{t }] temperature in degrees centigrade
+\item[\code{p }] gauge pressure (total pressure minus atmospheric pressure) in bars
 \item[\code{SumH2SO4 }] total sulfate concentration in mol/kg-solution; if not supplied this is calculated from S
 \item[\code{SumHF }] total fluoride concentration in mol/kg-solution; if not
 supplied this is calculated from S
@@ -1230,12 +1210,12 @@ DOE1994
 PRIVATE function: calculates seawater density (in kg/m3) from temperature (in degrees centigrade) and salinity
 \end{Description}
 \begin{Usage}
-\begin{verbatim}seadensity(Tc, S)\end{verbatim}
+\begin{verbatim}seadensity(S, t)\end{verbatim}
 \end{Usage}
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{Tc }] temperature in degrees centigrade
 \item[\code{S }] salinity S in practical salinity units (i.e. no unit)
+\item[\code{t }] temperature in degrees centigrade
 \end{ldescription}
 \end{Arguments}
 \begin{Value}
@@ -1276,15 +1256,15 @@ Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
 PRIVATE function: returns the intersection of the formulae for K\_CO2 for S < 5 and S >= 5
 \end{Description}
 \begin{Usage}
-\begin{verbatim}splitS_K_CO2(Tk)\end{verbatim}
+\begin{verbatim}splitS_K_CO2(T)\end{verbatim}
 \end{Usage}
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{Tk }] temperature in Kelvin
+\item[\code{T }] temperature in Kelvin
 \end{ldescription}
 \end{Arguments}
 \begin{Value}
-the value for S where the two formulae intersect at temperature Tk
+the value for S where the two formulae intersect at temperature T
 \end{Value}
 \begin{Author}\relax
 Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
@@ -1296,15 +1276,15 @@ Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)
 PRIVATE function: returns the intersection of the formulae for K\_HCO3 for S < 5 and S >= 5
 \end{Description}
 \begin{Usage}
-\begin{verbatim}splitS_K_HCO3(Tk)\end{verbatim}
+\begin{verbatim}splitS_K_HCO3(T)\end{verbatim}
 \end{Usage}
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{Tk }] temperature in Kelvin
+\item[\code{T }] temperature in Kelvin
 \end{ldescription}
 \end{Arguments}
 \begin{Value}
-the value for S where the two formulae intersect at temperature Tk
+the value for S where the two formulae intersect at temperature T
 \end{Value}
 \begin{Author}\relax
 Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)

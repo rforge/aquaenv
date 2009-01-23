@@ -35,3 +35,5 @@ clean:
 	mv dummy1.tex AquaEnv-ConstantsAndFormulae.tex 
 	rm -f Rplots.pdf
 	rm -f test*
+	rm -f q.log
+	rm -f *.bak

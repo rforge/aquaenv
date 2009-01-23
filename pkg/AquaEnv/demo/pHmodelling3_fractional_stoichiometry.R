@@ -1,3 +1,6 @@
+par(ask=TRUE)
+
+
 what   <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH", "dHRc", "dHRp", "rhoc", "rhop")
 mfrow  <- c(3,4)
 size   <- c(15,10)
@@ -5,7 +8,7 @@ size   <- c(15,10)
 
 parameters <- list(             
                    S           = 35        , # psu       
-                   Tc          = 15        , # degrees C
+                   t           = 15        , # degrees C
 
                    SumCO2_t0   = 0.002     , # mol/kg-soln  (comparable to Wang2005)
                    TA_t0       = 0.0022    , # mol/kg-soln  (comparable to Millero1998)
@@ -24,7 +27,7 @@ boxmodel <- function(timestep, currentstate, parameters)
   with (
         as.list(c(currentstate,parameters)),
         {        
-          ae    <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2, pH=-log10(H), SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0, dsa=TRUE)        
+          ae    <- aquaenv(S=S, t=t, SumCO2=SumCO2, pH=-log10(H), SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0, dsa=TRUE)        
          
           Rc    <- kc * ((ae$CO2_sat) - (ae$CO2)) 
           Rp    <- kp * (1-ae$omega_calcite)^n               
@@ -51,7 +54,7 @@ boxmodel <- function(timestep, currentstate, parameters)
 
 with (as.list(parameters),
       {
-        aetmp <- aquaenv(Tc=Tc, S=S, SumCO2=SumCO2_t0, TA=TA_t0, SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0)
+        aetmp <- aquaenv(t=t, S=S, SumCO2=SumCO2_t0, TA=TA_t0, SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0)
         H_t0  <- 10^(-aetmp$pH)
         
         initialstate <<- c(SumCO2=SumCO2_t0, H=H_t0)
@@ -60,9 +63,10 @@ with (as.list(parameters),
       })
 
 
-plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=mfrow, size=size, device=device, what=what) 
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=mfrow, size=size, what=what, newdevice=FALSE) 
 
 
+par(mfrow=c(1,1))
 what <- c("dHRc", "dHRp")
-plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", device=device, what=what, ylab="mol-H/(kg-soln*d)", legendposition="topright", cumulative=TRUE, newdevice=TRUE) 
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", what=what, ylab="mol-H/(kg-soln*d)", legendposition="topright", cumulative=TRUE, newdevice=FALSE) 
  

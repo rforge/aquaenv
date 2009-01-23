@@ -5,7 +5,7 @@
 \details{Metadata:
   \item{x-value}{mass of titrant added (in g)}
   \item{y-value}{pH measured on the free proton scale}
-  \item{Tc}{25 degC}
+  \item{t}{25 degC}
   \item{S}{35}
   \item{mass\_sample}{200 g}
   \item{conc\_titrant}{0.3000 mol/kg-soln}

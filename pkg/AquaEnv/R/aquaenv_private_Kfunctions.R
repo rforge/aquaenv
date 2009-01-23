@@ -1,14 +1,14 @@
 #######################################################################################
 # local functions
-#######################################################################################
-lnK <- function(A, B, C, D, E, Tk)        
+######################################################################################
+lnK <- function(A, B, C, D, E, T)        
   {
-    lnK <- A + (B/Tk) + C*log(Tk) + D*Tk + E*Tk^2
+    lnK <- A + (B/T) + C*log(T) + D*T + E*T^2
   }
 
-logK <- function(A, B, C, D, E, Tk)        
+logK <- function(A, B, C, D, E, T)        
   {
-    logK <- A + (B/Tk) + C*log10(Tk) + D*Tk + E*Tk^2
+    logK <- A + (B/T) + C*log10(T) + D*T + E*T^2
   }
 
 Sterms <- function(S)
@@ -24,22 +24,21 @@ Iterms <- function(S)
     Iterms <- list(I, I^2, sqrtI, I*sqrtI)
   }
 
-deltaPlnK <- function(Tk, d, coeff)
+deltaPlnK <- function(T, p, coeff)
   {
-    P         <- hydroP(d)
-    Tc        <- Tk + Constants$absZero 
-    Tc2       <- Tc^2
-    deltaV    <- coeff[[1]] + coeff[[2]]*Tc + coeff[[3]]*Tc2
-    deltaK    <- (coeff[[4]] + coeff[[5]]*Tc + coeff[[6]]*Tc2)/1000 #the 1000 is correction from Lewis1998
-    deltaPlnK <- -(deltaV/(Constants$R*Tk))*P + (0.5*(deltaK/(Constants$R*Tk)))*(P^2)  
+    t         <- T + PhysChemConst$absZero 
+    t2        <- t^2
+    deltaV    <- coeff[[1]] + coeff[[2]]*t + coeff[[3]]*t2
+    deltaK    <- (coeff[[4]] + coeff[[5]]*t + coeff[[6]]*t2)/1000 #the 1000 is correction from Lewis1998
+    deltaPlnK <- -(deltaV/(PhysChemConst$R*T))*p + (0.5*(deltaK/(PhysChemConst$R*T)))*(p^2)  
   }
 
-splitS_K_CO2 <- function(Tk)
+splitS_K_CO2 <- function(T)
   {
     res <- c()
-    for (t in Tk)
+    for (te in T)
       {
-        lnK1 <- function(Tk,S)
+        lnK1 <- function(T,S)
           {
             Sterms <- Sterms(S)
             
@@ -47,10 +46,10 @@ splitS_K_CO2 <- function(Tk)
             B <- -2307.1266 -     4.0484*Sterms[[2]]
             C <- -1.5529413
             
-            lnK1 <- lnK(A, B, C, 0, 0, Tk)    
+            lnK1 <- lnK(A, B, C, 0, 0, T)    
           }
         
-        lnK2 <- function(Tk,S)
+        lnK2 <- function(T,S)
           {
             Sterms <- Sterms(S)
             
@@ -58,19 +57,19 @@ splitS_K_CO2 <- function(Tk)
             B <- -14554.21 + 9714.36839*Sterms[[2]] - 2310.48919*S + 170.22169*Sterms[[3]]
             C <- -45.0575  +  34.485796*Sterms[[2]] -    8.19515*S +   0.60367*Sterms[[3]]
             
-            lnK2 <- lnK(A, B, C, 0, 0, Tk)    
+            lnK2 <- lnK(A, B, C, 0, 0, T)    
           }
-        res <- c(res, uniroot(function(x) lnK1(t,x)-lnK2(t,x), c(3,7))$root)
+        res <- c(res, uniroot(function(x) lnK1(te,x)-lnK2(te,x), c(3,7))$root)
       }
     return(res)
   }
 
-splitS_K_HCO3 <- function(Tk)
+splitS_K_HCO3 <- function(T)
   {
     res <- c()
-    for (t in Tk)
+    for (te in T)
       {
-        lnK1 <- function(Tk,S)
+        lnK1 <- function(T,S)
           {
             Sterms <- Sterms(S)
             
@@ -78,10 +77,10 @@ splitS_K_HCO3 <- function(Tk)
             B <- -3351.6106 -     23.9722*Sterms[[2]] 
             C <- -0.2005743 
             
-            lnK1 <- lnK(A, B, C, 0, 0, Tk)    
+            lnK1 <- lnK(A, B, C, 0, 0, T)    
           }
         
-        lnK2 <- function(Tk,S)
+        lnK2 <- function(T,S)
           {
             Sterms <- Sterms(S)
             
@@ -89,9 +88,9 @@ splitS_K_HCO3 <- function(Tk)
             B <- -11843.79 + 6551.35253*Sterms[[2]] - 1566.13883*S + 116.270079*Sterms[[3]]
             C <- -33.6485  +  25.928788*Sterms[[2]] -   6.171951*S + 0.45788501*Sterms[[3]]
             
-            lnK2 <- lnK(A, B, C, 0, 0, Tk)    
+            lnK2 <- lnK(A, B, C, 0, 0, T)    
           }
-        res <- c(res, uniroot(function(x) lnK1(t,x)-lnK2(t,x), c(3,7))$root)
+        res <- c(res, uniroot(function(x) lnK1(te,x)-lnK2(te,x), c(3,7))$root)
       }
     return(res)
   }
@@ -111,9 +110,9 @@ att <- function(K)
 ######################################################################################
 # Henry's constants
 ######################################################################################
-K0_CO2 <- function(Tc, S)           
+K0_CO2 <- function(S, t)           
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
 
     A <- 0.023517*S - 167.81077
     B <- 9345.17
@@ -121,15 +120,15 @@ K0_CO2 <- function(Tc, S)
     D <- -2.3656e-4*S
     E <- 4.7036e-7*S
     
-    K0_CO2 <- exp(lnK(A, B, C, D, E, Tk))
+    K0_CO2 <- exp(lnK(A, B, C, D, E, T))
     attr(K0_CO2, "unit") <- "mol/(kg-soln*atm)"
     
     return (K0_CO2)
   }
 
-K0_O2 <- function(Tc, S)            
+K0_O2 <- function(S, t)            
   {
-    Tk <- Tk(Tc) 
+    T <- T(t) 
     
     A <- -846.9975 - 0.037362*S
     B <- 25559.07 
@@ -137,8 +136,8 @@ K0_O2 <- function(Tc, S)
     D <- -0.22204 + 0.00016504*S
     E <- -2.0564e-7*S
     
-    K0_O2 <- exp(lnK(A, B, C, D, E, Tk))
-    K0_O2 <- K0_O2 * Constants$uMolToMol
+    K0_O2 <- exp(lnK(A, B, C, D, E, T))
+    K0_O2 <- K0_O2 * PhysChemConst$uMolToMol
     attr(K0_O2, "unit") <- "mol/(kg-soln*atm)"
 
     return(K0_O2)
@@ -151,9 +150,9 @@ K0_O2 <- function(Tc, S)
 ######################################################################################
 # ion product of water
 ######################################################################################
-K_W <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_W <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk <- Tk(Tc) 
+    T <- T(t) 
     Sterms <- Sterms(S)
     
     A <- 148.9652  -  5.977*Sterms[[2]] - 0.01615*S
@@ -162,7 +161,7 @@ K_W <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
     D <- 0
     E <- 0
     
-    K_W <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_W) + log(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free))
+    K_W <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_W) + log(scaleconvert(S, t, p, SumH2SO4, SumHF)$tot2free))
     attr(K_W, "unit")     <- "(mol/kg-soln)^2"
     attr(K_W, "pH scale") <- "free" 
     
@@ -176,9 +175,9 @@ K_W <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
 ######################################################################################
 # acid dissociation constants
 ######################################################################################
-K_HSO4 <- function(Tc, S, d=0)           
+K_HSO4 <- function(S, t, p=0)           
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Iterms <- Iterms(S)
     
     A <-  324.57*Iterms[[3]] - 771.54*Iterms[[1]] + 141.328  
@@ -187,14 +186,14 @@ K_HSO4 <- function(Tc, S, d=0)
     D <- 0
     E <- 0
     
-    K_HSO4 <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_HSO4) + log(molal2molin(S)))
+    K_HSO4 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_HSO4) + log(molal2molin(S)))
 
     return (eval(att(K_HSO4)))
   }
 
-K_HF <- function(Tc, S, d=0)
+K_HF <- function(S, t, p=0)
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Iterms <- Iterms(S)
     
     A <- 1.525 * Iterms[[3]] - 12.641
@@ -203,24 +202,24 @@ K_HF <- function(Tc, S, d=0)
     D <- 0
     E <- 0
     
-    K_HF <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_HF) + log(molal2molin(S)))
+    K_HF <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_HF) + log(molal2molin(S)))
     
     return(eval(att(K_HF)))
   }
 
-K_CO2 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_CO2 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk     <- Tk(Tc)
-    splitS <- splitS_K_CO2(Tk)
+    T     <- T(t)
+    splitS <- splitS_K_CO2(T)
     K_CO2  <- c()
     
     for (s in 1:length(S))
       {
         Sterms <- Sterms(S[[s]])
 
-        for (t in 1:length(Tc))
+        for (te in 1:length(t))
           {
-            if (S[[s]] > splitS[[t]])
+            if (S[[s]] > splitS[[te]])
               {
                 A <- 2.83655    - 0.20760841*Sterms[[2]] + 0.08468345*S[[s]] - 0.00654208*Sterms[[3]]
                 B <- -2307.1266 -     4.0484*Sterms[[2]]
@@ -238,25 +237,25 @@ K_CO2 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
               }
           }
         
-        K_CO2 <- c(K_CO2, exp(lnK(A, B, C, D, E, Tk) +  deltaPlnK(Tk, d, DeltaPcoeffs$K_CO2) + log(scaleconvert(Tc, S[[s]], d, SumH2SO4[[s]], SumHF[[s]])$tot2free) + log(molal2molin(S[[s]]))))
+        K_CO2 <- c(K_CO2, exp(lnK(A, B, C, D, E, T) +  deltaPlnK(T, p, DeltaPcoeffs$K_CO2) + log(scaleconvert(S[[s]], t, p, SumH2SO4[[s]], SumHF[[s]])$tot2free) + log(molal2molin(S[[s]]))))
       }
     
     return(eval(att(K_CO2)))
   }
 
-K_HCO3 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_HCO3 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk     <- Tk(Tc)
-    splitS <- splitS_K_HCO3(Tk)
+    T     <- T(t)
+    splitS <- splitS_K_HCO3(T)
     K_HCO3 <- c()
     
     for (s in 1:length(S))
       {
         Sterms <- Sterms(S[[s]])
 
-        for (t in 1:length(Tc))
+        for (te in 1:length(t))
           {
-            if (S[[s]] > splitS[[t]])
+            if (S[[s]] > splitS[[te]])
               {
                 A <- -9.226508  - 0.106901773*Sterms[[2]] + 0.1130822*S[[s]] - 0.00846934*Sterms[[3]] 
                 B <- -3351.6106 -     23.9722*Sterms[[2]] 
@@ -274,15 +273,15 @@ K_HCO3 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
               }
           }
             
-        K_HCO3 <- c(K_HCO3, exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_HCO3) + log(scaleconvert(Tc, S[[s]], d, SumH2SO4[[s]], SumHF[[s]])$tot2free) + log(molal2molin(S[[s]]))))
+        K_HCO3 <- c(K_HCO3, exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_HCO3) + log(scaleconvert(S[[s]], t, p, SumH2SO4[[s]], SumHF[[s]])$tot2free) + log(molal2molin(S[[s]]))))
       }
     
     return(eval(att(K_HCO3)))
   }
 
-K_BOH3 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_BOH3 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Sterms <- Sterms(S)
     
     A <- 148.0248 + 137.1942*Sterms[[2]] + 1.62142*S
@@ -291,14 +290,14 @@ K_BOH3 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
     D <-            0.053105*Sterms[[2]]
     E <- 0
     
-    K_BOH3 <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_BOH3) + log(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free))
+    K_BOH3 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_BOH3) + log(scaleconvert(S, t, p, SumH2SO4, SumHF)$tot2free))
     
     return(eval(att(K_BOH3)))
   }
 
-K_NH4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_NH4 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Sterms <- Sterms(S)
     
     A <- -0.25444 +  0.46532*Sterms[[2]] - 0.01992*S
@@ -307,14 +306,14 @@ K_NH4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
     D <- 0.0001635
     E <- 0
     
-    K_NH4 <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_NH4) + log(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$sws2free))
+    K_NH4 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_NH4) + log(scaleconvert(S, t, p, SumH2SO4, SumHF)$sws2free))
     
     return(eval(att(K_NH4)))
   }
 
-K_H2S <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_H2S <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Sterms <- Sterms(S)
     
     A <- 225.838  + 0.3449*Sterms[[2]] - 0.0274*S
@@ -323,14 +322,14 @@ K_H2S <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
     D <- 0
     E <- 0
     
-    K_H2S <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_H2S) + log(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free))
+    K_H2S <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_H2S) + log(scaleconvert(S, t, p, SumH2SO4, SumHF)$tot2free))
         
     return(eval(att(K_H2S)))
   }
 
-K_H3PO4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_H3PO4 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Sterms <- Sterms(S)
     
     A <- 115.525   + 0.69171*Sterms[[2]] - 0.01844*S
@@ -339,14 +338,14 @@ K_H3PO4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
     D <- 0
     E <- 0
     
-    K_H3PO4 <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_H3PO4) + log(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free))
+    K_H3PO4 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_H3PO4) + log(scaleconvert(S, t, p, SumH2SO4, SumHF)$tot2free))
     
     return(eval(att(K_H3PO4)))
   }
 
-K_H2PO4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL) 
+K_H2PO4 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL) 
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Sterms <- Sterms(S)
     
     A <- 172.0883  +  1.3566*Sterms[[2]] - 0.05778*S
@@ -355,14 +354,14 @@ K_H2PO4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
     D <- 0
     E <- 0
     
-    K_H2PO4 <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_H2PO4) + log(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free))
+    K_H2PO4 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_H2PO4) + log(scaleconvert(S, t, p, SumH2SO4, SumHF)$tot2free))
     
     return(eval(att(K_H2PO4)))
   }
 
-K_HPO4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_HPO4 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Sterms <- Sterms(S)
     
     A <- -18.141  +  2.81197*Sterms[[2]] -  0.09984*S
@@ -371,14 +370,14 @@ K_HPO4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
     D <- 0
     E <- 0 
     
-    K_HPO4 <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_HPO4) + log(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free))
+    K_HPO4 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_HPO4) + log(scaleconvert(S, t, p, SumH2SO4, SumHF)$tot2free))
     
     return(eval(att(K_HPO4)))
   }
 
-K_SiOH4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_SiOH4 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Iterms <- Iterms(S)
     
     A <- 117.385 + 3.5913*Iterms[[3]] - 1.5998*Iterms[[1]] + 0.07871*Iterms[[2]]
@@ -387,14 +386,14 @@ K_SiOH4 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
     D <- 0
     E <- 0
     
-    K_SiOH4 <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_SiOH4) + log(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free) + log(molal2molin(S)))
+    K_SiOH4 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_SiOH4) + log(scaleconvert(S, t, p, SumH2SO4, SumHF)$tot2free) + log(molal2molin(S)))
     
     return(eval(att(K_SiOH4)))
   }
 
-K_SiOOH3 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
+K_SiOOH3 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
 
     A <- 8.96
     B <- -4465.18
@@ -402,7 +401,7 @@ K_SiOOH3 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
     D <- 0.021952
     E <- 0
     
-    K_SiOOH3 <- exp(lnK(A, B, C, D, E, Tk) + deltaPlnK(Tk, d, DeltaPcoeffs$K_SiOOH3) + log(scaleconvert(Tc, S, d, SumH2SO4, SumHF)$tot2free) + log(molal2molin(S)))
+    K_SiOOH3 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_SiOOH3) + log(scaleconvert(S, t, p, SumH2SO4, SumHF)$tot2free) + log(molal2molin(S)))
     
     return(eval(att(K_SiOOH3)))
   }
@@ -413,9 +412,9 @@ K_SiOOH3 <- function(Tc, S, d=0, SumH2SO4=NULL, SumHF=NULL)
 ######################################################################################
 # solubility products
 ######################################################################################
-Ksp_calcite <- function(Tc, S, d=0) 
+Ksp_calcite <- function(S, t, p=0) 
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Sterms <- Sterms(S)
     
     A <- -171.9065 -   0.77712*Sterms[[2]] - 0.07711*S + 0.0041249*Sterms[[3]]
@@ -424,15 +423,15 @@ Ksp_calcite <- function(Tc, S, d=0)
     D <- -0.077993 + 0.0028426*Sterms[[2]]
     E <- 0
     
-    Ksp_calcite <- 10^(logK(A, B, C, D, E, Tk)) * exp(deltaPlnK(Tk, d, DeltaPcoeffs$Ksp_calcite))  
+    Ksp_calcite <- 10^(logK(A, B, C, D, E, T)) * exp(deltaPlnK(T, p, DeltaPcoeffs$Ksp_calcite))  
     attr(Ksp_calcite, "unit") <- "(mol/kg-soln)^2"     
 
     return(Ksp_calcite)
   }
 
-Ksp_aragonite <- function(Tc, S, d=0) 
+Ksp_aragonite <- function(S, t, p=0) 
   {
-    Tk <- Tk(Tc)
+    T <- T(t)
     Sterms <- Sterms(S)
     
     A <- -171.945  -  0.068393*Sterms[[2]] - 0.10018*S + 0.0059415*Sterms[[3]]
@@ -441,7 +440,7 @@ Ksp_aragonite <- function(Tc, S, d=0)
     D <- -0.077993 + 0.0017276*Sterms[[2]]
     E <- 0
     
-    Ksp_aragonite <- 10^(logK(A, B, C, D, E, Tk)) * exp(deltaPlnK(Tk, d, DeltaPcoeffs$Ksp_aragonite))
+    Ksp_aragonite <- 10^(logK(A, B, C, D, E, T)) * exp(deltaPlnK(T, p, DeltaPcoeffs$Ksp_aragonite))
     attr(Ksp_aragonite, "unit") <- "(mol/kg-soln)^2"     
 
     return(Ksp_aragonite)

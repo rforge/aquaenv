@@ -59,7 +59,7 @@
 
 \section{Chemical constants used in \textsf{AquaEnv}}
 
-\subsection{Elements of list \texttt{Constants}}
+\subsection{Elements of list \texttt{PhysChemConst}}
 \begin{scriptsize}
 \begin{tabular}{|lrllp{6cm}|} \hline
 \texttt{absZero} & -273.15     & \textdegree$ $C    & \citep{Dickson2007}    & absolute zero\\
@@ -84,8 +84,8 @@ Note that here we do not distinguish between fugacity and the partial pressure.\
 
 
   
-\subsection{Elements of list \texttt{MeanMolecularWeight}}
-The list  \texttt{MeanMolecularWeight} contains mean molecular masses ("mean molecular weights") in g/mol. The list is taken from \citet[chap. 5, p. 3]{DOE1994} and \citet[chap. 5, p. 4]{Dickson2007}.\\
+\subsection{Elements of list \texttt{MeanMolecularMass}}
+The list  \texttt{MeanMolecularMass} contains mean molecular masses in g/mol. The list is taken from \citet[chap. 5, p. 3]{DOE1994} and \citet[chap. 5, p. 4]{Dickson2007}.\\
 \begin{center}
 \begin{tabular}{|ll|} \hline
 \texttt{Cl}  & 35.453\\
@@ -140,10 +140,20 @@ According to \citet[chapter 5, p. 13, 15]{DOE1994},  \citet[ p.12]{Zeebe2001}, a
 Note that the approximation I/(mol/kg-solution) $\approx$ 0.0199201 \texttt{S} is given in \citet[  p. 428.]{Millero1982}.
 This relationship converted into mol/kg-$\rm H_2O$ and the last digits adjusted (from 0.0199201 to 0.019924) results in the formula used here.\\
 
-\section{Hydrostatic pressure \texttt{hypdroP} as function of water depth \texttt{d}}
-The hydrostatic pressure increases per m of water depth \texttt{d} by $\frac{1}{10}$ of 1 atm (= 1.01325 bar \citet[chap. 5, p. 3]{Dickson2007}), thus
+\section{Relation between water depth \texttt{d} and gauge pressure \texttt{p}}
+Although the relation between gauge pressure \texttt{p} (total pressure minus atmospheric pressure, see \cite{Feistel2008})  and water depth \texttt{d} can be approximated by 
 \begin{equation}
- \rm \mbox{\texttt{hydroP}} = 0.1\;\mbox{\texttt{d}}\;1.01325
+ \rm \mbox{\texttt{p}} = 0.1\;\mbox{\texttt{d}}\;1.01325
+\end{equation}
+since \texttt{p} increases per m of water depth \texttt{d} by $\frac{1}{10}$ of 1 atm (= 1.01325 bar \citet[chap. 5, p. 3]{Dickson2007}),
+here, the relation given by \cite{Fofonoff1983} as implemented in \cite{marelac} is used
+\begin{equation}
+\rm \mbox{\texttt{d}} = \frac{(9.72659 + (-2.2512\,10^{-5} + (2.279\,10^{-10} - 1.82\,10^{-15} \, \mbox{\texttt{p}}) \, \mbox{\texttt{p}})\, \mbox{\texttt{p}})\, \mbox{\texttt{p}})}{g + 1.092\,10^{-6} \, \mbox{\texttt{p}}}
+\end{equation}
+where \mbox{\texttt{p}} is the gauge pressure in dbar (deci-bar) and $\rm g$ the earth's gravity in m/$\rm s^2$. $\rm g$ is calculated from the latitude lat (in degrees, -90 to 90, if not give lat=0 is assumed) as given in \cite{Fofonoff1983}
+and implemented in \cite{marelac}
+\begin{equation}
+\rm g = 9.780318\, (1+ ( 0.0052788 + 2.36\,10^{-5}\,\sin(lat\,\frac{\Pi}{180}))\,\sin(lat\,\frac{\Pi}{180}))
 \end{equation}
 
 \section{Seawater \texttt{density} as function of temperature \texttt{Tc} and salinity \texttt{S}}
@@ -359,11 +369,11 @@ $D' = -0.077993 + 0.0017276\;\sqrt{S}$&&&\\ \hline
 Pressure has an effect on the stoichiometric acid-base dissociation constants  and the stoichiometric solubility products given in the  previous sections. As described in \citet[p. 675]{Millero1995} using corrections and assumptions from \citet[p. A-7]{Lewis1998} the effect of pressure can be accounted for by the equation\footnote{It is not stated in \citet{Millero1995} but since this pressure correction is a multiplicative factor, it can be inferred that the unit and pH scale of the corrected constant only depends on the unit and pH scale of the uncorrected constant. This formula thus can be applied to any constant with no respect to its unit and pH scale.}:
 
 \begin{equation}
-\rm K_{corr} = K \; \left(- \frac{a_0 + a_1 \; \mbox{\texttt{Tc}} + a_2 \; \mbox{\texttt{Tc}}^2}{\mbox{\texttt{R}}\;\mbox{\texttt{Tk}}} \; \mbox{\texttt{hydroP}} + \frac{b_0 + b_1 \; \mbox{\texttt{Tc}} + b_2 \; \mbox{\texttt{Tc}}^2}{1000\;\mbox{\texttt{R}}\;\mbox{\texttt{Tk}}} \; 0.5 \; \mbox{\texttt{hydroP}}^2\right) 
+\rm K_{corr} = K \; \left(- \frac{a_0 + a_1 \; \mbox{\texttt{Tc}} + a_2 \; \mbox{\texttt{Tc}}^2}{\mbox{\texttt{R}}\;\mbox{\texttt{Tk}}} \; \mbox{\texttt{p}} + \frac{b_0 + b_1 \; \mbox{\texttt{Tc}} + b_2 \; \mbox{\texttt{Tc}}^2}{1000\;\mbox{\texttt{R}}\;\mbox{\texttt{Tk}}} \; 0.5 \; \mbox{\texttt{p}}^2\right) 
 \end{equation}
 
 \noindent
-Where $\rm K_{corr}$ is the pressure corrected constant and K is the uncorrected constant, both on matching units, e.g., mol/kg-soln, \texttt{Tk} is the absolute temperature in Kelvin, \texttt{Tc} is the temperature in \textdegree$ $C, \texttt{R} is the ideal gas constant in (bar $\rm cm^3$)/(mol Kelvin), and \texttt{hydroP} is the hydrostatic pressure (total pressure minus one atm) in bar. The a and b coefficients (according to \citet{Millero1995} which is partly a restatement of \citet{Millero1979}, corrected by \citet{Lewis1998}) for constants in \textsf{AquaEnv} (stored in the data frame \texttt{DeltaPcoeffs}) are given in the following table\footnote{Note that in \citet{Lewis1998} it is stated that the $a$ values for $H_2O$ and $H_2S$ are \textit{freshwater} values! And that the coefficients for the silicate species are assumed to be the same as the ones for the borate species.}.
+Where $\rm K_{corr}$ is the pressure corrected constant and K is the uncorrected constant, both on matching units, e.g., mol/kg-soln, \texttt{Tk} is the absolute temperature in Kelvin, \texttt{Tc} is the temperature in \textdegree$ $C, \texttt{R} is the ideal gas constant in (bar $\rm cm^3$)/(mol Kelvin), and \texttt{p} is the gauge pressure (total pressure minus one atmosphere, see \cite{Feistel2008} for a definition) in bar. The a and b coefficients (according to \citet{Millero1995} which is partly a restatement of \citet{Millero1979}, corrected by \citet{Lewis1998}) for constants in \textsf{AquaEnv} (stored in the data frame \texttt{DeltaPcoeffs}) are given in the following table\footnote{Note that in \citet{Lewis1998} it is stated that the $a$ values for $H_2O$ and $H_2S$ are \textit{freshwater} values! And that the coefficients for the silicate species are assumed to be the same as the ones for the borate species.}.
 
 \begin{center}
 \begin{tabular}{|lrrrrrr|}\hline
@@ -415,7 +425,7 @@ In \citet[p.73]{Zeebe2001} the revelle factor is given as
 in \textsf{AquaEnv} \texttt{revelle} is calculated numerically.
 
 \section{Partial derivatives of total alkalinity}
-The values for \texttt{dTAdKdKdS}, \texttt{dTAdKdKdT}, \texttt{dTAdKdKdd}, \texttt{dTAdKdKdSumH2SO4}, and \texttt{dTAdKdKdSumHF} are calculated numerically as described in \citet{Hofmann2008b}.\\
+The values for \texttt{dTAdKdKdS}, \texttt{dTAdKdKdT}, \texttt{dTAdKdKdd}, \texttt{dTAdKdKdSumH2SO4}, and \texttt{dTAdKdKdSumHF} are calculated numerically as described in \citet{Hofmann2009}.\\
 
 \noindent
 The values for \texttt{dTAdH},  \texttt{dTAdSumCO2}, \texttt{dTAdSumBOH3}, \texttt{dTAdSumH2SO4}, and  \texttt{dTAdSumHF}  are calculated analytically as given in \citet{Hofmann2008}.

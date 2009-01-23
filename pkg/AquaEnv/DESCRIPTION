@@ -1,6 +1,6 @@
 Package: AquaEnv
-Version: 0.6
-Date: 2008-11-25
+Version: 0.7
+Date: 2009-01-21
 Title: AquaEnv - an integrated development toolbox for aquatic chemical model generation
 Author: Andreas F. Hofmann, Karline Soetaert, Filip J.R. Meysman
 Maintainer: Andreas F. Hofmann <a.hofmann@nioo.knaw.nl>
@@ -12,6 +12,6 @@ Description: AquaEnv is an integrated development toolbox for aquatic chemical m
   Furthermore, AquaEnv can not only be used to build dynamic models of aquatic systems, but it can also serve as a simple desktop tool for the 
   experimental aquatic chemist to generate and visualize all possible derived information from a set of measurements with one single easy to use R function.
   Additionally, the sensitivity of the system to variations in the input variables can be visualized.
-License: GPL
+License: GPL 2.0 or above
 LazyData: yes
 

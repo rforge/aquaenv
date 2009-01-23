@@ -30,8 +30,8 @@ AquaEnv is an integrated development toolbox for aquatic
   \tabular{ll}{
     Package: \tab AquaEnv\cr
     Type: \tab Package\cr
-    Version: \tab 1.0\cr
-    Date: \tab 2008-??\cr
+    Version: \tab 0.7\cr
+    Date: \tab 2009-01-21\cr
     License: \tab GNU Public License 2 or above\cr
   }
 }
@@ -56,6 +56,15 @@ demo(basicfeatures )
 vignette("AquaEnv")
 edit(vignette("AquaEnv"))
 browseURL(paste(system.file(package="AquaEnv"), "/doc", sep=""))
+
+## show index file of package vignettes and documentation files
+browseURL(paste(system.file(package="AquaEnv"), "/doc/index.html", sep=""))
+
+## show documentation about private functions in the packet
+browseURL(paste(system.file(package="AquaEnv"), "/doc/AquaEnv-PrivateFunctions.pdf", sep=""))
+
+## show documentation about physical-chemical constants and formulae used in the packet
+browseURL(paste(system.file(package="AquaEnv"), "/doc/AquaEnv-ConstantsAndFormulae.pdf", sep=""))
 }
 }
 
