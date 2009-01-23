@@ -579,7 +579,6 @@ A two dimensional object of class \textit{aquaenv} can be visualized using the \
 For convenience of the user, the default setting for the \texttt{plot} function for an object of class \textit{aquaenv} results in a
 new plotting device being opened. Setting the flag \texttt{newdevice} to \texttt{FALSE} prevents that.
 
-\vspace*{-2cm}
 <<Plotall, fig=TRUE, echo=TRUE, width=13, height=10>>=
 plot(ae, xval=t, xlab="t/(deg C)", newdevice=FALSE)
 @ 
@@ -1010,8 +1009,10 @@ The model is solved
 <<SinglPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
 with (as.list(parameters),
       {
-        H_init       <<- 10^(-(aquaenv(S=S, t=t, SumCO2=SumCO2_io, SumNH4=SumNH4_io, TA=TA_io, speciation=FALSE)$pH))
-        initialstate <<- c(O2=O2_io, NO3=NO3_io, SumNH4=SumNH4_io, SumCO2=SumCO2_io, TA=TA_io, H=H_init, H_stoich=H_init)
+        H_init       <<- 10^(-(aquaenv(S=S, t=t, SumCO2=SumCO2_io, SumNH4=SumNH4_io, TA=TA_io, 
+                                       speciation=FALSE)$pH))
+        initialstate <<- c(O2=O2_io, NO3=NO3_io, SumNH4=SumNH4_io, SumCO2=SumCO2_io, TA=TA_io, H=H_init, 
+                           H_stoich=H_init)
         times        <<- c(0:modeltime)
         output       <<- as.data.frame(vode(initialstate, times, boxmodel, parameters, hmax=1))[-1,]        
       })
