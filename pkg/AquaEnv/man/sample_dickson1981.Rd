@@ -1,8 +1,9 @@
 \name{sample_dickson1981}
 \alias{sample_dickson1981}
 \title{sample\_dickson1981}
-\description{PUBLIC dataset: theoretical titration curve for TA determination as given in table 1 of Dickson1981}
-\details{Metadata:
+\description{PUBLIC dataset: theoretical titration curve for TA
+  determination as given in table 1 of Dickson1981}
+\describe{Meta-data:
   \item{x-value}{mass of titrant added (in g)}
   \item{y-value}{pH measured on the free proton scale}
   \item{t}{25 degC}

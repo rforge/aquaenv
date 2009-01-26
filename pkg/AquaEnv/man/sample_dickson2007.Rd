@@ -2,7 +2,7 @@
 \alias{sample_dickson2007}
 \title{sample\_dickson2007}
 \description{PUBLIC dataset: titration curve for TA determination as given on p. 11 of SOP3b in  Dickson2007}
-\details{Metadata:
+\describe{Metadata:
   \item{x-value}{mass of titrant added (in cubic centimeters)}
   \item{y-value}{E in V}
   \item{t}{24.25 degC}
