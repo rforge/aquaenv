@@ -1663,7 +1663,7 @@ plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red", xl
 \paragraph{Test with generated data from literature}$\,$\\
 
 \cite{Dickson1981} provided a synthetic dataset to test total alkalinity fitting programs. This dataset is included in \aq$\,$ as
-\texttt{sample\_dickson}.
+\texttt{sample\_dickson1981}.
 Following quantities are given
 
 <<TAfit15, fig=FALSE, echo=TRUE>>=
@@ -1679,7 +1679,7 @@ Note that all concentrations are in mol/kg-solution and the mass of the sample i
 calculated from its ionic strenght of 0.3 mol/kg-soln.\\
 
 \noindent
-In the original dataset as represented in \texttt{sample\_dickson}, the mass of titrant is given in g which needs to be converted to kg
+In the original dataset as represented in \texttt{sample\_dickson1981}, the mass of titrant is given in g which needs to be converted to kg
 <<TAfit16, fig=FALSE, echo=TRUE>>=
 sam <- cbind(sample_dickson1981[,1]/1000, sample_dickson1981[,2]) # convert mass of titrant from g to kg
 @ 
@@ -2039,7 +2039,7 @@ To be consistent with \citet{DOE1994} \textbf{molin} concentrations (mol/kg-solu
 \end{footnotesize}
 \noindent
 The values for \texttt{K\_W},\texttt{K\_HSO4}, \texttt{K\_HF}, \texttt{K\_CO2}, \texttt{K\_HCO3}, \texttt{K\_BOH3},  \texttt{K\_NH4},  \texttt{K\_H2S},  \texttt{K\_H3PO4}, \texttt{K\_H2PO4}, \texttt{K\_HPO4}, \texttt{K\_SiOH4}, \texttt{K\_SiOOH3},  \texttt{Ksp\_calcite}, \texttt{Ksp\_aragonite} obtained as functions of 
-salinity \texttt{S} and temperature \texttt{t} from the above references are pressure corrected using the given depth \texttt{d} and the calculated hydrostatic pressure \texttt{hydroP} according to \citet{Millero1995} 
+salinity \texttt{S} and temperature \texttt{t} from the above references are pressure corrected using the gauge pressure \texttt{p} according to \citet{Millero1995} 
 with corrections by \citet{Lewis1998}.\\
 
 \noindent
