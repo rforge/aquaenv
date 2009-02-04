@@ -7,8 +7,8 @@
   \cr
   Meta-data: \cr
   \tabular{ll}{
-  \emph{x-value} \tab {mass of titrant added (in g)} \cr
-  \emph{y-value} \tab {pH measured on the free proton scale} \cr
+  \emph{x-value} \tab mass of titrant added (in g) \cr
+  \emph{y-value} \tab pH measured on the free proton scale \cr
     }
   \tabular{lll}{
   \emph{t} \tab 25 \tab degC \cr

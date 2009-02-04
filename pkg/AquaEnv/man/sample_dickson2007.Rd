@@ -7,8 +7,8 @@
   \cr
   Metadata:\cr
   \tabular{ll}{
-  \emph{x-value} \tab {mass of titrant added (in cubic centimeters)} \cr
-  \emph{y-value} \tab {E in V} \cr
+  \emph{x-value} \tab mass of titrant added (in cubic centimeters) \cr
+  \emph{y-value} \tab E in V \cr
   }
   \tabular{lll}{
   \emph{t} \tab 24.25  \tab degC \cr
