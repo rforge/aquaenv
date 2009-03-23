@@ -13,8 +13,8 @@
   \tabular{lll}{
   \emph{t} \tab 25 \tab degC \cr
   \emph{S} \tab 35 \tab  \cr
-  \emph{mass\_sample}} \tab 200 \tab g \cr
-  \emph{conc\_titrant}} \tab 0.3000 \tab mol/kg-soln \cr
+  \emph{mass\_sample} \tab 200 \tab g \cr
+  \emph{conc\_titrant} \tab 0.3000 \tab mol/kg-soln \cr
   \emph{TA} \tab 0.00245 \tab mol/kg-soln \cr
   \emph{SumCO2} \tab 0.00220 \tab mol/kg-soln \cr
   \emph{SumBOH3} \tab 0.00042 \tab mol/kg-soln \cr
