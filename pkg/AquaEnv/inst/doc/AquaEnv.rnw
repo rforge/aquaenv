@@ -777,7 +777,7 @@ This can be illustrated with an example. (For information about how to set up a 
 \noindent
 A list of parameters is specified
 \begin{scriptsize}
-<<OrdDynModParamList, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<OrdDynModParamList, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 parameters <- list(             
        S          = 25    , # psu       
        t_min     = 5     , # degrees C
@@ -813,7 +813,7 @@ A model function is defined which will be executed every timestep of the numeric
 is created in each timestep, some of its elements are used to calculated kinetic rate expressions and the whole object is returned as output.
 
 \begin{scriptsize}
-<<OrdDynModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<OrdDynModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 boxmodel <- function(timestep, currentstate, parameters)
 {
   with (
@@ -871,10 +871,10 @@ boxmodel <- function(timestep, currentstate, parameters)
 @ 
 \end{scriptsize}
 
-The model is solved
+The model is solved. 
 
 \begin{scriptsize}
-<<OrdDynModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<OrdDynModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 with (as.list(parameters),
       {
         initialstate <<- c(O2=O2_io, NO3=NO3_io, SumNH4=SumNH4_io, SumCO2=SumCO2_io, TA=TA_io)
@@ -885,8 +885,11 @@ with (as.list(parameters),
 \end{scriptsize}
 
 and the output can be plotted in the same way as a two dimensional object of class \textit{aquaenv} by converting it 
-to an object of class \textit{aquaenv} using the \texttt{from.data.frame} flag of the function \texttt{aquaenv}
-<<OrdDynModePlotting, fig=TRUE, echo=TRUE, width=13, height=10>>=
+to an object of class \textit{aquaenv} using the \texttt{from.data.frame} flag of the function \texttt{aquaenv}.
+(Please note that due to runtime constraints of the vignette for this package, this model is not run during construction of the vignette 
+and, therefore, no resulting plot of the following code chunk is included. The user can generate the plot by extracting and executing the relevant code-chunks.)
+
+<<OrdDynModePlotting, echo=TRUE, eval=FALSE>>=
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(11,10), newdevice=FALSE) 
 @ 
 
@@ -1056,7 +1059,7 @@ plot(output$DSAstoichpH, ylim=ylim, type="l", col="blue", xlab="", ylab="")
            
 A list of parameters
 \begin{scriptsize}
-<<ImplicitPHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<ImplicitPHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 parameters <- list(             
     t           = 15        , # degrees C
     S           = 35        , # psu       
@@ -1076,7 +1079,7 @@ parameters <- list(
 
 The model function
 \begin{scriptsize}
-<<ImplicitPHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<ImplicitPHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 boxmodel <- function(timestep, currentstate, parameters)
 {
   with (
@@ -1105,7 +1108,7 @@ boxmodel <- function(timestep, currentstate, parameters)
 
 Solving the model
 \begin{scriptsize}
-<<ImplicitPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<ImplicitPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 with (as.list(parameters),
       {
         initialstate <<- c(SumCO2=SumCO2_t0, TA=TA_t0)
@@ -1115,8 +1118,11 @@ with (as.list(parameters),
 @ 
 \end{scriptsize}
 
-Visualizing the output
-<<ImplicitPHModPlotting, fig=TRUE, echo=TRUE, width=10, height=5>>=
+Visualizing the output.
+(Please note that due to runtime constraints of the vignette for this package, this model is not run during construction of the vignette 
+and, therefore, no resulting plot of the following code chunk is included. The user can generate the plot by extracting and executing the relevant code-chunks.)
+
+<<ImplicitPHModPlotting, echo=TRUE, eval=FALSE>>=
 what <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH")
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="", mfrow=c(2,3), size=c(12,5), what=what, newdevice=FALSE) 
 @ 
@@ -1128,7 +1134,7 @@ plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="", mfrow=
 
 A list of parameters       
 \begin{scriptsize}
-<<ExplicitPHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<ExplicitPHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 parameters <- list(             
     S           = 35        , # psu       
     t           = 15        , # degrees C
@@ -1148,7 +1154,7 @@ parameters <- list(
 
 The model function
 \begin{scriptsize}
-<<ExplicitPHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<ExplicitPHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 boxmodel <- function(timestep, currentstate, parameters)
 {
   with (
@@ -1180,7 +1186,7 @@ boxmodel <- function(timestep, currentstate, parameters)
 
 Solving the model
 \begin{scriptsize}
-<<ExplicitPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<ExplicitPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 with (as.list(parameters),
       {
         aetmp <- aquaenv(S=S, t=t, SumCO2=SumCO2_t0, TA=TA_t0, SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0)
@@ -1193,14 +1199,17 @@ with (as.list(parameters),
 @ 
 \end{scriptsize}
 
-Visualizing the output
-<<ExplicitPHModPlotting1, fig=TRUE, echo=TRUE, width=10, height=5>>=
+Visualizing the output.
+(Please note that due to runtime constraints of the vignette for this package, this model is not run during construction of the vignette 
+and, therefore, no resulting plot of the following two code chunks is included. The user can generate the plot by extracting and executing the relevant code-chunks.)
+
+<<ExplicitPHModPlotting1, echo=TRUE, eval=FALSE>>=
 what   <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH", "dHRc", "dHRp")
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(3,3), size=c(15,10), what=what, newdevice=FALSE) 
 @ 
 
 Cumulatively plotting the influences of the two processes on the pH
-<<ExplicitPHModPlotting2, fig=TRUE, echo=TRUE, width=10, height=5>>=
+<<ExplicitPHModPlotting2, echo=TRUE, eval=FALSE>>=
 what <- c("dHRc", "dHRp")
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", what=what, ylab="mol-H/(kg-soln*d)", legendposition="topright", cumulative=TRUE, newdevice=FALSE) 
 @ 
@@ -1212,7 +1221,7 @@ plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", 
            
 A list of parameters
 \begin{scriptsize}
-<<FracStoichModParams, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<FracStoichModParams, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 parameters <- list(             
      S           = 35        , # psu       
      t           = 15        , # degrees C
@@ -1232,7 +1241,7 @@ parameters <- list(
 
 The model function
 \begin{scriptsize}
-<<FracStoichModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<FracStoichModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 boxmodel <- function(timestep, currentstate, parameters)
 {
   with (
@@ -1267,7 +1276,7 @@ boxmodel <- function(timestep, currentstate, parameters)
 
 Solving the model
 \begin{scriptsize}
-<<FracStoichModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+<<FracStoichModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 with (as.list(parameters),
       {
         aetmp <- aquaenv(S=S, t=t, SumCO2=SumCO2_t0, TA=TA_t0, SumSiOH4=0, 
@@ -1281,8 +1290,11 @@ with (as.list(parameters),
 @
 \end{scriptsize}
 
-Visualizing the output
-<<FracStoichModPlotting, fig=TRUE, echo=TRUE, width=10, height=5>>=
+Visualizing the output.
+(Please note that due to runtime constraints of the vignette for this package, this model is not run during construction of the vignette 
+and, therefore, no resulting plot of the following code chunk is included. The user can generate the plot by extracting and executing the relevant code-chunks.)
+
+<<FracStoichModPlotting, echo=TRUE, eval=FALSE>>=
 what   <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH", "dHRc", "dHRp", "rhoc", "rhop")
 plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(3,4), size=c(15,10), what=what, newdevice=FALSE) 
 @ 
@@ -1384,29 +1396,31 @@ plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3,
 \subsubsection{Titration with NaOH}
 
 Similar to the titration with HCl, also a titration with NaOH can be simulated
+(Please note that due to runtime constraints of the vignette for this package, this titration simulation is not run during construction of the vignette 
+and, therefore, no resulting plots of the following code chunks is included. The user can generate the plots by extracting and executing the relevant code-chunks.)
 
-<<NaOHTit1, fig=FALSE, echo=TRUE>>=
+<<NaOHTit1, fig=FALSE, echo=TRUE, eval=FALSE>>=
 ae <- titration(aquaenv(S=35, t=15, SumCO2=0.0035, SumNH4=0.00002, pH=2), mass_sample=0.01, mass_titrant=0.02, conc_titrant=0.01, S_titrant=0.5, steps=50, type="NaOH")
 @ 
 Plottinge everything
-<<NaOHTit2, fig=FALSE, echo=TRUE>>=
+<<NaOHTit2, fig=FALSE, echo=TRUE, eval=FALSE>>=
 plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", mfrow=c(10,10))
 @ 
 
 Plotting selectively
-<<NaOHTit3, fig=FALSE, echo=TRUE>>=
+<<NaOHTit3, fig=FALSE, echo=TRUE, eval=FALSE>>=
 what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
 plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4))
 plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=c(12,8), mfrow=c(4,4))
 @ 
 
 Bjerrum plots
-<<NaOHTit4, fig=TRUE, echo=TRUE, width=13, height=10>>=
+<<NaOHTit4, echo=TRUE, eval=FALSE>>=
 what  <- c("CO2", "HCO3", "CO3")
 plot(ae, what=what, bjerrum=TRUE, newdevice=FALSE)
 @ 
 
-<<NaOHTit5, fig=TRUE, echo=TRUE, width=13, height=10>>=
+<<NaOHTit5, echo=TRUE, eval=FALSE>>=
 what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
 plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]), newdevice=FALSE)
 @ 
@@ -1515,7 +1529,7 @@ abline(h=0)
 
 One can see that the Gran functions actually are not linear. This is due to volume and salinity change effects during the titration.
 This can be overcome by either employing ``modified Gran functions'' \citep[see][]{Haraldsson1997} that correct for the volume changes or by using 
-a titration with a titrant with high concentrations and a large sample volume (Please not that here the value of the concentration of total
+a titration with a titrant with high concentrations and a large sample volume (Please note that here the value of the concentration of total
 alkalinity and total carbonate does not equal their total amount and need to be converted with the factor 100/3)
 
 
@@ -1572,8 +1586,11 @@ fit1
 Thus, we see that \texttt{TAfit} calculates the correct SumCO2 and TA values.\\
 
 \noindent
-Trying the \cite{Lueker2000} (K\_CO2 and K\_HCO3) and \cite{Perez1987} (K\_HF) values
-<<TAfit6a, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+Trying the \cite{Lueker2000} (K\_CO2 and K\_HCO3) and \cite{Perez1987} (K\_HF) values.
+(Please note that due to runtime constraints of the vignette for this package, this calculation is not run during construction of the vignette. 
+ The user can perform the calculation by extracting and executing the relevant code-chunks.)
+
+<<TAfit6a, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
 initial_ae_ <- aquaenv(S=35, t=15, SumCO2=0.002, TA=0.0022,
                        k1k2="lueker", khf="perez")
 ae_         <- titration(initial_ae_, mass_sample=0.01, mass_titrant=0.003, 
@@ -1591,7 +1608,7 @@ fit1_
 otherwise we would need to calculate the S profile for the titration extra to use it to convert to the total scale in the following step.)
 However, to do so we first need to convert our pH curve to the seawater pH scale. According to \cite[p.7, ch.4, sop.3]{DOE1994} and \cite{Dickson2007}, the Nernst equation relates E to 
 the total proton concentration.
-<<TAfit7, fig=FALSE, echo=TRUE>>=
+<<TAfit7, fig=FALSE, echo=TRUE, eval=FALSE>>=
 ae <- titration(initial_ae, mass_sample=0.01, mass_titrant=0.003, conc_titrant=0.01,
                 steps=20, seawater_titrant=TRUE)
 titcurve    <- cbind(ae$delta_mass_titrant, ae$pH)
@@ -1600,7 +1617,9 @@ Etitcurve   <- cbind(ae$delta_mass_titrant, (0.4 - ((PhysChemConst$R/10)*initial
 @ 
 Again, \texttt{TAfit} can be executed, this time also calculating E0. Note that the flag \texttt{verbose=TRUE} causes
 \texttt{TAfit} to show the progress of the fitting procedure in a plot window.
-<<TAfit8, fig=FALSE, echo=TRUE>>=
+(Please note that due to runtime constraints of the vignette for this package, this calculation is not run during construction of the vignette. 
+ The user can perform the calculation by extracting and executing the relevant code-chunks.)
+<<TAfit8, fig=FALSE, echo=TRUE, eval=FALSE>>=
 fit2 <- TAfit(initial_ae, Etitcurve, conc_titrant=0.01, mass_sample=0.01, Evals=TRUE, verbose=TRUE, seawater_titrant=TRUE)
 fit2     
 @   
@@ -1626,15 +1645,18 @@ fit4
 @ 
 
 Furthermore, TA, SumCO2, K\_CO2 and E0 can be fitted at the same time.
-<<TAfit11, fig=FALSE, echo=TRUE>>=
+(Please note that due to runtime constraints of the vignette for this package, this calculation is not run during construction of the vignette. 
+ The user can perform the calculation by extracting and executing the relevant code-chunks.)
+<<TAfit11, fig=FALSE, echo=TRUE, eval=FALSE>>=
 Etitcurve <- cbind(titcurve[,1], (0.4 - ((PhysChemConst$R/10)*initial_ae$T/PhysChemConst$F)*log(10^-titcurve[,2])))
 fit5 <- TAfit(initial_ae, Etitcurve, conc_titrant=0.01, mass_sample=0.01, K_CO2fit=TRUE, seawater_titrant=TRUE, Evals=TRUE)
 fit5
 @ 
 
 Sometimes, the obtained titration curve is not equally spaced on the x axis. \texttt{TAfit} can deal with such curves if the flag
-\texttt{equalspaced} is set to \texttt{FALSE}
-<<TAfit12, fig=FALSE, echo=TRUE>>=
+\texttt{equalspaced} is set to \texttt{FALSE}. (Please note that due to runtime constraints of the vignette for this package, this calculation is not run during construction of the vignette. 
+ The user can perform the calculation by extracting and executing the relevant code-chunks.)
+<<TAfit12, fig=FALSE, echo=TRUE, eval=FALSE>>=
 neqsptitcurve <- rbind(titcurve[1:9,], titcurve[11:20,])
 fit6 <- TAfit(initial_ae, neqsptitcurve, conc_titrant=0.01, mass_sample=0.01, seawater_titrant=TRUE, equalspaced=FALSE, verbose=TRUE, debug=TRUE)
 fit6
@@ -1643,7 +1665,7 @@ fit6
 Finally, some "noise" is added to the generated data
 <<TAfit13, fig=FALSE, echo=TRUE>>=
 noisetitcurve <- titcurve * rnorm(length(titcurve), mean=1, sd=0.01) #one percent error possible
-fit7 <- TAfit(initial_ae, noisetitcurve, conc_titrant=0.01, mass_sample=0.01, seawater_titrant=TRUE, verbose=TRUE)
+fit7 <- TAfit(initial_ae, noisetitcurve, conc_titrant=0.01, mass_sample=0.01, seawater_titrant=TRUE, verbose=TRUE, debug=TRUE)
 fit7
 @ 
 
@@ -1762,62 +1784,8 @@ dicksonfit3
 @ 
 reveals that now exactly the same values are calculated as are given in \cite{Dickson1981}.
 
-\paragraph{Test with data from literature}
-Fitting test data from \cite{Dickson2007} (SOP3b, page 11).
 
-<<TAfitDickson2007_01, fig=FALSE, keep.source=TRUE>>=
-mass_sample     <- 140.32 / 1000 #kg
-density_titrant <- 1.02393/1000  #kg/ml
-conc_titrant    <- 0.10046       #mol/kg-soln
 
-sample <- cbind(sample_dickson2007[,1] * density_titrant,  sample_dickson2007[,2])
-
-fit <- TAfit(aquaenv(S=33.923, t=24.25), sample, 
-             mass_sample=mass_sample, conc_titrant=conc_titrant,
-             datxbegin=sample[,1][[1]], verbose=TRUE, debug=TRUE, 
-             Evals=TRUE, electrode_polarity="neg", k1k2="lueker", 
-             khf="perez", seawater_titrant=TRUE,
-             SumCO2Zero=TRUE)
-fit
-@ 
-One can see that with the values given in \cite{Dickson2007} being 2260.06 umol/kg-soln and 394.401 mV that there is a small
-difference between the \cite{Dickson2007} values and the values obtained here. This is in spite of the fact that \aq$\;$ has been 
-checked for consistancy against \cite{Dickson2007} in terms of every constant, formula and K value.
-
-\noindent
-We can try to recreate the curve given in \cite{Dickson2007} with a theoretical titration in \aq$\;$
-<<TAfitDickson2007_02, fig=FALSE>>=
-testtit <- titration(aquaenv(S=33.923, t=24.25, SumCO2=0, TA=0.00226006, SumBOH3=0), mass_sample=mass_sample,
-                     conc_titrant=conc_titrant, k1k2="lueker", khf="perez", mass_titrant=sample[,1][[length(sample[,1])]], steps=90, seawater_titrant=TRUE)
-@ 
-
-E is related to total pH \citep{Dickson2007} via the Nerst equation
-<<TAfitDickson2007_02, fig=FALSE>>=
-testtotpH <- convert(testtit$pH, "pHscale", "free2tot", S=33.923, t=24.25)
-testE  <- -(-0.394401 - (((PhysChemConst$R/10)*testtit$T[[1]])/PhysChemConst$F)*log(10^(-testtotpH)))
-@ 
-That lets us visualize the whole curve
-<<TAfitDickson2007_03, fig=TRUE>>=
-ylim <- range(testE, sample[,2])
-xlim <- range(testtit$delta_mass_titrant, sample[,1])
-plot(testtit$delta_mass_titrant, testE, type="l", xlim=xlim, ylim=ylim, xlab="Delta mass titrant / kg", ylab="E/V")
-par(new=TRUE)
-plot(sample[,1], sample[,2], type="l", col="red", xlim=xlim, ylim=ylim, xlab="", ylab="")
-@
-just the part to be fitted
-<<TAfitDickson2007_04, fig=TRUE>>=
-ylim <- range(testE[71:91], sample[,2])
-xlim <- range(testtit$delta_mass_titrant[71:91], sample[,1])
-plot(testtit$delta_mass_titrant[71:91], testE[71:91], type="l", xlim=xlim, ylim=ylim, xlab="Delta mass titrant / kg", ylab="E/V")
-par(new=TRUE)
-plot(sample[,1], sample[,2], type="l", col="red", xlim=xlim, ylim=ylim, xlab="", ylab="")
-@ 
-and the difference between the curves
-<<TAfitDickson2007_05, fig=TRUE>>=
-plot(testE[71:91]-sample[,2], xlab="Delta mass titrant / kg", ylab="E/V")
-@ 
-That shows that the curves are slightly different. However, with an offset for E0 of 0.26 mV the fit would be rather good.
-Upt to now, it is unclear where this offset comes from, this is something to be looked into.
 
 
 \section{Extending \aq}
