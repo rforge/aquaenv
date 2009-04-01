@@ -1,6 +1,6 @@
 Package: AquaEnv
-Version: 0.8
-Date: 2009-04-01
+Version: 0.7
+Date: 2009-03-24
 Title: AquaEnv - an integrated development toolbox for aquatic chemical model generation
 Author: Andreas F. Hofmann, Karline Soetaert, Filip J.R. Meysman
 Maintainer: Andreas F. Hofmann <a.hofmann@nioo.knaw.nl>
