@@ -157,16 +157,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
 
         if (is.null(k_hf))
           {
-            if (khf=="perez")  # "perez": using seacarb
-              {                        # To convert from the total to the free scale, only K_HSO4 is needed. That's why we do not need to call "convert" with
-                                       # the option khf="perez" here. Otherwise the cat would also bite its own tail
-                aquaenv[["K_HF"]]   <- convert(Kf(S=S, T=t, P=aquaenv[["p"]], kf="pf"), "KHscale", "tot2free", S=S, t=t, p=p,
-                                               SumH2SO4=(SumH2SO4 + SumH2SO4_Koffset), SumHF=(SumHF + SumHF_Koffset))
-              }
-            else # if(khf=="dickson")
-              {
-                aquaenv[["K_HF"]]    <- K_HF(S, t, p)
-              }
+            aquaenv[["K_HF"]]    <- K_HF(S, t, p, SumH2SO4=(SumH2SO4 + SumH2SO4_Koffset), SumHF=(SumHF + SumHF_Koffset), khf=khf)
           }
         else
         {
@@ -175,16 +166,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
 
         if (is.null(k_co2))
           {
-            if (k1k2=="lueker") # "lueker": using seacarb 
-              {  # To convert from the total to the free scale, only K_HSO4 is needed. That's why we do not need to call "convert" with the option khf set
-                aquaenv[["K_CO2"]]   <- convert(K1(S=S, T=t, P=aquaenv[["p"]], k1k2="l"), "KHscale", "tot2free", S=S, t=t, p=p,
-                                                SumH2SO4=(SumH2SO4 + SumH2SO4_Koffset), SumHF=(SumHF + SumHF_Koffset))
-              }
-            else #if (k1k2=="roy")
-              {
-                aquaenv[["K_CO2"]]    <- K_CO2 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
-              }
-            
+            aquaenv[["K_CO2"]]    <- K_CO2 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, k1k2=k1k2)
           }
         else
           {
@@ -193,15 +175,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
 
         if (is.null(k_hco3))
           {
-            if (k1k2=="lueker") # "lueker" using seacarb
-              {
-                aquaenv[["K_HCO3"]]  <- convert(K2(S=S, T=t, P=aquaenv[["p"]], k1k2="l"), "KHscale", "tot2free", S=S, t=t, p=p,
-                                                SumH2SO4=(SumH2SO4 + SumH2SO4_Koffset), SumHF=(SumHF + SumHF_Koffset))
-              }
-            else #if (k1k2=="roy")
-              {  # To convert from the total to the free scale, only K_HSO4 is needed. That's why we do not need to call "convert" with the option khf set
-                aquaenv[["K_HCO3"]]  <- K_HCO3(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
-              }
+            aquaenv[["K_HCO3"]]  <- K_HCO3(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, k1k2=k1k2)
           }
         else
           {

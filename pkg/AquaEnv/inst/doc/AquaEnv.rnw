@@ -1930,6 +1930,7 @@ Millero1981      & \cite{Millero1981}\\
 Millero1988      & \cite{Millero1988}\\
 Millero1995      & \cite{Millero1995}\\
 Millero1995a     & \cite{Millero1995a}\\
+Millero2006      & \cite{Millero2006}\\
 Mucci1983        & \cite{Mucci1983}\\
 Perez1987a       & \cite{Perez1987a}\\
 Riordan2005      & \cite{Riordan2005}\\
@@ -1974,7 +1975,7 @@ Constant type (stoichiometric) and  concentration unit (mol/kg-$\rm H_2O$ conver
 In \citet[chapter 5, p. 12]{DOE1994} the total scale is stated for the formula for high salinities and thus can be inferred for the formula for low salinities. 
 The scale is also indirectly stated for both formulations in the original reference \citet{Roy1993b}. Note that in \citet{Roy1993b} a function for fresh water (based on \cite{Millero1979} which in turn is on a temperature relationship from \cite{Harned1943} and \cite{Harned1941} respectively) and a function for seawater is derived. In \citet{Millero1995} it is stated that for S$<$5 the fresh water formula (based on \cite{Millero1979}) should be used and for S$>=$5 the seawater formula derived in \citet{Roy1993b}. However, both formulations do not always 
 intersect at \texttt{S}=5. The true intersection with respect to salinity \texttt{S} is a function of temperature \texttt{t}. Here, we first calculate this intersection by
-numerical root finding and then decide which formulation to use. This practise results in a continuous function with respect to \texttt{S}. (Note that there is a typesetting error in \citet{Roy1993b}: one of the numerical values for the function for $\rm K^*_{CO_2}$ is given as 310.48919, but correct is 2310.48919. However, in \citet{Millero1995} this value is stated correctly.) In \textsf{AquaEnv}, it is also possible to use the constants according to \cite{Lueker2000}.\\
+numerical root finding and then decide which formulation to use. This practise results in a continuous function with respect to \texttt{S}. (Note that there is a typesetting error in \citet{Roy1993b}: one of the numerical values for the function for $\rm K^*_{CO_2}$ is given as 310.48919, but correct is 2310.48919. However, in \citet{Millero1995} this value is stated correctly.) In \textsf{AquaEnv}, it is also possible to use the constants according to \cite{Lueker2000} and \cite{Millero2006}.\\
 \texttt{K\_BOH3}     & \citet[p. 763]{Dickson1990} (original, but mol/kg-$\rm H_2O$ version), \citet[ch. 5, p. 14]{DOE1994}, \citet[p. 262]{Zeebe2001}, \citet[p.669]{Millero1995} (mol/kg-$\rm H_2O$ version) , agrees with data in \citet{Roy1993a}.
 Constant type (stoichiometric) and  concentration unit (mol/kg-solution): \citet[chapter 5, p. 14]{DOE1994}, pH scale (total): \citet[chapter 5, p. 12]{DOE1994} and \citet[p.263]{Zeebe2001}. \\
 \texttt{K\_NH4}      & \citet{Millero1995a} (original reference), \citet[p.671]{Millero1995}. Constant type (stoichiometric) and concentration unit (mol/kg-solution): \citet[p.671]{Millero1995}, pH scale (seawater, converted to free here):  

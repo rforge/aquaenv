@@ -2,13 +2,16 @@
 \alias{K_CO2}
 \title{K\_CO2}
 \description{PUBLIC function: calculates the dissociation constant of CO2}
-\usage{K_CO2(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)}
+\usage{K_CO2(S, t, p=0, SumH2SO4=NULL, SumHF=NULL, k1k2="roy")}
 \arguments{
   \item{S }{salinity in practical salinity units (i.e. no unit)}
   \item{t }{temperature in degrees centigrade}
   \item{p }{gauge pressure (total pressure minus atmospheric pressure) in bars}
   \item{SumH2SO4 }{total sulfate concentration in mol/kg-solution (calculated from S if not supplied)}
-  \item{SumHF }{total fluoride concentration in mol/kg-solution (calculated from S if not supplied)}
+  \item{SumHF }{total fluoride concentration in mol/kg-solution
+    (calculated from S if not supplied)}
+  \item{k1k2 }{"roy", "lueker", or "millero": specifies the S, t,
+    dependency to be used. Default is "roy". (see section below for references)}
 }
 \value{
   the dissociation constant of CO2 in mol/kg-solution on the free proton pH scale
@@ -20,8 +23,8 @@ K_CO2(S=35, t=15, p=10, SumH2SO4=0.03)
 plot(K_CO2(35, 1:25), xlab="temperature / degC")
 }
 \author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
-\references{Roy1993b, DOE1994, Millero1995, Zeebe2001
-(Note that for a constant calculated from Lueker2000, one needs to use
-either aquaenv(k1k2="lueker")\$K\_CO2 or seacarb)}
+\references{k1k2 = "roy": Roy1993b, DOE1994, Millero1995, Zeebe2001;
+  k1k2 = "lueker": Lueker2000;
+  k1k2 = "millero": Millero2006}
 \keyword{misc}
 
