@@ -191,7 +191,7 @@ Maximally, i.e., if the enough input data is supplied to define the pH of the sy
 \texttt{SumBOH3}     & mol/kg-soln                  & $[\rm \sum B(OH)_3]$, total borates concentration\\
 \texttt{SumH2SO4}    & mol/kg-soln                  & $[\rm \sum H_2SO_4]$, total sulfate concentration\\
 \texttt{SumHF}       & mol/kg-soln                  & $[\rm \sum HF]$, total fluoride concentration\\
-\texttt{SumBr}       & mol/kg-soln                  & $[\rm \sum HBr]$, total bromide concentration\\
+\texttt{Br}          & mol/kg-soln                  & $[\rm Br^-]$, bromide concentration\\
 \texttt{ClConc}      & mol/kg-soln                  & $[\rm Cl^-]$, chloride concentration\\
 \texttt{Na}          & mol/kg-soln                  & $[\rm Na^{+}]$, sodium concentration\\
 \texttt{Mg}          & mol/kg-soln                  & $[\rm Mg^{2+}]$, magnesium concentration\\
@@ -207,8 +207,10 @@ Maximally, i.e., if the enough input data is supplied to define the pH of the sy
 \texttt{sws2tot}     & -                            & pH conversion factor: seawater scale to total scale\\ 
 \texttt{K0\_CO2}     & mol/(kg-soln*atm)            & Henry's constant for $\rm CO_2$\\ 
 \texttt{K0\_O2}      & mol/(kg-soln*atm)            & Henry's constant for $\rm O_2$\\ 
-\texttt{CO2\_sat}    & mol/kg-soln                  & $\rm CO_2$ saturation concentration at an atmospheric partial pressure/fugacity of Fugacity\$CO2\\
-\texttt{O2\_sat}     & mol/kg-soln                  & $\rm O_2$ saturation concentration at an atmospheric partial pressure/fugacity of Fugacity\$O2\\
+\texttt{fCO2atm}     & atm                          & atmospheric fugacity of CO$_2$\\
+\texttt{fO2atm}      & atm                          & atmospheric fugacity of O$_2$\\
+\texttt{CO2\_sat}    & mol/kg-soln                  & $\rm CO_2$ saturation concentration at an atmospheric fugacity of \texttt{fCO2atm}\\
+\texttt{O2\_sat}     & mol/kg-soln                  & $\rm O_2$ saturation concentration at an atmospheric  fugacity of \texttt{fO2atm}\\
 \texttt{K\_W}        &(mol/kg-soln)$^2$, free pH scale & stoichiometric equilibrium ion product of \\
             &                              & $\rm H_2O$: $\rm K^*_W = [H^+][OH-]$\\
 \texttt{K\_HSO4}     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
@@ -249,7 +251,7 @@ Maximally, i.e., if the enough input data is supplied to define the pH of the sy
             &                                 & $\rm Ksp^*_{ara} = [Ca^{2+}][CO_3^{2-}]$\\
 \texttt{TA}          & mol/kg-soln                     & [TA], total alkalinity\\
 \texttt{pH}          & -, free scale                   & pH\\              
-\texttt{pCO2}        & atm,                            & partial pressure (~fugacity) of $\rm CO_2$ in the water\\
+\texttt{fCO2}        & atm,                            & fugacity of $\rm CO_2$ in the water (i.e. in a small volume of air equilibrated with the water)\\
 \texttt{CO2}         & mol/kg-soln                     & $[\rm CO_2]$\\         
 \texttt{HCO3}        & mol/kg-soln                     & $[\rm HCO_3^-]$\\         
 \texttt{CO3}         & mol/kg-soln                     & $[\rm CO_3^{2-}]$\\         
@@ -410,7 +412,7 @@ names(ae)
 
 \subsubsection{Defining the complete \textit{aquaenv} system in different ways}
 If enough information is given to define a complete speciation, i.e. either one of the pairs
-SumCO2 and pH, SumCO2 and TA, SumCO2 and CO2, or SumCO2 and pCO2, 
+SumCO2 and pH, SumCO2 and TA, SumCO2 and CO2, or SumCO2 and fCO2, 
 a full \textit{aquaenv} system can be defined.
 
 
@@ -421,7 +423,7 @@ p      <- 10
 SumCO2 <- 0.0020
 pH     <- 8
 TA     <- 0.002142233
-pCO2   <- 0.0005272996
+fCO2   <- 0.0005272996
 CO2    <- 2.031241e-05
 
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH)
@@ -453,7 +455,7 @@ Furtermore all the quantities needed for the explicit pH modelling approaches as
 setting the flag \texttt{dsa} to \texttt{TRUE}. The revelle factor can be calculated using the flag \texttt{revelle}.
 
 <<DSAAquaenv, fig=FALSE, echo=TRUE>>=
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, pCO2=pCO2, dsa=TRUE, revelle=TRUE)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, fCO2=fCO2, dsa=TRUE, revelle=TRUE)
 ae$dTAdH
 ae$revelle
 @ 
@@ -462,12 +464,12 @@ If an ambivalent situation is created because the user enters too much informati
 
 \begin{scriptsize}
 <<ErrorMessagesAquaenv, fig=FALSE, echo=TRUE>>=
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2, fCO2=fCO2)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, TA=TA)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, CO2=CO2)
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, fCO2=fCO2)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, CO2=CO2)
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, fCO2=fCO2)
 @ 
 \end{scriptsize}
 
@@ -476,10 +478,10 @@ ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, pCO2=pCO2)
 \subsubsection{Calculating $\rm [\sum CO_2]$} 
 
 
-$\rm [\sum CO_2]$ can be calculated by giving a constant pair of either pH and CO2, pH and pCO2, pH and TA, TA and CO2, or TA and pCO2  
+$\rm [\sum CO_2]$ can be calculated by giving a constant pair of either pH and CO2, pH and fCO2, pH and TA, TA and CO2, or TA and fCO2  
 
 <<SumCO2Calculating, fig=FALSE, echo=TRUE>>=
-pCO2   <- 0.0006943363
+fCO2   <- 0.0006943363
 CO2    <- 2.674693e-05
 pH     <- 7.884892
 TA     <- 0.0021
@@ -491,7 +493,7 @@ p <- 10
 ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, CO2=CO2)
 ae$SumCO2
 
-ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, fCO2=fCO2)
 ae$SumCO2
 
 ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, TA=TA)
@@ -500,7 +502,7 @@ ae$SumCO2
 ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, CO2=CO2)
 ae$SumCO2
 
-ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, fCO2=fCO2)
 ae$SumCO2
 @ 
 
@@ -658,7 +660,7 @@ ae$SumCO2
 Two further examples
 
 <<SumCO2CalcInputVecs2, fig=FALSE, echo=TRUE, eval=FALSE>>=
-ae <- aquaenv(S=20:30, t=15, SumCO2=NULL, pH=pH, pCO2=pCO2)
+ae <- aquaenv(S=20:30, t=15, SumCO2=NULL, pH=pH, fCO2=fCO2)
 plot(ae, xval=20:30, xlab="S")
 @ 
 
@@ -1348,7 +1350,7 @@ plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", mfrow=c(10,
 
 Then, a selection of elements can be plotted as a function of the added titrant mass, 
 <<HClTit3, fig=TRUE, echo=TRUE, width=13, height=10>>=
-what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "fCO2")
 plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4), newdevice=FALSE)
 @ 
 titrant concentration offset, or the moles of added titrant
@@ -1409,7 +1411,7 @@ plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", mfrow=c(10
 
 Plotting selectively
 <<NaOHTit3, fig=FALSE, echo=TRUE, eval=FALSE>>=
-what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "fCO2")
 plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4))
 plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=c(12,8), mfrow=c(4,4))
 @ 
@@ -1444,7 +1446,7 @@ plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", mfrow=c(10,
 
 Plotting selectively and with different elements for \texttt{xval}
 <<TextbookTit3, fig=FALSE, echo=TRUE, eval=FALSE>>=
-what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "fCO2")
 plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4))
 plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=c(12,8), mfrow=c(4,4))
 plot(ae, xval=ae$delta_conc_titrant, xlab="[HCl] offset added [mol/kg-soln]", what=what, size=c(12,8), mfrow=c(4,4))
@@ -1954,7 +1956,7 @@ atmospheric pressure \texttt{Pa} at sea level as well as the definition of total
 Note that the approximation I/(mol/kg-solution) $\approx$ 0.0199201 \; \texttt{S} is given in \citet[  p. 428.]{Millero1982}.
 This relationship converted into mol/kg-$\rm H_2O$ and the last digits adjusted (from 0.0199201 to 0.019924) results in the formula used here.\\
 density     & \citet{Millero1981} and \citet[chapter 5, p. 6f]{DOE1994}.\\
-\texttt{SumBr}, \texttt{ClConc}, \texttt{Na}, \texttt{Mg}, \texttt{Ca}, \texttt{K}, \texttt{Sr} & \citet[ chapter 5, p.11]{DOE1994}\\    
+\texttt{Br}, \texttt{ClConc}, \texttt{Na}, \texttt{Mg}, \texttt{Ca}, \texttt{K}, \texttt{Sr} & \citet[ chapter 5, p.11]{DOE1994}\\    
 \texttt{molal2molin} & \citet[ p.257]{Roy1993b}, and  \citet[chapter 5, p. 15]{DOE1994}\\
 \texttt{free2tot}, \texttt{tot2free}  & \citet[p.2302]{Dickson1984}, \citet[ chapter 4, p.16]{DOE1994}, \citet[p.57, 261]{Zeebe2001}\\
 \texttt{free2sws}, \texttt{tot2sws}, \texttt{sws2free}, \texttt{sws2tot} &  \citet[p.2303]{Dickson1984}, \citet[ p.57]{Zeebe2001}\\

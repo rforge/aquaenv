@@ -29,7 +29,7 @@ plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", mfrow=c(10,
 # plotting selectively
 size  <- c(12,8) #inches
 mfrow <- c(4,4)
-what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "fCO2")
 
 plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what=what, size=size, mfrow=mfrow, newdevice=FALSE)
 plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=size, mfrow=mfrow, newdevice=FALSE)
@@ -87,7 +87,7 @@ plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", mfrow=c(10
 # plotting selectively
 size  <- c(12,8) #inches
 mfrow <- c(4,4)
-what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "fCO2")
 
 plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", what=what, size=size, mfrow=mfrow, newdevice=FALSE)
 plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=size, mfrow=mfrow, newdevice=FALSE)
@@ -135,7 +135,7 @@ plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", mfrow=c(10,
 # plotting selectively
 size  <- c(12,8) #inches
 mfrow <- c(4,4)
-what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "pCO2")
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "fCO2")
 
 plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what=what, size=size, mfrow=mfrow, newdevice=FALSE)
 plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=size, mfrow=mfrow, newdevice=FALSE)

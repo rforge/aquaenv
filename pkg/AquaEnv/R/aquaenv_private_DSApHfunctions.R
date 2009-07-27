@@ -102,11 +102,11 @@ dTAdKdKdS <- function(ae)                     # object of class aquaenv
                     TAplus  <- c(TAplus, aquaenv(S=(S[[s]]+epsilon[[s]]), t=t, p=p[[pe]],
                                                  SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                  SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                 TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
+                                                 TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
                     TAminus <- c(TAminus, aquaenv(S=(S[[s]]-epsilon[[s]]), t=t, p=p[[pe]],
                                                   SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                   SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                  TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
+                                                  TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
                   }
               }
             return ((TAplus - TAminus)/(2*epsilon))  # derivative of [TA] with respect to changes in the dissociation constants (Ks) times the derivative of the dissociation constants with respect to salinity S
@@ -134,11 +134,11 @@ dTAdKdKdT <- function(ae)                     # object of class aquaenv
                     TAplus  <- c(TAplus, aquaenv(S=S[[s]], t=(t+epsilon), p=p[[pe]],
                                                  SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                  SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                 TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
+                                                 TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
                     TAminus <- c(TAminus, aquaenv(S=S[[s]], t=(t-epsilon), p=p[[pe]],
                                                   SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                   SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                  TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
+                                                  TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
                   }
               }
             return ((TAplus - TAminus)/(2*epsilon)) # derivative of [TA] with respect to changes in the dissociation constants (Ks) times the derivative of the dissociation constants with respect to temperature T
@@ -166,11 +166,11 @@ dTAdKdKdp <- function(ae)                     # object of class aquaenv
                     TAplus  <- c(TAplus, aquaenv(S=S[[s]], t=t, p=(p[[pe]]+epsilon[[pe]]),
                                                  SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                  SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                 TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
+                                                 TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
                     TAminus <- c(TAminus, aquaenv(S=S[[s]], t=t, p=(p[[pe]]-epsilon[[pe]]),
                                                   SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                   SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                  TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
+                                                  TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$TA)
                   }
               }
             return ((TAplus - TAminus)/(2*epsilon))  # derivative of [TA] with respect to changes in the dissociation constants (Ks) times the derivative of the dissociation constants with respect to depth d
@@ -198,12 +198,12 @@ dTAdKdKdSumH2SO4 <- function(ae)              # object of class aquaenv
                     TAplus  <- c(TAplus, aquaenv(S=S[[s]], t=t, p=p[[pe]],
                                                  SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                  SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                 TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, 
+                                                 TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, 
                                                  SumH2SO4_Koffset=epsilon[[s]], revelle=FALSE)$TA)
                     TAminus <- c(TAminus, aquaenv(S=S[[s]], t=t, p=p[[pe]],
                                                   SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                   SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                  TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, 
+                                                  TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, 
                                                   SumH2SO4_Koffset=-epsilon[[s]], revelle=FALSE)$TA)
                   }
               }
@@ -232,12 +232,12 @@ dTAdKdKdSumHF <- function(ae)                 # object of class aquaenv
                     TAplus  <- c(TAplus, aquaenv(S=S[[s]], t=t, p=p[[pe]],
                                                  SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                  SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                 TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, 
+                                                 TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, 
                                                  SumHF_Koffset=epsilon[[s]], revelle=FALSE)$TA)
                     TAminus <- c(TAminus, aquaenv(S=S[[s]], t=t, p=p[[pe]],
                                                   SumCO2=SumCO2[[x]], SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                   SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                  TA=NULL, pH=pH[[i]], pCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, 
+                                                  TA=NULL, pH=pH[[i]], fCO2=NULL, CO2=NULL, speciation=FALSE, dsa=FALSE, ae=NULL, from.data.frame=FALSE, 
                                                   SumHF_Koffset=-epsilon[[s]], revelle=FALSE)$TA)
                   }
               }
@@ -270,7 +270,7 @@ revelle <- function(ae)                       # object of class aquaenv
                         CO2new  <<- c(CO2new, aquaenv(t=t[[te]], S=S[[s]], p=p[[pe]],
                                                       SumCO2=(SumCO2[[x]]+dSumCO2[[x]]), SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2, 
                                                       SumBOH3=SumBOH3[[s]], SumH2SO4=SumH2SO4[[s]], SumHF=SumHF[[s]],
-                                                      TA=TA[[i]], pH=NULL, pCO2=NULL, CO2=NULL, speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$CO2)
+                                                      TA=TA[[i]], pH=NULL, fCO2=NULL, CO2=NULL, speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,  revelle=FALSE)$CO2)
                       })
               }
           }

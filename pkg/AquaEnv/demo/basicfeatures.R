@@ -42,7 +42,7 @@ p      <- gauge_p(d=10)   # ~ p <- 0.1*10*1.01325
 SumCO2 <- 0.0020
 pH     <- 8
 TA     <- 0.002140798
-pCO2   <- 0.0005326744
+fCO2   <- 0.0005326744
 CO2    <- 2.051946e-05
 
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH)
@@ -54,15 +54,15 @@ ae$pH
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2)
 ae$pH
 
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, fCO2=fCO2)
 ae$pH
 
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2, fCO2=fCO2)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, TA=TA)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, CO2=CO2)
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, fCO2=fCO2)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, CO2=CO2)
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, fCO2=fCO2)
 
 
 ###########################################################################################
@@ -213,9 +213,9 @@ aetest      <- aquaenv(ae=aedataframe, from.data.frame=TRUE)
 
 
 ######################################################################################
-# Calculating SumCO2 by giving a constant  pH&CO2, pH&pCO2, pH&TA, TA&CO2, or TA&pCO2  
+# Calculating SumCO2 by giving a constant  pH&CO2, pH&fCO2, pH&TA, TA&CO2, or TA&fCO2  
 ######################################################################################
-pCO2   <- 0.0006952296
+fCO2   <- 0.0006952296
 CO2    <- 2.678137e-05
 pH     <- 7.888573
 TA     <- 0.0021
@@ -229,7 +229,7 @@ ae$SumCO2
 ae$revelle
 ae$dTAdH
 
-ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, fCO2=fCO2)
 ae$SumCO2
 
 ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, TA=TA)
@@ -238,7 +238,7 @@ ae$SumCO2
 ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, CO2=CO2)
 ae$SumCO2
 
-ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, fCO2=fCO2)
 ae$SumCO2
 
 
@@ -251,7 +251,7 @@ plot(ae, xval=t, xlab="T/(deg C)", newdevice=FALSE)
 
 S  <- 1:30
 t  <- 15
-ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, pCO2=pCO2, revelle=TRUE, dsa=TRUE)
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, fCO2=fCO2, revelle=TRUE, dsa=TRUE)
 plot(ae, xval=S, xlab="S", newdevice=FALSE)
 
 S  <- 30

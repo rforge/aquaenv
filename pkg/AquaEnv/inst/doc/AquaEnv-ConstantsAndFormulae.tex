@@ -74,16 +74,6 @@
 \end{tabular}
 \end{scriptsize}
 
-\subsubsection{Elements of list \texttt{Fugacity}}
-Note that here we do not distinguish between fugacity and the partial pressure.\\
-
-
-\begin{tabular}{|lrlll|}  \hline
-\texttt{CO2} & 0.000383 & atm & \citep{Borges2004a, Guinotte2008}  & fugacity of $\rm CO_2$\\
-\texttt{O2}  & 0.20946  & atm & \citep{Williams2004} & fugacity of $\rm O_2$ \\ \hline
-\end{tabular}
-
-
 
 \subsubsection{Elements of list \texttt{MeanMolecularMass}}
 The list  \texttt{MeanMolecularMass} contains mean molecular weights in g/mol. The list is taken from \citet[chap. 5, p. 3]{DOE1994} and \citet[chap. 5, p. 4]{Dickson2007}.\\
@@ -190,7 +180,7 @@ In the following we will give A, B, C, D, and E  or A', B', C', D', and E' for e
 
 \subsubsection{Gas-exchange constants (Henry's constants) as functions of salinity \texttt{S} and temperature \texttt{T}}
 
-The following table shows the coefficients for gas exchange constants in \textsf{AquaEnv}, with $f\ce{CO_2}$ being the fugacity (assumed to be equal to the partial pressure) of $\ce{CO_2}$.
+The following table shows the coefficients for gas exchange constants in \textsf{AquaEnv}, with $f\ce{CO_2}$ being the fugacity of $\ce{CO_2}$.
 
 \clearpage
 
@@ -204,7 +194,7 @@ E $= 4.7036 \; 10^{-7} \mbox{\texttt{S}}$&&&\\ \hline
 \multicolumn{4}{|l|}{\textit{References:} \citet{Weiss1974} (original), \citet[chap. 5, p. 13]{DOE1994}, \citet[p. 663]{Millero1995},}\\
 \multicolumn{4}{|l|}{\color{white} \textit{References:} \color{black} \citet[p. 257]{Zeebe2001}, and \citet[chap. 5, p. 12]{Dickson2007}} \\ \hline \specialrule{1pt}{2pt}{0pt}
 \multicolumn{4}{|l|}{\texttt{K0\_O2} \textbf{: solubility of $\ce{O_2}$ in seawater} (\textbf{micro}mol per kg-soln and atm)}\\ \specialrule{1pt}{0pt}{0pt}
-A $= -846.9975 - 0.037362 \; \mbox{\texttt{S}}$ & \texttt{O2\_sat} &=& $f\ce{O_2} \; $\texttt{K0\_O2}\ \\
+A $= -846.9978 - 0.037362 \; \mbox{\texttt{S}}$ & \texttt{O2\_sat} &=& $f\ce{O_2} \; $\texttt{K0\_O2}\ \\
 B $=  25559.07 $ &&&\\
 C $=  146.4813$ & ${k_0^\circ}$&=& $\left[\frac{\mu mol}{kg-solution \; atm}\right]$\\
 D $= -0.22204 + 0.00016504 \; \mbox{\texttt{S}}$ &&&\\
@@ -212,7 +202,7 @@ E $= -2.0564 \; 10^{-7} \; \mbox{\texttt{S}}$ &&&\\ \hline
 \multicolumn{4}{|l|}{\textit{References:} derived from \citet{Weiss1970}, agrees with data in \citet{Murray1969a}} \\ \hline
 \end{longtable}
 \noindent
-Note that the formulation for \texttt{K0\_O2} has been derived using the formulation for a gravimetric $[\ce{O_2}]_{sat}$ given in \citet[Weiss, 1970]{Weiss1970}. It has been converted from ml-$\rm O_2$/kg-soln to $\mu$mol-$\rm O_2$/kg-soln using the molar volume of $\rm O_2$ calculated with the virial equation using a first virial coefficient for oxygen at 273.0 Kelvin of $\rm -22 \; cm^3/mol$ \citet{Atkins1996}, a value of $8.314$ Nm/(Kelvin mol) for the gas constant R and an ambient pressure of 101300 N/$\rm m^2$. The expression for the Henry's constant has then been created by dividing the expression for the saturation concentration by $\rm f\ce{O_2} = 0.20946 \;atm$ \citep{Williams2004}.
+Note that the formulation for \texttt{K0\_O2} has been derived using the formulation for a gravimetric $[\ce{O_2}]_{sat}$ given in \citet[Weiss, 1970]{Weiss1970}. It has been converted from ml-$\rm O_2$/kg-soln to $\mu$mol-$\rm O_2$/kg-soln using the molar volume of $\rm O_2$ calculated with the virial equation using a first virial coefficient for oxygen at 273.15 Kelvin of $\rm -22 \; cm^3/mol$ \citet{Atkins1996}, a value of $8.314472$ Nm/(Kelvin mol) for the gas constant R and an ambient pressure of 101325 N/$\rm m^2$. The expression for the Henry's constant has then been created by dividing the expression for the saturation concentration by $\rm f\ce{O_2} = 0.20946 \;atm$ \citep{Williams2004}.
 
 
 \subsubsection{Stoichiometric acid base dissociation constants as functions of salinity \texttt{S} and temperature \texttt{T}}

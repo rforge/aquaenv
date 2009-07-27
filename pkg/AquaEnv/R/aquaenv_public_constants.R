@@ -24,14 +24,7 @@ Technicals <- list(
                    epsilon_fraction = 0.1,         # fraction of disturbance for the numerical calculation of derivatives of TA with respect to changes in the dissociation constants
                    revelle_fraction = 1e-5         # fraction of disturbance for the numerical calculation of the revelle factor
                    )
-
-
-# list of fugacities of gases
-Fugacity <- list(
-                 CO2 = 0.000383,              # fugacity of CO2 in atm
-                 O2  = 0.20946                # fugacity of O2 in atm
-                 )
-                 
+               
 
 # coefficients for the pressure correction of dissociation constants and solubility products (Millero1995 WITH CORRECTIONS BY Lewis1998 (CO2Sys)!!!!!!)
 DeltaPcoeffs <- data.frame(  

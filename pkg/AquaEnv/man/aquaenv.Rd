@@ -6,11 +6,11 @@
         P=Pa, Pa=1.01325, d=0, lat=0,
         SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0,
         SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL,
-        SumH2SO4=NULL,SumHF=NULL, TA=NULL, pH=NULL, pCO2=NULL, CO2=NULL,
+        SumH2SO4=NULL,SumHF=NULL, TA=NULL, pH=NULL, fCO2=NULL, CO2=NULL,
         speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,
         SumH2SO4_Koffset=0,SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE,
         k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
-        k_hf=NULL, k1k2="roy", khf="dickson")}
+        k_hf=NULL, k1k2="roy", khf="dickson", fCO2atm=0.000390, fO2atm=0.20946)}
 \arguments{
   \item{S }{salinity in practical salinity units (i.e. no unit)}
   \item{t }{temperature in degrees centigrade}
@@ -35,8 +35,10 @@
   \item{SumHF }{total fluoride concentration in mol/kg-solution, calculated from S if not supplied}
   \item{TA }{total alkalinity in mol/kg-solution, if supplied, pH will be calculated}
   \item{pH }{pH on the free proton concentration scale, if supplied, total alkalinity will be calculated}
-  \item{pCO2 }{partial pressure of CO2 in atm (note that we do not destinguish between partial pressure and fugacity), can be used with either [TA], pH, or [CO2] to define the system}
-  \item{CO2 }{concentration of CO2, can be used with either [TA], pH, or pCO2 to define the system }
+  \item{fCO2 }{fugacity of CO2 in the water in atm (i.e. the fugacity of
+    CO2 in a small volume of air fully equilibrated with a sufficiently
+    large sample of water), can be used with either [TA], pH, or [CO2] to define the system}
+  \item{CO2 }{concentration of CO2, can be used with either [TA], pH, or fCO2 to define the system }
   \item{speciation }{flag: TRUE = full speciation is calculated}
   \item{dsa }{flag: TRUE = all information necessary to build a pH model with the direct substitution approach (DSA, Hofmann2008) is calculated}
   \item{ae }{either an object of class aquaenv used for the cloning functionality or a dataframe used for the from.data.frame
@@ -54,7 +56,12 @@
   \item{k_hf}{a fixed K\_HF can be specified}
   \item{k1k2}{either "roy" (default, Roy1993a), "lueker" (Lueker2000),
     or "millero" (Millero2006) for K\_CO2 and K\_HCO3.}
-  \item{khf}{either "dickson" (default, Dickson1979a) or "perez" (Perez1987a) for K\_HF}
+  \item{khf}{either "dickson" (default, Dickson1979a) or "perez"
+    (Perez1987a) for K\_HF}
+  \item{fCO2atm}{atmospheric fugacity of CO2 in atm, default =
+    0.000390 atm}
+  \item{fO2atm}{atmospheric fugacity of O2 in atm, default =
+    0.20946 atm}
 }
 \examples{\dontrun{
 ############################
@@ -87,7 +94,7 @@ p      <- gauge_p(d=10)  # ~ p <- 0.1*10*1.01325
 SumCO2 <- 0.0020
 pH     <- 8
 TA     <- 0.002140798
-pCO2   <- 0.0005326744
+fCO2   <- 0.0005326744
 CO2    <- 2.051946e-05
 
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH)
@@ -99,15 +106,15 @@ ae$pH
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2)
 ae$pH
 
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, fCO2=fCO2)
 ae$pH
 
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2, fCO2=fCO2)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, TA=TA)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, CO2=CO2)
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, fCO2=fCO2)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, CO2=CO2)
-ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, fCO2=fCO2)
 
 
 ################################################################
@@ -184,10 +191,10 @@ plot(ae, xval=p, xlab="gauge pressure/bar", newdevice=FALSE)
 
 
 ##################################################################
-# Calculating SumCO2 by giving a constant  pH&CO2, pH&pCO2, pH&TA,
-# TA&CO2, or TA&pCO2
+# Calculating SumCO2 by giving a constant  pH&CO2, pH&fCO2, pH&TA,
+# TA&CO2, or TA&fCO2
 ##################################################################
-pCO2   <- 0.0006952296
+fCO2   <- 0.0006952296
 CO2    <- 2.678137e-05
 pH     <- 7.888573
 TA     <- 0.0021
@@ -201,7 +208,7 @@ ae$SumCO2
 ae$revelle
 ae$dTAdH
 
-ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, fCO2=fCO2)
 ae$SumCO2
 
 ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, TA=TA)
@@ -210,7 +217,7 @@ ae$SumCO2
 ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, CO2=CO2)
 ae$SumCO2
 
-ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, pCO2=pCO2)
+ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, fCO2=fCO2)
 ae$SumCO2
 
 
@@ -223,7 +230,7 @@ plot(ae, xval=t, xlab="T/(deg C)", newdevice=FALSE)
 
 S  <- 1:30
 t  <- 15
-ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, pCO2=pCO2, revelle=TRUE, dsa=TRUE)
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, fCO2=fCO2, revelle=TRUE, dsa=TRUE)
 plot(ae, xval=S, xlab="S", newdevice=FALSE)
 
 S  <- 30
@@ -236,17 +243,18 @@ plot(ae, xval=p, xlab="gauge pressure/bar", newdevice=FALSE)
   a list containing: 
               "S"                "t"                "p"
               "T"                "Cl"               "I"
-              "P"                "Pa"               "d"               
+              "P"                "Pa"               "d"
 	      "density"          "SumCO2"          
 	      "SumNH4"           "SumH2S"           "SumHNO3"         
 	      "SumHNO2"          "SumH3PO4"         "SumSiOH4"        
    	      "SumBOH3"          "SumH2SO4"         "SumHF"           
-              "SumBr"            "ClConc"           "Na"              
+              "Br"               "ClConc"           "Na"              
               "Mg"               "Ca"               "K"               
               "Sr"               "molal2molin"      "free2tot"        
               "free2sws"         "tot2free"         "tot2sws"         
               "sws2free"         "sws2tot"          "K0\_CO2"          
-              "K0\_O2"            "CO2\_sat"          "O2\_sat"          
+              "K0\_O2"           "fCO2atm"          "fO2atm"
+	      "CO2\_sat"          "O2\_sat"
               "K\_W"              "K\_HSO4"           "K\_HF"            
               "K\_CO2"            "K\_HCO3"           "K\_BOH3"          
               "K\_NH4"            "K\_H2S"            "K\_H3PO4"         
@@ -254,7 +262,7 @@ plot(ae, xval=p, xlab="gauge pressure/bar", newdevice=FALSE)
               "K\_SiOOH3"         "K\_HNO2"           "K\_HNO3"          
               "K\_H2SO4"          "K\_HS"             "Ksp\_calcite"     
               "Ksp\_aragonite"    "TA"               "pH"              
-              "pCO2"             "CO2"              "HCO3"            
+              "fCO2"             "CO2"              "HCO3"            
               "CO3"              "BOH3"             "BOH4"            
               "OH"               "H3PO4"            "H2PO4"           
               "HPO4"             "PO4"              "SiOH4"           

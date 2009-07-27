@@ -312,14 +312,7 @@ scaleconvert <- function(S,                    # salinity S in practical salinit
       }
 
     K_HSO4 <- K_HSO4(S, t, p)
-    if (khf=="dickson")
-      {
-        K_HF  <- K_HF(S, t, p)
-      }
-    else if (khf=="perez")
-      {
-        K_HF  <- Kf(S=S, T=t, P=p, kf="pf") / (1 + (SumH2SO4/K_HSO4)) # use seacarb and convert K_HF from total scale to free scale
-      }
+    K_HF   <- K_HF(S, t, p, SumH2SO4, SumHF, khf=khf)
     
     FreeToTot <- (1 + (SumH2SO4/K_HSO4))
     FreeToSWS <- (1 + (SumH2SO4/K_HSO4) + (SumHF/K_HF))
@@ -329,8 +322,9 @@ scaleconvert <- function(S,                    # salinity S in practical salinit
     SQRTI     <- sqrt(I(S))
     eT        <- PhysChemConst$e*T(t)
     A         <- 1.82e6/(eT*sqrt(eT))
-    NBSToFree <- 10^(A*((SQRTI/(1+SQRTI)) - 0.2*I(S))) #davies equation: only valid up to I=0.5
- 
+                 #davies equation: only valid up to I=0.5     #Lewis1998: NBS scale is based on mol/kg-H2O (molality) and all other scales (incl free) on mol/kg-soln (molinity)
+    NBSToFree <- 10^(A*((SQRTI/(1+SQRTI)) - 0.2*I(S)))        * molal2molin(S)            
+               
     return(list(                              # list of conversion factors "free2tot", "free2sws", etc.
                 free2tot = FreeToTot,
                 free2sws = FreeToSWS,
