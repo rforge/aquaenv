@@ -1,2 +1,2 @@
-export(aquaenv, plot.aquaenv, convert, as.data.frame.aquaenv, merge.aquaenv, c.aquaenv, length.aquaenv, TAfit, titration, K_BOH3, K_CO2, K_H2PO4, K_H2S, K_H3PO4, K_HCO3, K_HF, K_HPO4, K_HSO4, K_NH4, K_SiOH4, K_SiOOH3, K_W, K0_CO2, K0_O2, Ksp_aragonite, Ksp_calcite, PhysChemConst, Technicals, Fugacity, DeltaPcoeffs, MeanMolecularMass, ConcRelCl, gauge_p, watdepth)
+export(aquaenv, plot.aquaenv, convert, as.data.frame.aquaenv, merge.aquaenv, c.aquaenv, length.aquaenv, TAfit, titration, K_BOH3, K_CO2, K_H2PO4, K_H2S, K_H3PO4, K_HCO3, K_HF, K_HPO4, K_HSO4, K_NH4, K_SiOH4, K_SiOOH3, K_W, K0_CO2, K0_O2, Ksp_aragonite, Ksp_calcite, PhysChemConst, Technicals, DeltaPcoeffs, MeanMolecularMass, ConcRelCl, gauge_p, watdepth)
 
