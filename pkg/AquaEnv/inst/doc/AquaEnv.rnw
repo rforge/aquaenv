@@ -116,10 +116,10 @@ $\rm H_3PO4$\citep{Millero1995}, $\rm H_2PO4^-$ \citep{Millero1995}, $HPO4^{2-}$
 $\rm SiOOH3^-$ \citep{Wischmeyer2003}, $\rm HNO2$ \citep{Riordan2005}, $\rm HNO3$,  $\rm H2SO4$ \citep{Atkins1996}, $\rm HS$ \citep{Atkins1996} mostly calculated 
 as functions of temperature and salinity and pressure corrected according to \cite{Millero1995}.
 \item the solubility products of calcite and aragonite \citep{Mucci1983} as well as the associated $\Omega$'s if a full speciation is calculated (see below)
-\item the partial pressure of $\rm CO_2$ - if a full speciation is calculated (see below)
-\item if $[\rm \sum CO_2]$ and pH are given $[\rm TA]$ is calculated, if $[\rm \sum CO_2]$ and $[\rm TA]$ are given pH is calculated, if $[\rm \sum CO_2]$ and $\rm [CO_2]$ or p$\rm CO_2$
+\item the fugacity of $\rm CO_2$ - if a full speciation is calculated (see below)
+\item if $[\rm \sum CO_2]$ and pH are given $[\rm TA]$ is calculated, if $[\rm \sum CO_2]$ and $[\rm TA]$ are given pH is calculated, if $[\rm \sum CO_2]$ and $\rm [CO_2]$ or f$\rm CO_2$
 are given, pH and $[\rm TA]$ are calculated.
-\item if either one of the pairs pH and  $\rm [CO_2]$ or p$\rm CO_2$, pH and $[\rm TA]$, or $[\rm TA]$ and $\rm [CO_2]$ or p$\rm CO_2$ is given, $[\rm \sum CO_2]$ is calculated
+\item if either one of the pairs pH and  $\rm [CO_2]$ or f$\rm CO_2$, pH and $[\rm TA]$, or $[\rm TA]$ and $\rm [CO_2]$ or f$\rm CO_2$ is given, $[\rm \sum CO_2]$ is calculated
 \item if sufficient information is given and the flag \texttt{speciation=TRUE} is set, a full speciation of $[\rm \sum CO2]$, $[\rm \sum NH4]$, $[\rm \sum H_2S]$, $[\rm \sum HNO3]$,  $[\rm \sum HNO2]$,
  $[\rm \sum H_3PO4]$, $[\rm \sum Si(OH)_4]$, $[\rm \sum B(OH)_3]$, $[\rm \sum H_2SO_4]$, $[\rm \sum HF]$, as well as water itself is calculated
 \item if the flag \texttt{revelle=TRUE} is set, the revelle factor \citep{Zeebe2001} is calculated.
