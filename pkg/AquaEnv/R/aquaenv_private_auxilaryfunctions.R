@@ -386,6 +386,7 @@ basicplot <- function(aquaenv,                # object of class aquaenv
                       filename="aquaenv",     # filename to be used if "eps" or "pdf" is selected for device
                       newdevice,              # flag: if TRUE, new plot device is opened
                       setpar,                 # flag: if TRUE parameters are set with the function par
+		      ylab=NULL,              # y axis label: if given, it overrides the names from an aquaenv object
                       ...)
   {
     if (newdevice)
@@ -399,7 +400,15 @@ basicplot <- function(aquaenv,                # object of class aquaenv
     aquaenv <- as.data.frame(aquaenv)
     for (i in 1:length(aquaenv))
       {
-        plot(xval, aquaenv[[i]], ylab=names(aquaenv)[[i]], type=type,  ...)
+        if(is.null(ylab))
+          {
+            ylab_ <- names(aquaenv)[[i]]
+          }
+        else
+          {
+            ylab_ <- ylab
+          }
+        plot(xval, aquaenv[[i]], ylab=ylab_, type=type,  ...)
       }
   } 
 
