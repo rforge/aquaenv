@@ -53,6 +53,15 @@
   \item{... }{further arguments are passed on to the plot function}	
 }
 \examples{\dontrun{
+### 0
+#####
+A <- aquaenv(35, 15, SumCO2=0.003, TA=seq(0.001,0.004, 0.0001))
+plot(A, xval=A$TA, xlab="[TA]/(mol/kg-soln)")
+plot(A, what=c("CO2", "HCO3", "CO3"), bjerrum=TRUE, log=TRUE)
+plot(A, xval=A$TA, xlab="[TA]/(mol/kg-soln)", what=c("CO2", "HCO3", "CO3"),
+     cumulative=TRUE, ylab="mol/kg-soln", ylim=c(0,0.0031))
+
+
 ### 1
 #####
 
