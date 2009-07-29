@@ -174,9 +174,12 @@ or
 \begin{equation}
 \rm \log_{10}{\frac{K_X}{k_0^\circ}} = A' + \frac{B'}{\mbox{\texttt{T}}} + C' \log_{10}(\mbox{\texttt{T}}) + D' \; \mbox{\texttt{T}} + E' \;\mbox{\texttt{T}}^2
 \end{equation}
+or
+\begin{equation}
+\rm \log_{10}{\frac{K_X}{k_0^\circ}} = A'' + \frac{B''}{\mbox{\texttt{T}}} + C'' \ln(\mbox{\texttt{T}}) + D'' \; \mbox{\texttt{T}} + E'' \;\mbox{\texttt{T}}^2 \label{eq: logk}
+\end{equation}
 with \texttt{T} being the temperature in Kelvin, \texttt{S} the salinity, $k_0^\circ$ the concentration unit of the constant, and A, B, C, D, E, and the respective variables with a prime (') being functions of salinity \texttt{S}.
-In the following we will give A, B, C, D, and E  or A', B', C', D', and E' for each calculated constant.
-
+In the following we will give A, B, C, D, and E,  or A', B', C', D', and E', or A'', B'', C'', D'', and E'' for each calculated constant.
 
 \subsubsection{Gas-exchange constants (Henry's constants) as functions of salinity \texttt{S} and temperature \texttt{T}}
 
@@ -251,16 +254,23 @@ C = $- 45.0575+ 34.485796 \; \sqrt{\mbox{\texttt{S}}}- 8.19515\; \mbox{\texttt{S
 %\pagebreak 
 \specialrule{1pt}{2pt}{0pt}
 \multicolumn{3}{|l}{\textbf{\texttt{K\_CO2}: $\ce{CO_2}(aq) + \ce{H_2O} \; (\rightleftharpoons \ce{H_2CO_3}) \; \rightleftharpoons \ce{H^+ + HCO_3^-}$} ("lueker")} & \textbf{total} pH scale\\ \specialrule{1pt}{0pt}{0pt}
-A' = $61.2172 + 0.011555\; \mbox{\texttt{S}} - 0.0001152 \; \mbox{\texttt{S}}^2$ & \texttt{K\_CO2} &=& $\frac{[\ce{H^+}] \; [\ce{HCO_3^-}]}{[\ce{CO_2(aq)}]}$\\
-B' = $- 3633.86$ & $k^\circ$ &=& $\molin$\\
-C' = $- 9.67770$ &&&\\ \hline
+A'' = $61.2172 + 0.011555\; \mbox{\texttt{S}} - 0.0001152 \; \mbox{\texttt{S}}^2$ & \texttt{K\_CO2} &=& $\frac{[\ce{H^+}] \; [\ce{HCO_3^-}]}{[\ce{CO_2(aq)}]}$\\
+B'' = $- 3633.86$ & $k^\circ$ &=& $\molin$\\
+C'' = $- 9.67770$ &&&\\ \hline
 \multicolumn{4}{|l|}{\textit{References:} \citet{Lueker2000} (original), \citet[chap. 5, p.13-14]{Dickson2007}}\\ \hline \specialrule{1pt}{2pt}{0pt}
+\multicolumn{3}{|l}{\textbf{\texttt{K\_CO2}: $\ce{CO_2}(aq) + \ce{H_2O} \; (\rightleftharpoons \ce{H_2CO_3}) \; \rightleftharpoons \ce{H^+ + HCO_3^-}$} ("millero")} & \textbf{SW} pH scale\\ \specialrule{1pt}{0pt}{0pt}
+A'' = $126.34048 - 0.0331\;\mbox{\texttt{S}} + 0.0000533 \; \mbox{\texttt{S}}^2 - 13.4191 \; \sqrt{\mbox{\texttt{S}}}$& \texttt{K\_CO2} &=& $\frac{[\ce{H^+}] \; [\ce{HCO_3^-}]}{[\ce{CO_2(aq)}]}$\\
+B'' = $-6320.813 +  6.103\;\mbox{\texttt{S}} + 530.123\; \sqrt{\mbox{\texttt{S}}}$ & $k^\circ$ &=& $\molin$\\
+C'' = $-19.568224 + 2.06950\; \sqrt{\mbox{\texttt{S}}}$ &&&\\ \hline
+\multicolumn{4}{|l|}{\textit{References:} \citet{Millero2006} (original)} \\ \hline \specialrule{1pt}{2pt}{0pt}
 \multicolumn{3}{|l}{\textbf{\texttt{K\_HCO3}: $\ce{HCO_3^-} \rightleftharpoons \ce{H^+ + CO_3^{2-}}$} ("roy"; high salinities: $\mbox{\texttt{S}} > 5$) }& \textbf{total} pH scale\\ \specialrule{1pt}{0pt}{0pt}
 A = $-9.226508 -0.106901773\; \sqrt{\mbox{\texttt{S}}} + 0.1130822  \; \mbox{\texttt{S}}  - 0.00846934\; \mbox{\texttt{S}}^{\frac{3}{2}}$ & \texttt{K\_HCO3} &=& $\frac{[\ce{H^+}] \; [\ce{CO_3^{2-}}]}{[\ce{HCO_3^-}]}$\\
 B = $-3351.6106 - 23.9722 \; \sqrt{\mbox{\texttt{S}}}$ & $k^\circ$ &=& $\molal$\\
 C = $- 0.2005743$ &&&\\ \hline
 \multicolumn{4}{|l|}{\textit{References:} \citet[p. 254]{Roy1993a} (original), \citet[c. 25, p.15]{DOE1994}, \citet[p. 664]{Millero1995},}\\
- \multicolumn{4}{|l|}{\color{white}\textit{References:} \color{black} \citet[p. 255]{Zeebe2001} }\\ \hline  \specialrule{1pt}{2pt}{0pt}
+ \multicolumn{4}{|l|}{\color{white}\textit{References:} \color{black} \citet[p. 255]{Zeebe2001} }\\ \hline  
+\pagebreak
+\specialrule{1pt}{2pt}{0pt}
 \multicolumn{3}{|l}{\textbf{\texttt{K\_HCO3}: $\ce{HCO_3^-} \rightleftharpoons \ce{H^+ + CO_3^{2-}}$} ("roy"; low salinities: $\mbox{\texttt{S}} \leq 5$) }& \textbf{total} pH scale\\ \specialrule{1pt}{0pt}{0pt}
 \multicolumn{4}{|l|}{A = $207.6548 -167.69908\; \sqrt{\mbox{\texttt{S}}} +    39.75854\; \mbox{\texttt{S}}  -2.892532\; \mbox{\texttt{S}}^{\frac{3}{2}} - 0.00613142\; \mbox{\texttt{S}}^2$}\\
 B =  $-11843.79 + 6551.35253\; \sqrt{\mbox{\texttt{S}}} - 1566.13883 \; \mbox{\texttt{S}}+ 116.270079\; \mbox{\texttt{S}}^{\frac{3}{2}}$& \texttt{K\_HCO3} &=& $\frac{[\ce{H^+}] \; [\ce{CO_3^{2-}}]}{[\ce{HCO_3^-}]}$\\
@@ -269,14 +279,20 @@ C =  $- 33.6485 + 25.928788\; \sqrt{\mbox{\texttt{S}}} - 6.171951\; \mbox{\textt
 \multicolumn{4}{|l|}{\color{white}\textit{References:} \color{black} (here it is mentioned that this formula should be used for $\mbox{\texttt{S}} \leq 5$. Note that both functions}\\
 \multicolumn{4}{|l|}{\color{white}\textit{References:} \color{black} do not always intersect at \texttt{S}=5. The true intersection is a function of \texttt{t}, is calculated in}\\
 \multicolumn{4}{|l|}{\color{white}\textit{References:} \color{black} \textsf{AquaEnv}, and is used to decide which formula to use.)}\\ \hline 
-\pagebreak
+%\pagebreak
 \specialrule{1pt}{2pt}{0pt}
 \multicolumn{3}{|l}{\textbf{\texttt{K\_HCO3}: $\ce{HCO_3^-} \rightleftharpoons \ce{H^+ + CO_3^{2-}}$} ("lueker")} & \textbf{total} pH scale\\ \specialrule{1pt}{0pt}{0pt}
-A' =  $-25.9290 + 0.01781\; \mbox{\texttt{S}} - 0.0001122\; \mbox{\texttt{S}}^2$ & \texttt{K\_HCO3}&=& $\frac{[\ce{H^+}] \; [\ce{CO_3^{2-}}]}{[\ce{HCO_3^-}]}$\\
-B' = $- 471.78$ & $k^\circ$ &=& $\molin$\\
-C' = $3.16967$ &&&\\ \hline
+A'' =  $-25.9290 + 0.01781\; \mbox{\texttt{S}} - 0.0001122\; \mbox{\texttt{S}}^2$ & \texttt{K\_HCO3}&=& $\frac{[\ce{H^+}] \; [\ce{CO_3^{2-}}]}{[\ce{HCO_3^-}]}$\\
+B'' = $- 471.78$ & $k^\circ$ &=& $\molin$\\
+C'' = $3.16967$ &&&\\ \hline
 \multicolumn{4}{|l|}{\textit{References:} \citet{Lueker2000} (original), \citet[chap. 5, p.14]{Dickson2007}}\\ \hline 
 %\pagebreak
+\specialrule{1pt}{2pt}{0pt}
+\multicolumn{3}{|l}{\textbf{\texttt{K\_HCO3}: $\ce{HCO_3^-} \rightleftharpoons \ce{H^+ + CO_3^{2-}}$} ("millero")} & \textbf{SW} pH scale\\ \specialrule{1pt}{0pt}{0pt}
+A'' =  $90.18333  - 0.1248\;\mbox{\texttt{S}} + 0.0003687\; \mbox{\texttt{S}}^2 - 21.0894\; \sqrt{\mbox{\texttt{S}}}$ & \texttt{K\_HCO3}&=& $\frac{[\ce{H^+}] \; [\ce{CO_3^{2-}}]}{[\ce{HCO_3^-}]}$\\
+B'' = $-5143.692 + 20.051\;\mbox{\texttt{S}} + 772.483\; \sqrt{\mbox{\texttt{S}}}$ & $k^\circ$ &=& $\molin$\\
+C'' = $-14.613358 +  3.3336\; \sqrt{\mbox{\texttt{S}}}$ &&&\\ \hline
+\multicolumn{4}{|l|}{\textit{References:} \citet{Millero2006} (original)}\\ \hline 
 \specialrule{1pt}{2pt}{0pt}
 \multicolumn{3}{|l}{\textbf{\texttt{K\_W}: $\ce{H_2O} \rightleftharpoons \ce{H^+ + OH^-}$}} & \textbf{total} pH scale\\ \specialrule{1pt}{0pt}{0pt}
 A = $148.9652 - 5.977\; \sqrt{\mbox{\texttt{S}}}  - 0.01615 \; \mbox{\texttt{S}}$ &\texttt{K\_W} &=& $[\ce{H^+}] \; [\ce{OH^-}]$\\
@@ -294,7 +310,7 @@ D = $0.053105 \; \sqrt{\mbox{\texttt{S}}}$ &&&\\ \hline
 \multicolumn{4}{|l|}{\color{white}\textit{References:} \color{black} \citet[p. 262]{Zeebe2001} , agrees with data in \citet{Roy1993}} \\ \hline
 %\pagebreak
  \specialrule{1pt}{2pt}{0pt}
-\multicolumn{3}{|l}{\textbf{\texttt{K\_NH4}: $\ce{NH_4^+} \rightleftharpoons \ce{H^+ + NH_3}$}} & \textbf{SWS} pH scale\\ \specialrule{1pt}{0pt}{0pt}
+\multicolumn{3}{|l}{\textbf{\texttt{K\_NH4}: $\ce{NH_4^+} \rightleftharpoons \ce{H^+ + NH_3}$}} & \textbf{SW} pH scale\\ \specialrule{1pt}{0pt}{0pt}
 A = $-0.25444 + 0.46532 \; \sqrt{\mbox{\texttt{S}}} -0.01992 \; \mbox{\texttt{S}}$ & \texttt{K\_NH4} &=&  $\frac{[\ce{H^+}] \; [\ce{NH_3}]}{[\ce{NH_4^+}]}$ \\
 B = $-6285.33 - 123.7184\; \sqrt{\mbox{\texttt{S}}} + 3.17556 \; \mbox{\texttt{S}}$ &$k^\circ$ &=& $\molin$\\
 D = $0.0001635$ &&&\\ \hline
@@ -308,6 +324,7 @@ D = $0.0001635$ &&&\\ \hline
  C = $- 34.6435$&&&\\ \hline
  \multicolumn{4}{|l|}{\textit{References:} \citet[p. 671]{Millero1995}, \citet{Millero1988} (original),}\\
   \multicolumn{4}{|l|}{\color{white}\textit{References:} \color{black} corrections of \citet{Millero1995} in \citet{Lewis1998} give pH scale} \\ \hline
+\pagebreak
  \specialrule{1pt}{2pt}{0pt}
  \multicolumn{3}{|l}{\textbf{\texttt{K\_H3PO4}: $\rm H_3PO_4 \rightleftharpoons H^+ + H_2PO_4^-$}} & \textbf{total} pH scale\\ \specialrule{1pt}{0pt}{0pt}
  A = $115.525 + 0.69171 \; \sqrt{\mbox{\texttt{S}}}  - 0.01844\; \mbox{\texttt{S}}$ & \texttt{K\_H3PO4} &=& $\rm \frac{[H^+] \; [H_2PO_4^-]}{[H_3PO_4]}$\\
@@ -321,7 +338,7 @@ A = $172.0883 +  1.3566\; \sqrt{\mbox{\texttt{S}}} - 0.05778 \; \mbox{\texttt{S}
  $C = - 27.927 $ &&&\\ \hline
  \multicolumn{4}{|l|}{\textit{References:} \citet[chap. 5, p 16]{DOE1994}, \citet[p.670]{Millero1995} (original), }\\
   \multicolumn{4}{|l|}{\color{white}\textit{References:} \color{black} \citet[chap. 5, p.15]{Dickson2007}, agrees with data in \citet{Dickson1979a}}\\ \hline 
-\pagebreak
+%\pagebreak
 \specialrule{1pt}{2pt}{0pt}
  \multicolumn{3}{|l}{\textbf{\texttt{K\_HPO4} : $\rm HPO_4^{2-} \rightleftharpoons H^+ + PO_4^{3-}$}} & \textbf{total} pH scale\\ \specialrule{1pt}{0pt}{0pt}
 A = $ - 18.141  + 2.81197 \; \sqrt{\mbox{\texttt{S}}} -  0.09984\; \mbox{\texttt{S}}$ & \texttt{K\_HPO4} &=& $\rm \frac{[H^+] \; [PO_4^{3-}]}{[HPO_4^{2-}]}$\\

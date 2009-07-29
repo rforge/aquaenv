@@ -395,7 +395,7 @@ K_HCO3_lueker <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL) # Lueker2000
 K_HCO3_millero <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL) # Millero2006
   {
     T      <- T(t)
-    Sterms <- Sterms(S) #list(S^2, sqrtS, S*sqrtS)
+    Sterms <- Sterms(S) 
 
     A <- 90.18333  - 0.1248*S + 0.0003687*Sterms[[1]] - 21.0894*Sterms[[2]]
     B <- -5143.692 + 20.051*S                         + 772.483*Sterms[[2]]
