@@ -60,7 +60,7 @@ as well as additionally the electrode standard potential ($\rm E_0$) and the fir
   Netherlands Institute of Ecology (NIOO)\\
   4401 NT Yerseke, Netherlands
   E-mail: \email{a.hofmann@nioo.knaw.nl}\\
-  URL: \url{http://www.nioo.knaw.nl/ppages/ahofmann}\\
+  URL: \url{http://www.nioo.knaw.nl/users/ahofmann}\\
 }
 
 
@@ -1926,6 +1926,7 @@ Feistel2008      & \cite{Feistel2008}\\
 Fofonoff1983     & \cite{Fofonoff1983}\\
 Follows2006      & \cite{Follows2006}\\
 Hofmann2008      & \cite{Hofmann2008}\\
+Khoo1977         & \cite{Khoo1977}\\
 Lewis1998        & \cite{Lewis1998}\\
 Lueker2000       & \cite{Lueker2000}\\
 Millero1981      & \cite{Millero1981}\\
@@ -1944,6 +1945,7 @@ Wischmeyer2003   & \cite{Wischmeyer2003}\\
 Zeebe2001        & \cite{Zeebe2001}\\
 \end{tabular}
 
+\clearpage
 
 \section{References for the elements of an object of class \textit{aquaenv}} \label{app: references}
 \begin{footnotesize}
@@ -1968,7 +1970,7 @@ However the version of the formula used here is the one converted to total pH sc
 pH scale (total, converted to free here) , and 
 concentration unit (mol/kg-solution squared): \citet[chapter 5, p. 12,18]{DOE1994}, pH scale also in \citet[p. 258]{Zeebe2001}.\\
 \texttt{K\_HSO4}     & \citet[chapter 5 page 13]{DOE1994}, \citet[p. 260]{Zeebe2001}, \citet{Dickson1990a} (original reference). Constant type (stoichiometric), pH scale (free) , and 
-concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \citet[chapter 5, p. 13]{DOE1994}.\\
+concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \citet[chapter 5, p. 13]{DOE1994}. Note that it is also possible to use the constant according to \cite{Khoo1977}, as cited in, e.g.,  \cite{Roy1993b}, \cite{Millero1995}, and \cite{Lewis1998}. In \cite{Lewis1998} it is stated that the constant resulting from this equation is in mol/kg-H$_2$O and on the free pH scale.\\
 \texttt{K\_HF}       & \citet[p. 91]{Dickson1979} (original reference), \citet[c. 5, p. 15]{DOE1994}, \citet[p. 257]{Roy1993b}, \citet[p. 1783]{Dickson1987}, \citet[p. 664]{Millero1995}, \citet[p. 260]{Zeebe2001} 
 (converted to molinty and total scale).  Constant type (stoichiometric), pH scale (free) , and 
 concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \citet[chapter 5, p. 15, 16]{DOE1994}. In \textsf{AquaEnv}, it is also possible to use the constant according to \cite{Perez1987a}. \\

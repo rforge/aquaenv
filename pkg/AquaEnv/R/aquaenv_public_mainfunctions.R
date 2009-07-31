@@ -39,6 +39,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                     k_hf=NULL,
                     k1k2="roy",
                     khf="dickson",
+                    khso4="dickson",
                     fCO2atm=0.000390,
                     fO2atm=0.20946)
   { 
@@ -153,7 +154,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
 
         if (is.null(k_hso4))
           {    
-            aquaenv[["K_HSO4"]]      <- K_HSO4(S, t, p)
+            aquaenv[["K_HSO4"]]      <- K_HSO4(S, t, p, khso4)
           }
         else
           {

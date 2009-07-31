@@ -178,20 +178,42 @@ K_W <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)
 ######################################################################################
 # acid dissociation constants
 ######################################################################################
-K_HSO4 <- function(S, t, p=0)           
+K_HSO4 <- function(S, t, p=0, khso4="dickson")           
+  {
+    if (khso4 == "khoo")
+      {
+        return(K_HSO4_khoo(S=S, t=t, p=p))
+      }
+    else
+      {
+        T <- T(t)
+        Iterms <- Iterms(S)
+        
+        A <-  324.57*Iterms[[3]] - 771.54*Iterms[[1]] + 141.328  
+        B <-   35474*Iterms[[1]] +   1776*Iterms[[2]] - 13856*Iterms[[3]] - 2698*Iterms[[4]] - 4276.1
+        C <- 114.723*Iterms[[1]] - 47.986*Iterms[[3]] - 23.093
+        D <- 0
+        E <- 0
+        
+        K_HSO4 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_HSO4) + log(molal2molin(S)))
+        
+        return (eval(att(K_HSO4)))
+      }
+  }
+
+K_HSO4_khoo <- function(S, t, p=0)           
   {
     T <- T(t)
-    Iterms <- Iterms(S)
-    
-    A <-  324.57*Iterms[[3]] - 771.54*Iterms[[1]] + 141.328  
-    B <-   35474*Iterms[[1]] +   1776*Iterms[[2]] - 13856*Iterms[[3]] - 2698*Iterms[[4]] - 4276.1
-    C <- 114.723*Iterms[[1]] - 47.986*Iterms[[3]] - 23.093
-    D <- 0
+        
+    A <- 6.3451 + 0.5208*sqrt(I(S))
+    B <- -647.59 
+    C <- 0
+    D <- -0.019085
     E <- 0
     
-    K_HSO4 <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_HSO4) + log(molal2molin(S)))
+    K_HSO4_khoo <- exp(lnK(A, B, C, D, E, T) + deltaPlnK(T, p, DeltaPcoeffs$K_HSO4) + log(molal2molin(S)))
 
-    return (eval(att(K_HSO4)))
+    return (eval(att(K_HSO4_khoo)))
   }
 
 K_HF <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL, khf="dickson")
