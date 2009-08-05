@@ -2,13 +2,16 @@
 \alias{K_H2PO4}
 \title{K\_H2PO4}
 \description{PUBLIC function: calculates the dissociation constant of H2PO4}
-\usage{K_H2PO4(S, t, p=0, SumH2SO4=NULL, SumHF=NULL)}
+\usage{K_H2PO4(S, t, p=0, SumH2SO4=NULL, SumHF=NULL, khf="dickson", khso4="dickson")}
 \arguments{
   \item{S }{salinity in practical salinity units (i.e. no unit)}
   \item{t }{temperature in degrees centigrade}
   \item{p }{gauge pressure (total pressure minus atmospheric pressure) in bars}
   \item{SumH2SO4 }{total sulfate concentration in mol/kg-solution (calculated from S if not supplied)}
-  \item{SumHF }{total fluoride concentration in mol/kg-solution (calculated from S if not supplied)}
+  \item{SumHF }{total fluoride concentration in mol/kg-solution
+    (calculated from S if not supplied)}
+   \item{khf}{S, t relation for K\_HF needed for scale conversion: either "dickson" (default, Dickson1979a) or "perez" (Perez1987a)}
+  \item{khso4}{S, t relation for K\_HSO4 needed for scale conversion: either "dickson" (default, Dickson1990) or "khoo" (Khoo1977)}
 }
 \value{
   the dissociation constant of H2PO4 in mol/kg-solution on the free proton pH scale

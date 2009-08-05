@@ -49,7 +49,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
       }
     else if (!is.null(ae))
       {
-        return (cloneaquaenv(ae, TA=TA, pH=pH, k_co2=k_co2, k1k2=k1k2, khf=khf))
+        return (cloneaquaenv(ae, TA=TA, pH=pH, k_co2=k_co2, k1k2=k1k2, khf=khf, khso4=khso4))
       }
     else
       {
@@ -122,7 +122,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
             
             aquaenv[["molal2molin"]] <- molal2molin(S)      ; attr(aquaenv[["molal2molin"]], "unit")  <- "(mol/kg-soln)/(mol/kg-H2O)"
             
-            scaleconvs <- scaleconvert(S, t, p, SumH2SO4, SumHF, khf=khf)
+            scaleconvs <- scaleconvert(S, t, p, SumH2SO4, SumHF, khf=khf, khso4=khso4)
             aquaenv[["free2tot"]]    <- scaleconvs$free2tot ; attr(aquaenv[["free2tot"]], "pH scale") <- "free -> tot"
             aquaenv[["free2sws"]]    <- scaleconvs$free2sws ; attr(aquaenv[["free2sws"]], "pH scale") <- "free -> sws"
             aquaenv[["tot2free"]]    <- scaleconvs$tot2free ; attr(aquaenv[["tot2free"]], "pH scale") <- "total -> free"
@@ -145,7 +145,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
         
         if (is.null(k_w))
           {
-            aquaenv[["K_W"]]         <- K_W(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
+            aquaenv[["K_W"]]         <- K_W(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, khf=khf, khso4=khso4)
           }
         else
           {
@@ -163,7 +163,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
 
         if (is.null(k_hf))
           {
-            aquaenv[["K_HF"]]    <- K_HF(S, t, p, SumH2SO4=(SumH2SO4 + SumH2SO4_Koffset), SumHF=(SumHF + SumHF_Koffset), khf=khf)
+            aquaenv[["K_HF"]]    <- K_HF(S, t, p, SumH2SO4=(SumH2SO4 + SumH2SO4_Koffset), SumHF=(SumHF + SumHF_Koffset), khf=khf, khso4=khso4)
           }
         else
         {
@@ -172,7 +172,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
 
         if (is.null(k_co2))
           {
-            aquaenv[["K_CO2"]]    <- K_CO2 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, k1k2=k1k2)
+            aquaenv[["K_CO2"]]    <- K_CO2 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, k1k2=k1k2, khf=khf, khso4=khso4)
           }
         else
           {
@@ -181,7 +181,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
 
         if (is.null(k_hco3))
           {
-            aquaenv[["K_HCO3"]]  <- K_HCO3(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, k1k2=k1k2)
+            aquaenv[["K_HCO3"]]  <- K_HCO3(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, k1k2=k1k2, khf=khf, khso4=khso4)
           }
         else
           {
@@ -190,20 +190,20 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
 
         if (is.null(k_boh3))
           {
-            aquaenv[["K_BOH3"]]      <- K_BOH3(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
+            aquaenv[["K_BOH3"]]      <- K_BOH3(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, khf=khf, khso4=khso4)
           }
         else
           {
             aquaenv[["K_BOH3"]]      <- eval(att(rep(k_boh3,len)))
           }
         
-        aquaenv[["K_NH4"]]       <- K_NH4   (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
-        aquaenv[["K_H2S"]]       <- K_H2S   (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)  
-        aquaenv[["K_H3PO4"]]     <- K_H3PO4 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
-        aquaenv[["K_H2PO4"]]     <- K_H2PO4 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
-        aquaenv[["K_HPO4"]]      <- K_HPO4  (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
-        aquaenv[["K_SiOH4"]]     <- K_SiOH4 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)
-        aquaenv[["K_SiOOH3"]]    <- K_SiOOH3(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset)  
+        aquaenv[["K_NH4"]]       <- K_NH4   (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, khf=khf, khso4=khso4)
+        aquaenv[["K_H2S"]]       <- K_H2S   (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, khf=khf, khso4=khso4)  
+        aquaenv[["K_H3PO4"]]     <- K_H3PO4 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, khf=khf, khso4=khso4)
+        aquaenv[["K_H2PO4"]]     <- K_H2PO4 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, khf=khf, khso4=khso4)
+        aquaenv[["K_HPO4"]]      <- K_HPO4  (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, khf=khf, khso4=khso4)
+        aquaenv[["K_SiOH4"]]     <- K_SiOH4 (S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, khf=khf, khso4=khso4)
+        aquaenv[["K_SiOOH3"]]    <- K_SiOOH3(S, t, p, SumH2SO4 + SumH2SO4_Koffset, SumHF + SumHF_Koffset, khf=khf, khso4=khso4)  
         
         aquaenv[["K_HNO2"]]      <- PhysChemConst$K_HNO2    ; attr(aquaenv[["K_HNO2"]], "unit")       <- "mol/kg-soln; mol/kg-H2O; mol/l"
         aquaenv[["K_HNO3"]]      <- PhysChemConst$K_HNO3    ; attr(aquaenv[["K_HNO3"]], "unit")       <- "mol/kg-soln; mol/kg-H2O; mol/l"
