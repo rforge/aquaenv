@@ -1,0 +1,16 @@
+citHeader("To cite package 'AquaEnv' in publications use:")
+
+citEntry(entry="Article",
+         title   = "AquaEnv - an Aquatic acid-base modelling Environment in R\n",
+	 journal = "Aquatic Geochemistry",
+         author  = personList(as.person("Andreas F. Hofmann"), as.person("Karline Soetaert"), as.person("Jack J. Middelburg"), as.person("Filip J. R. Meysman")),
+         year    = 2009,
+	 volume  = "in press",
+	 textVersion = 
+         paste("AquaEnv - an Aquatic acid-base modelling Environment in R", 
+               "Andreas F. Hofmann, Karline Soetaert, Jack J. Middelburg and Filip J. R. Meysman",
+               sep="")
+         )
+
+citFooter("We have invested a lot of time and effort in creating AquaEnv,",
+          "please cite it when using it, thank you!")
