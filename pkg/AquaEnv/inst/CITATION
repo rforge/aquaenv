@@ -5,9 +5,8 @@ citEntry(entry="Article",
 	 journal = "Aquatic Geochemistry",
          author  = personList(as.person("Andreas F. Hofmann"), as.person("Karline Soetaert"), as.person("Jack J. Middelburg"), as.person("Filip J. R. Meysman")),
          year    = 2009,
-	 volume  = "in press"
-	 url     = "http://cran.r-project.org/package=AquaEnv"
-         textVersion = 
+	 volume  = "in press",
+	 textVersion = 
          paste("AquaEnv - an Aquatic acid-base modelling Environment in R", 
                "Andreas F. Hofmann, Karline Soetaert, Jack J. Middelburg and Filip J. R. Meysman",
                sep="")
