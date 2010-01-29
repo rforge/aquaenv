@@ -149,7 +149,7 @@ and implemented in \cite{marelac}
 
 
 \subsection{Seawater \texttt{density} as function of salinity \texttt{S} and temperature \texttt{t}}
-According to \citep{Millero1981} as reprinted in \citet[chap. 5, p. 6f]{DOE1994} the density of seawater $\rho_{SeaWater}$ (in $\frac{kg}{m^3}$; \texttt{density} in an object of class \textit{aquaenv}) can be calculated as
+According to \citep{Millero1981}, \citet[p. 434]{Millero1982}, as reprinted in \citet[chap. 5, p. 6f]{DOE1994} the density of seawater $\rho_{SeaWater}$ (in $\frac{kg}{m^3}$; \texttt{density} in an object of class \textit{aquaenv}) can be calculated as
 %\begin{center}
 \begin{eqnarray}
 \rm \rho_{SeaWater} &=&\rm \rho_{Water} + A\;\mbox{\texttt{S}} + B\;\mbox{\texttt{S}}^{1.5} + C\; \mbox{\texttt{S}}^2\\
@@ -158,7 +158,7 @@ According to \citep{Millero1981} as reprinted in \citet[chap. 5, p. 6f]{DOE1994}
 \rm B &=& \rm -5.72466 \; 10^{-3} + 1.0227 \; 10^{-4} \, \mbox{\texttt{t}} - 1.6546\; 10^{-6} \, \mbox{\texttt{t}}^2 \\
 \rm C &=& 4.8314\;10^{-4} \\
 \rho_{Water} &=& 999.842594 + 6.793952\;10^{-2} \, \mbox{\texttt{t}} - 9.095290\;10^{-3} \, \mbox{\texttt{t}}^2\\
-                                    && + 1.001685\;10^{-4}\,\mbox{\texttt{t}}^3 - 1.120083\;10^{-6} \, \mbox{\texttt{t}}^4 + 6.536332\;10^{-9} \, \mbox{\texttt{t}}^6
+                                    && + 1.001685\;10^{-4}\,\mbox{\texttt{t}}^3 - 1.120083\;10^{-6} \, \mbox{\texttt{t}}^4 + 6.536332\;10^{-9} \, \mbox{\texttt{t}}^5
 \end{eqnarray}
 %\end{center}
 \noindent

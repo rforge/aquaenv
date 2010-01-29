@@ -69,7 +69,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
         aquaenv[["Pa"]]          <- Pa                  ; attr(aquaenv[["Pa"]], "unit")           <- "bar"
         aquaenv[["d"]]           <- round(watdepth(P=p+Pa, lat=lat),2) ; attr(aquaenv[["d"]], "unit")      <- "m"
 
-        aquaenv[["density"]]     <- seadensity(t,S)     ; attr(aquaenv[["density"]], "unit")      <- "kg/m3"
+        aquaenv[["density"]]     <- seadensity(S=S, t=t)     ; attr(aquaenv[["density"]], "unit")      <- "kg/m3"
         
         aquaenv[["SumCO2"]]      <- SumCO2              
         aquaenv[["SumNH4"]]      <- SumNH4              ; attr(aquaenv[["SumNH4"]], "unit")       <- "mol/kg-soln"
