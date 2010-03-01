@@ -489,7 +489,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                           {
                             aquaenv[["ni1"]] <<- HNO2/SumHNO2     ; attributes(aquaenv[["ni1"]])  <<- NULL
                             aquaenv[["ni2"]] <<- NO2 /SumHNO2     ; attributes(aquaenv[["ni2"]])  <<- NULL
-                            aquaenv[["dTAdSumHNO2"]] <<- -aquaenv[["na2"]]
+                            aquaenv[["dTAdSumHNO2"]] <<- -aquaenv[["ni1"]]
                             attr(aquaenv[["dTAdSumHNO2"]], "unit") <<- "(mol-TA/kg-soln)/(mol-SumHNO2/kg-soln)"
                           }
                       })
