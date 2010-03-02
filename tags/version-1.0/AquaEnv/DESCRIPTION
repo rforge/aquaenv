@@ -11,8 +11,7 @@ Description: AquaEnv is an integrated development toolbox for aquatic chemical m
   Next to the routines necessary to calculate desired information, AquaEnv also contains a suite of tools to visualize this information.
   Furthermore, AquaEnv can not only be used to build dynamic models of aquatic systems, but it can also serve as a simple desktop tool for the 
   experimental aquatic chemist to generate and visualize all possible derived information from a set of measurements with one single easy to use R function.
-  Additionally, the sensitivity of the system to variations in the input variables can be visualized. The corresponding 
-  publication in Aquatic Geochemistry can be found at http://www.springerlink.com/content/l4747417w0k50463/
+  Additionally, the sensitivity of the system to variations in the input variables can be visualized.
 License: GPL (>= 2)
 LazyData: yes
 
