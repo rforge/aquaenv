@@ -37,9 +37,9 @@
   \item{nlscontrol}{nls.lm.control() can be specified}
   \item{verbose}{verbose mode: show the traject of the fitting in a
     plot}
-  \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3.}
+  \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000) for K\_CO2 and K\_HCO3.}
   \item{khf}{either "dickson" (default, Dickson1979a) or "perez"
-    (Perez1987a, calculated with seacarb) for K\_HF}
+    (Perez1987a) for K\_HF}
   \item{datxbegin}{at what x value (amount of titrant added) does the
     supplied curve start? (i.e. is the complete curve supplied or just a
     part?)}

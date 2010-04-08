@@ -27,8 +27,8 @@
   \item{k_boh3}{a fixed K\_BOH3 can be specified}
   \item{k_hso4}{a fixed K\_HSO4 can be specified}
   \item{k_hf}{a fixed K\_HF can be specified}
-  \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3.}
-  \item{khf}{either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
+  \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000) for K\_CO2 and K\_HCO3.}
+  \item{khf}{either "dickson" (default, Dickson1979a) or "perez" (Perez1987a) for K\_HF}
 }
 \value{
   object of class aquaenv which contains a titration simulation

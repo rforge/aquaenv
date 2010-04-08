@@ -28,10 +28,7 @@
 \Plainkeywords{aquatic modelling, pH, pH scales, dissolved inorganic carbon, total alkalinity, total alkalinity curve fitting, theoretical titration, revelle factor, omega, solubility products, CO2, ocean acidification, estuaries, carbonate system, seawater, R}
 
 
-\author{Andreas F. Hofmann\\
-Centre for Estuarine and Marine Ecology\\
-Netherlands Institute of Ecology\\
-The Netherlands}
+\author{Andreas F. Hofmann}
 
 \Plainauthor{Andreas F. Hofmann}
 
@@ -56,6 +53,12 @@ as well as additionally the electrode standard potential ($\rm E_0$) and the fir
 
 \Address{
   Andreas F. Hofmann\\
+  Monterey Bay Aquarium Research Institute (MBARI)\\
+  7700 Sandholdt Road\\
+  Moss Landing, CA 95039\\
+  USA\\
+  E-mail: \email{ahofmann@mbari.org}\\ \\
+  \textit{previous address:}\\
   Centre for Estuarine and Marine Ecology (CEME)\\
   Netherlands Institute of Ecology (NIOO)\\
   4401 NT Yerseke, Netherlands

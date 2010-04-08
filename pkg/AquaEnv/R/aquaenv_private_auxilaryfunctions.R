@@ -322,11 +322,18 @@ scaleconvert <- function(S,                    # salinity S in practical salinit
     attributes(FreeToTot) <- NULL
     attributes(FreeToSWS) <- NULL
 
-    SQRTI     <- sqrt(I(S))
-    eT        <- PhysChemConst$e*T(t)
-    A         <- 1.82e6/(eT*sqrt(eT))
-                 #davies equation: only valid up to I=0.5     #Lewis1998: NBS scale is based on mol/kg-H2O (molality) and all other scales (incl free) on mol/kg-soln (molinity)
-    NBSToFree <- 10^(A*((SQRTI/(1+SQRTI)) - 0.2*I(S)))        * molal2molin(S)            
+    #davies equation: only valid up to I=0.5     
+    SQRTI   <- sqrt(I(S))
+    eT      <- PhysChemConst$e*T(t)
+    A       <- 1.82e6/(eT*sqrt(eT))
+    gamma_H <- 10^-((A*((SQRTI/(1+SQRTI)) - 0.2*I(S))))
+      
+    NBSToFree <- 1/(gamma_H*FreeToSWS) * molal2molin(S)      #Lewis1998, Perez1984: pH_NBS = -log10(gamma_H (H + HSO4 + HF))  with concs being molal
+                                                             #i.e.: the NBS scale is related to the SEAWATER scale via gamma_H not the free scale
+                                                             #      (since, if you measure with NBS buffers in seawater, you do not get the activity of the proton alone
+                                                             #       but of the proton plus HSO4 and HF)
+                                                             ##################
+                                                             #Lewis1998: NBS scale is based on mol/kg-H2O (molality) and all other scales (incl free) on mol/kg-soln (molinity)
                
     return(list(                              # list of conversion factors "free2tot", "free2sws", etc.
                 free2tot = FreeToTot,
