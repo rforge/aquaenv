@@ -1,4 +1,4 @@
-all: vignette_AquaEnv vignette_AquaEnv-PrivateFunctions vignette_AquaEnv-ConstantsAndFormulae clean
+all: vignette_AquaEnv vignette_AquaEnv-PrivateFunctions vignette_AquaEnv-ConstantsAndFormulae
 
 
 vignette_AquaEnv:
