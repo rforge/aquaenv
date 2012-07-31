@@ -1,0 +1,3 @@
+inst/doc/Makefile
+.*[.]tex
+inst/doc/jss_old[.].*

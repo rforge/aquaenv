@@ -30,7 +30,7 @@
 %% Please report errors to Achim.Zeileis@R-project.org
 %%
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{jss}[\filedate\space\fileversion\space jss class by Achim Zeileis]
+\ProvidesClass{jss_old}[\filedate\space\fileversion\space jss class by Achim Zeileis]
 %% options
 \newif\if@article
 \newif\if@codesnippet
@@ -72,7 +72,7 @@
   \usepackage[authoryear,round,longnamesfirst]{natbib}
 \fi
 \bibpunct{(}{)}{;}{a}{}{,}
-\bibliographystyle{jss}
+\bibliographystyle{jss_old}
 %% paragraphs
 \setlength{\parskip}{0.7ex plus0.1ex minus0.1ex}
 \setlength{\parindent}{0em}
