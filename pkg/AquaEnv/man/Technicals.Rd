@@ -12,6 +12,6 @@
         \item{revelle_fraction}{fraction of disturbance for the numerical calculation of the revelle factor}
 	\item{CO2}{fugacity of CO2 in atm}
        } 
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \keyword{misc}
 

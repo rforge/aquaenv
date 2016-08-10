@@ -19,6 +19,6 @@
   \emph{calculated TA} \tab 2260.06 \tab  umol/kg-soln \cr
   \emph{calculated E0} \tab 0.394401 \tab V \cr
   }}
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \keyword{misc}
 

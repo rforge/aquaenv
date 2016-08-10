@@ -1,0 +1,2027 @@
+\documentclass[article,nojss]{jss}
+\DeclareGraphicsExtensions{.pdf,.eps}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{longtable}
+\usepackage{array}
+\setlength{\extrarowheight}{0.1cm}
+
+\newcommand{\noun}[1]{\textsc{#1}}
+\newcommand{\aq}{\textbf{\textsf{AquaEnv}}}
+\newcommand{\lm}{\textbf{\textsf{minpack.lm}}}
+\newcommand{\R}{\proglang{R }}
+\newcommand{\ds}{\textbf{\textsf{deSolve}}}
+
+\setkeys{Gin}{width=\textwidth} %width of graphics produced by Sweave
+
+% enumerate and add to table down to subparagraph
+\addtocounter{tocdepth}{+3}
+\addtocounter{secnumdepth}{+3}
+
+
+\title{Package \aq: an \noun{Aqua}tic modelling \noun{Env}ironment in \proglang{R}}
+\Plaintitle{Package AquaEnv: an Aquatic modelling Environment in R}
+
+\Keywords{aquatic modelling, pH, pH scales, dissolved inorganic carbon, total alkalinity, total alkalinity curve fitting, theoretical titration, revelle factor, omega, solubility products, $\rm CO_2$, ocean acidification, estuaries, carbonate system, seawater, \proglang{R}}
+
+\Plainkeywords{aquatic modelling, pH, pH scales, dissolved inorganic carbon, total alkalinity, total alkalinity curve fitting, theoretical titration, revelle factor, omega, solubility products, CO2, ocean acidification, estuaries, carbonate system, seawater, R}
+
+
+\author{Andreas F. Hofmann}
+
+\Plainauthor{Andreas F. Hofmann}
+
+\Abstract{ 
+\noindent
+\aq$\,$ is an integrated development toolbox for aquatic chemical model generation focused on (ocean) acidification and CO2 air-water exchange. 
+\begin{itemize}
+\item It contains all elements necessary to model the pH, the related CO2 air-water exchange, as well as aquatic acid-base chemistry in general for
+an arbitrary marine, estuarine or freshwater system. Also chemical batches can be modelled. 
+\item Next to the routines necessary to calculate desired information, \aq$\,$ also contains a suite of tools to visualize this information.
+\item Furthermore, \aq$\,$ can not only be used to build dynamic models of aquatic systems, but it can also serve as a simple desktop tool for the 
+experimental aquatic chemist to generate and visualize all possible derived information from a set of measurements with one single easy to use R function.
+\item Additionally, the sensitivity of the system to variations in the input variables can be visualized.
+\item \aq$\,$ also contains a number of example ``applications'' that make use of the aquatic modelling toolbox that \aq$\,$ provides: 
+\begin{itemize}
+\item a theoretical titration simulator
+\item and a routine to determine total alkalinity ([TA]), the total dissolved inorganic carbon concentration ([$\sum$CO2]), 
+as well as additionally the electrode standard potential ($\rm E_0$) and the first dissociation constant of the carbonate system ($\rm K^*_{CO_2}$) from titration data.
+\end{itemize}
+\end{itemize}
+}
+
+\Address{
+  Andreas F. Hofmann\\
+  Monterey Bay Aquarium Research Institute (MBARI)\\
+  7700 Sandholdt Road\\
+  Moss Landing, CA 95039\\
+  USA\\
+  E-mail: \email{ahofmann@mbari.org}\\ \\
+  \textit{previous address:}\\
+  Centre for Estuarine and Marine Ecology (CEME)\\
+  Netherlands Institute of Ecology (NIOO)\\
+  4401 NT Yerseke, Netherlands
+  E-mail: \email{a.hofmann@nioo.knaw.nl}\\
+  URL: \url{http://www.nioo.knaw.nl/users/ahofmann}\\
+}
+
+
+
+%% need no \usepackage{Sweave}
+%\VignetteIndexEntry{AquaEnv}
+
+
+
+\begin{document}
+\SweaveOpts{engine=R,eps=FALSE}
+%\SweaveOpts{keep.source=TRUE}
+
+<<Preliminaries,echo=FALSE,results=hide>>=
+library("AquaEnv")
+#options(width=70)
+
+@
+
+
+\maketitle
+
+\clearpage
+\tableofcontents
+\clearpage
+
+\section{Introduction}
+
+\aq$\,$is a toolbox for aquatic modelling that serves several purposes
+\begin{itemize}
+\item It provides functions to calculate the stoichiometric equilibrium constants ($\rm K^*$) for key acid base systems in natural seawater, the Henry's constants ($\rm K_0$), 
+      as well as the solubility products ($\rm K_{sp}$) for calcite and aragonite. This functionality is provided via the functions 
+      \texttt{K\_CO2, K\_HCO3, K\_BOH3, K\_W, K\_HSO4, K\_HF, K\_NH4, K\_H2S, K\_H3PO4, K\_H2PO4, K\_HPO4, K\_SiOH4, K\_SiOOH3, K0\_CO2, K0\_O2, Ksp\_aragonite,} and \\
+      \texttt{Ksp\_calcite}.
+
+\item It is designed to make its use as easy as possible: all the information that can be calculated from the set of parameters know of a system or sample
+can be obtained by one single function: \texttt{aquaenv}. This function returs a list of class  \textit{aquaenv} that contains next to the input parameters 
+\begin{itemize}
+\item the clorinity, the ionic strength, $[\rm \sum B(OH)_3]$, $[\rm \sum H_2SO_4]$, $[\rm \sum HF]$, $[\rm Cl^-]$, $[\rm Cl^-]$,$[\rm \sum Br]$, $[\rm Na^+]$, $[\rm Mg^{2+}]$, 
+$[\rm Ca^{2+}]$, $[\rm K^{+}]$, $[\rm Sr^{2+}]$ calculated from salinity as given in \cite{DOE1994}
+(Please note that if values for $[\rm \sum B(OH)_3]$, $[\rm \sum H_2SO_4]$, $[\rm \sum HF]$ are given as input parameters, these parameters are used and not the ones calculated 
+from salinity.)
+\item the gauge pressure p \citep[total pressure minus atmospheric pressure][]{Feistel2008} either given as input variable, or calculated from depth \citep[according to][]{Fofonoff1983}, or calculated from the total pressure P and the atmospheric pressure Pa,
+both of which can be given as input variables and are also stored in an object of class  \textit{aquaenv}
+\item  the seawater density calculated from temperature and salinity as given by \cite{Millero1981}
+\item a set of conversion factors to convert between different pH scales \citep{Dickson1984, Zeebe2001} and between mol/kg-$\rm H_2O$ and mol/kg-solution
+ (inferred from \cite{Roy1993b} and \cite{DOE1994})
+\item the Henry's constants for $\rm CO_2$ \citep{Weiss1974} and for $\rm O_2$ \citep[inferred from][]{Weiss1970} calculated from temperature and salinity as well as the 
+associated saturation concentrations of $\rm CO_2$ and $\rm O_2$.
+\item the ion product of water \citep{Millero1995}, the stoichiometric equilibrium constants of $\rm HSO_4^-$ \citep{Dickson1990},  $\rm HF$\citep{Dickson1979a} ,
+$\rm CO_2$ \citep{Roy1993b}, $\rm HCO_3^-$ \citep{Roy1993b}, $\rm B(OH)_3$ \citep{Dickson1990}, $\rm NH4^+$\citep{Millero1995a}, $\rm H2_S$ \citep{Millero1995},
+$\rm H_3PO4$\citep{Millero1995}, $\rm H_2PO4^-$ \citep{Millero1995}, $HPO4^{2-}$ \citep{Millero1995}, $\rm SiOH4$ \citep{Millero1988},         
+$\rm SiOOH3^-$ \citep{Wischmeyer2003}, $\rm HNO2$ \citep{Riordan2005}, $\rm HNO3$,  $\rm H2SO4$ \citep{Atkins1996}, $\rm HS$ \citep{Atkins1996} mostly calculated 
+as functions of temperature and salinity and pressure corrected according to \cite{Millero1995}.
+\item the solubility products of calcite and aragonite \citep{Mucci1983} as well as the associated $\Omega$'s if a full speciation is calculated (see below)
+\item the fugacity of $\rm CO_2$ - if a full speciation is calculated (see below)
+\item if $[\rm \sum CO_2]$ and pH are given $[\rm TA]$ is calculated, if $[\rm \sum CO_2]$ and $[\rm TA]$ are given pH is calculated, if $[\rm \sum CO_2]$ and $\rm [CO_2]$ or f$\rm CO_2$
+are given, pH and $[\rm TA]$ are calculated.
+\item if either one of the pairs pH and  $\rm [CO_2]$ or f$\rm CO_2$, pH and $[\rm TA]$, or $[\rm TA]$ and $\rm [CO_2]$ or f$\rm CO_2$ is given, $[\rm \sum CO_2]$ is calculated
+\item if sufficient information is given and the flag \texttt{speciation=TRUE} is set, a full speciation of $[\rm \sum CO2]$, $[\rm \sum NH4]$, $[\rm \sum H_2S]$, $[\rm \sum HNO3]$,  $[\rm \sum HNO2]$,
+ $[\rm \sum H_3PO4]$, $[\rm \sum Si(OH)_4]$, $[\rm \sum B(OH)_3]$, $[\rm \sum H_2SO_4]$, $[\rm \sum HF]$, as well as water itself is calculated
+\item if the flag \texttt{revelle=TRUE} is set, the revelle factor \citep{Zeebe2001} is calculated.
+item if the flag \texttt{revelle=TRUE} is set, all necessary quantities for the explicit ``direct substitution approach'' (DSA) to pH modelling as given in \cite{Hofmann2008} are 
+calculated. These are the buffer factor (the partial derivative of $\rm [TA]$ with respect to $\rm [H^+]$) and the partial derivatives of $\rm [TA]$ with respect to the other 
+total quantities. Furthermore, the partial derivatives of $\rm [TA]$ with respect to changes in the equilibrium constants ($K^*$), multiplied with the partial derivatives
+of the equilibrium constants with respect to their variables needed for the DSA with time variable equilibrium constants as described in \cite{Hofmann2009} are calculated.
+Finally, the ionization fractions as defined by \cite{Stumm1996} and used in \cite{Hofmann2008c} are calculated for the full speciation.
+\end{itemize}
+\item Input for \texttt{aquaenv} has to be supplied in standard SI units, the free proton pH scale and in molinity\footnote{Note that it is not sufficient to give a gravimetric concentration in 
+mol/kg since there is a substancial difference between mol/kg-$\rm H_2O$ (molality) and mol/kg-solution (molinity).} (mol/kg-solution).
+Conversion of input parameters to this necessary units and pH scale  can be done with the generic function \texttt{convert}.
+\item The information created with aquaenv is also supplied in standard SI units and in molinity. All elements of an object of class \textit{aquaenv} of a certain unit or pH scale
+can be converted into other units or pH scales with the function \texttt{convert} as well.
+\item One can use input vectors of salinity S, temperature t, or gauge pressure p (as well as total pressure P and depth d) for \texttt{aquaenv} to obtain vectors of all calculated information as function of 
+the input vector. This can be visualized in a large variety of ways using the \texttt{plot} function specially defined for objects pf class \textit{aquaenv}.
+\item  Objects of class aquaenv can be used in dynamic models to define the state of the system in each timestep of the numerical integration (done e.g. with \ds).
+with the function \texttt{aquaenv} and the flag \texttt{from.data.frame=TRUE} it is possible to convert output of those dynamic models into objects pf class
+\textit{aquaenv} which allows the user to use the whole suite of visualisation tools that is provided by the function \texttt{plot} in \aq.
+\item As mentioned above \cite{Hofmann2008}, \cite{Hofmann2009}, and \cite{Hofmann2008c} describe methods for an ``explicit'' pH modelling which allows 
+for the quantification of the influences of kinetically modelled processes on the pH. Objects pf class \textit{aquaenv} provide all needed quantities 
+(partial derivatives of $\rm[TA]$, ionization fractions, etc.) to employ both of those methods in dynamic models. 
+Furthermore, \aq$\,$provides the functionality to cumulatively plot the obtained influences on the pH.
+\item As an example of how to use the aquatic chemical toolbox that is provided by \aq, two applications are provided
+\begin{itemize}
+\item The function \texttt{titration}: creates theoretical titrations which can be used e.g. to create bjerrum plots with the function \texttt{plot.aquaenv} in \aq.
+\item The function \texttt{TAfit}:  a routine based on a method in \cite{DOE1994} that makes use of that theoretical titration function and allows for 
+determining  total alkalinity ($\rm [TA]$),  the total dissolved inorganic carbon concentration ([$\sum$CO2]), as well as additionally the electrode standard potential ($\rm E_0$) and the first dissociation 
+constant of the carbonate system ($\rm K^*_{CO_2}$) using the Levenberg-Marquart algorithm (least squares optimization procedure) as provided in the \R package \lm.
+\end{itemize}
+\end{itemize}
+
+
+\section{The elements of an object of class \textit{aquaenv}}
+The function \texttt{aquaenv}, the central function of \aq$ $, returns an object of class \textit{aquaenv}. This object is a list of different elements which can be accesses with the \$ character or 
+with the [[]] operator
+<<AquaenvElements, fig=FALSE, echo=TRUE>>=
+test <- aquaenv(35, 10)
+test$t
+test[["t"]]
+@ 
+Maximally, i.e., if the enough input data is supplied to define the pH of the system and the flags \texttt{speciation}, \texttt{dsa}, and \texttt{revelle} are \texttt{TRUE} while the flag
+\texttt{skeleton} is \texttt{FALSE}, an object of class \textit{aquaenv} contains the following elements
+
+\begin{footnotesize}
+\begin{longtable}{l|l|p{7cm}}
+\textbf{element}& \textbf{unit}            & \textbf{explanation} \\ \hline 
+\texttt{S}           & ``psu'' (no unit)            & salinity             \\
+\texttt{t}           & \textdegree C                & temperature          \\
+\texttt{p}           & bar                          & gauge pressure \citep[total pressure minus atmospheric pressure][]{Feistel2008} \\
+
+\texttt{T}           & K                            & absolute temperature \\
+
+\texttt{Cl}          & \textperthousand             & chlorinity           \\
+\texttt{I}           & mol/kg-$\rm H_2O$            & ionic strength       \\
+
+\texttt{P}           & bar                          & total pressure \\
+\texttt{Pa}          & bar                          & atmospheric pressure \\
+\texttt{d}           & m                            & depth                \\ 
+
+\texttt{density}     & kg/$\rm m^3$                 & (seawater) density   \\
+\texttt{SumCO2}      & mol/kg-soln                  & $[\rm \sum CO_2]$, total dissolved inorganic carbon concentration \\         
+\texttt{SumNH4}      & mol/kg-soln                  & $[\rm \sum NH_4^+]$, total ammonium concentration\\
+\texttt{SumH2S}      & mol/kg-soln                  & $[\rm \sum H_2S]$, total sulfide concentration\\
+\texttt{SumHNO3}     & mol/kg-soln                  & $[\rm \sum HNO_3]$, total nitrate concentration\\
+\texttt{SumHNO2}     & mol/kg-soln                  & $[\rm \sum HNO_2]$, total nitrite concentration\\
+\texttt{SumH3PO4}    & mol/kg-soln                  & $[\rm \sum H_3PO_4]$, total phosphate concentration\\
+\texttt{SumSiOH4}    & mol/kg-soln                  & $[\rm \sum Si(OH)_4]$, total silicate concentration\\       
+\texttt{SumBOH3}     & mol/kg-soln                  & $[\rm \sum B(OH)_3]$, total borates concentration\\
+\texttt{SumH2SO4}    & mol/kg-soln                  & $[\rm \sum H_2SO_4]$, total sulfate concentration\\
+\texttt{SumHF}       & mol/kg-soln                  & $[\rm \sum HF]$, total fluoride concentration\\
+\texttt{Br}          & mol/kg-soln                  & $[\rm Br^-]$, bromide concentration\\
+\texttt{ClConc}      & mol/kg-soln                  & $[\rm Cl^-]$, chloride concentration\\
+\texttt{Na}          & mol/kg-soln                  & $[\rm Na^{+}]$, sodium concentration\\
+\texttt{Mg}          & mol/kg-soln                  & $[\rm Mg^{2+}]$, magnesium concentration\\
+\texttt{Ca}          & mol/kg-soln                  & $[\rm Ca^{2+}]$, calcium concentration\\
+\texttt{K}           & mol/kg-soln                  & $[\rm K^+]$, potassium concentration\\               
+\texttt{Sr}          & mol/kg-soln                  & $[\rm Sr^{2+}]$, strontium concentration\\    
+\texttt{molal2molin} & (mol/kg-soln)/(mol/kg-H2O)   & concentration conversion factor: from molality to molinity\\
+\texttt{free2tot}    & -                            & pH conversion factor: free scale to total scale\\
+\texttt{free2sws}    & -                            & pH conversion factor: free scale to sawater scale\\
+\texttt{tot2free}    & -                            & pH conversion factor: total scale to free scale\\ 
+\texttt{tot2sws}     & -                            & pH conversion factor: total scale to seawater scale\\ 
+\texttt{sws2free}    & -                            & pH conversion factor: seawater scale to  free scale\\ 
+\texttt{sws2tot}     & -                            & pH conversion factor: seawater scale to total scale\\ 
+\texttt{K0\_CO2}     & mol/(kg-soln*atm)            & Henry's constant for $\rm CO_2$\\ 
+\texttt{K0\_O2}      & mol/(kg-soln*atm)            & Henry's constant for $\rm O_2$\\ 
+\texttt{fCO2atm}     & atm                          & atmospheric fugacity of CO$_2$\\
+\texttt{fO2atm}      & atm                          & atmospheric fugacity of O$_2$\\
+\texttt{CO2\_sat}    & mol/kg-soln                  & $\rm CO_2$ saturation concentration at an atmospheric fugacity of \texttt{fCO2atm}\\
+\texttt{O2\_sat}     & mol/kg-soln                  & $\rm O_2$ saturation concentration at an atmospheric  fugacity of \texttt{fO2atm}\\
+\texttt{K\_W}        &(mol/kg-soln)$^2$, free pH scale & stoichiometric equilibrium ion product of \\
+            &                              & $\rm H_2O$: $\rm K^*_W = [H^+][OH-]$\\
+\texttt{K\_HSO4}     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+            &                              & $\rm K^*_{HSO_4^-} = [H^+][SO_4^{2-}] / [HSO_4^-]$\\
+\texttt{K\_HF}       &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{HF} = [H^+][F^{-}] / [HF]$\\
+\texttt{K\_CO2}      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{CO_2} = [H^+][HCO_3^{-}] / [CO_2]$\\
+\texttt{K\_HCO3}     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+            &                                 & $\rm K^*_{HCO_3^{-}} = [H^+][CO_3^{2-}] / [HCO_3^{-}]$\\
+\texttt{K\_BOH3}     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{B(OH)_3} = [H^+][B(OH)_4^-] / [B(OH)_3]$\\          
+\texttt{K\_NH4}      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{NH_4^+} = [H^+][NH_3] / [NH_4^+]$\\
+\texttt{K\_H2S}      &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant \\
+            &                                 & $\rm K^*_{H_2S} = [H^+][HS^-] / [H_2S]$\\
+\texttt{K\_H3PO4}    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{H_3PO_4} = [H^+][H_2PO_4^-] / [H_3PO_4]$\\         
+\texttt{K\_H2PO4}    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{H_2PO_4^-} = [H^+][HPO_4^{2-}] / [H_2PO_4^-]$\\
+\texttt{K\_HPO4}     &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{HPO_4^{2-}} = [H^+][PO_4^{3-}] / [HPO_4^{2-}]$\\
+\texttt{K\_SiOH4}    &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{Si(OH)_4} = [H^+][SiO(OH)_3^-] / [Si(OH)_4]$\\         
+\texttt{K\_SiOOH3}   &mol/kg-soln,       free pH scale & stoichiometric equilibrium constant\\
+            &                                 & $\rm K^*_{SiO(OH)_3^-} = [H^+][SiO_2(OH)_2^{2-}] / [SiO(OH)_3^-]$\\         
+\texttt{K\_HNO2}     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+            &                                 & $\rm K^*_{HNO_2} = [H^+][NO_2^-] / [HNO_2]$\\         
+\texttt{K\_HNO3}     &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+            &                                 & $\rm K^*_{HNO_3} = [H^+][NO_3^-] / [HNO_3]$\\              
+\texttt{K\_H2SO4}    &mol/kg-soln; mol/kg-H2O; mol/l   & approximate value for equilibrium constant \\
+            &                                 & $\rm K^*_{H_2SO_4} = [H^+][HSO_4^-] / [H_2SO_4]$\\    
+\texttt{K\_HS}       & mol/kg-soln; mol/kg-H2O; mol/l  & approximate value for equilibrium constant \\
+            &                                 & $\rm K^*_{HS^-} = [H^+][S^{2-}] / [HS^-]$\\
+\texttt{Ksp\_calcite}& (mol/kg-soln)$^2$               & stoichiometric equilibrium solubility product of calcite\\
+            &                                 & $\rm Ksp^*_{cal} = [Ca^{2+}][CO_3^{2-}]$\\
+\texttt{Ksp\_aragonite} &(mol/kg-soln)$^2$             & stoichiometric equilibrium solubility product of aragonite\\
+            &                                 & $\rm Ksp^*_{ara} = [Ca^{2+}][CO_3^{2-}]$\\
+\texttt{TA}          & mol/kg-soln                     & [TA], total alkalinity\\
+\texttt{pH}          & -, free scale                   & pH\\              
+\texttt{fCO2}        & atm,                            & fugacity of $\rm CO_2$ in the water (i.e. in a small volume of air equilibrated with the water)\\
+\texttt{CO2}         & mol/kg-soln                     & $[\rm CO_2]$\\         
+\texttt{HCO3}        & mol/kg-soln                     & $[\rm HCO_3^-]$\\         
+\texttt{CO3}         & mol/kg-soln                     & $[\rm CO_3^{2-}]$\\         
+\texttt{BOH3}        & mol/kg-soln                     & $[\rm B(OH)_3]$\\         
+\texttt{BOH4}        & mol/kg-soln                     & $[\rm B(OH)_4^-]$\\                     
+\texttt{OH}          & mol/kg-soln                     & $[\rm OH^-]$\\         
+\texttt{H3PO4}       & mol/kg-soln                     & $[\rm H_3PO_4]$\\         
+\texttt{H2PO4}       & mol/kg-soln                     & $[\rm H2PO_4^-]$\\                    
+\texttt{HPO4}        & mol/kg-soln                     & $[\rm HPO_4^{2-}]$\\         
+\texttt{PO4}         & mol/kg-soln                     & $[\rm PO_4^{3-}]$\\         
+\texttt{SiOH4}       & mol/kg-soln                     & $[\rm Si(OH)_4]$\\                    
+\texttt{SiOOH3}      & mol/kg-soln                     & $[\rm SiO(OH)_3^-]$\\         
+\texttt{SiO2OH2}     & mol/kg-soln                     & $[\rm SiO_2(OH)_2^{2-}]$\\         
+\texttt{H2S}         & mol/kg-soln                     & $[\rm H_2S]$\\                      
+\texttt{HS}          & mol/kg-soln                     & $[\rm HS^-]$\\         
+\texttt{S2min}       & mol/kg-soln                     & $[\rm S^{2-}]$\\         
+\texttt{NH4}         & mol/kg-soln                     & $[\rm NH_4^+]$\\                      
+\texttt{NH3}         & mol/kg-soln                     & $[\rm NH_3]$\\         
+\texttt{H2SO4}       & mol/kg-soln                     & $[\rm H_2SO_4]$\\         
+\texttt{HSO4}        & mol/kg-soln                     & $[\rm HSO_4^-]$\\                     
+\texttt{SO4}         & mol/kg-soln                     & $[\rm SO_4^{2-}]$\\         
+\texttt{HF}          & mol/kg-soln                     & $[\rm HF]$\\         
+\texttt{F}           & mol/kg-soln                     & $[\rm F^-]$\\                        
+\texttt{HNO3}        & mol/kg-soln                     & $[\rm HNO_3]$\\
+\texttt{NO3}         & mol/kg-soln                     & $[\rm NO_3^-]$\\         
+\texttt{HNO2}        & mol/kg-soln                     & $[\rm HNO_2]$\\                     
+\texttt{NO2}         & mol/kg-soln                     & $[\rm NO_2^-]$\\         
+\texttt{omega\_calcite}   & -                          & saturation state $\Omega$ with respect to calcite\\
+\texttt{omega\_aragonite} & -                          & saturation state $\Omega$ with respect to aragonite\\
+\texttt{revelle}     & -                               & Revelle factor\\    
+\texttt{c1}          & -                               & ionization fraction $c_1 = [\rm CO_2]/[\rm \sum CO_2]$\\
+\texttt{c2}          & -                               & ionization fraction $c_2 = [\rm HCO_3^-]/[\rm \sum CO_2]$\\
+\texttt{c3}          & -                               & ionization fraction $c_3 = [\rm CO_3^{2-}]/[\rm \sum CO_2]$\\
+\texttt{dTAdSumCO2}  & -                               & $\rm \frac{\partial [TA]}{[\partial \sum CO_2]}$\\
+            &                                 & with $\rm[TA] = f([H^+], [\sum CO_2], ...)$\\
+\texttt{b1}          & -                               & ionization fraction $b_1 = [\rm B(OH)_3]/[\rm \sum B(OH)_3]$\\               
+\texttt{b2}          & -                               & ionization fraction $b_2 = [\rm B(OH)_4^-]/[\rm \sum B(OH)_3]$\\               
+\texttt{dTAdSumBOH3} & -                               & $\rm \frac{\partial [TA]}{[\partial \sum B(OH)_3]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\
+\texttt{so1}         & -                               & ionization fraction $so_1 = [\rm H_2SO_4]/[\rm \sum H_2SO_4]$\\               
+\texttt{so2}         & -                               & ionization fraction $so_2 = [\rm HSO_4^-]/[\rm \sum H_2SO_4]$\\               
+\texttt{so3}         & -                               & ionization fraction $so_3 = [\rm SO_4^{2-}]/[\rm \sum H_2SO_4]$\\               
+\texttt{dTAdSumH2SO4}& -                               & $\rm \frac{\partial [TA]}{[\partial \sum H_2SO_4]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\   
+\texttt{f1}          & -                               & ionization fraction $f_1 = [\rm HF]/[\rm \sum HF]$\\               
+\texttt{f2}          & -                               & ionization fraction $f_1 = [\rm F^-]/[\rm \sum HF]$\\               
+\texttt{dTAdSumHF}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum HF]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\    
+\texttt{p1}         & -                                 & ionization fraction $p_1 [\rm H_3PO_4]/[\rm \sum H_3PO_4]$\\
+\texttt{p2}         & -                                & ionization fraction $p_2 [\rm H_2PO_4^-]/[\rm \sum H_3PO_4]$\\
+\texttt{p3}        & -                                & ionization fraction $p_3 [\rm HPO_4^{2-}]/[\rm \sum H_3PO_4]$\\
+\texttt{p4}         & -                                & ionization fraction $p_4 [\rm PO_4^{3-}]/[\rm \sum H_3PO_4]$\\
+\texttt{dTAdSumH3PO4}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum H_3PO_4]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
+\texttt{si1}        & -                               & ionization fraction $si_1 = [\rm Si(OH)_4]  / [\rm \sum Si(OH)_4]$\\
+\texttt{si2}        & -                               & ionization fraction $si_2 = [\rm SiO(OH)_3]  / [\rm \sum Si(OH)_4]$\\
+\texttt{si3}        & -                               & ionization fraction $si_3 = [\rm SiO_2(OH)_2]  / [\rm \sum Si(OH)_4]$\\
+\texttt{dTAdSumSumSiOH4}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum Si(OH)_4]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
+\texttt{s1}       & -                                & ionization fraction $s_1 = [\rm H_2S]  / [\rm \sum H_2S]$\\
+\texttt{s2}       & -                                & ionization fraction $s_2 = [\rm HS^-]  / [\rm \sum H_2S]$\\
+\texttt{s3}       & -                                & ionization fraction $s_3 = [\rm S^{2-}]  / [\rm \sum H_2S]$ \\
+            &                                        & Note that we do assume $\rm S^{2-}$ does exist. However, $s_3$ is very small.\\
+\texttt{dTAdSumH2S}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum H_2S]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\     
+\texttt{n1}       & -                                & ionization fraction $n_1 = [\rm NH_4^+] / [\rm \sum NH_4^+]$\\
+\texttt{n2}       & -                                & ionization fraction $n_2 = [\rm NH_3] / [\rm \sum NH_4^+]$\\
+\texttt{dTAdSumNH4}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum NH_4^+]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\     
+\texttt{na1}      & -                                 & ionization fraction $na_1 = [\rm HNO_3] / [\sum HNO_3]$\\
+\texttt{na2}      & -                                 & ionization fraction $na_2 = [\rm NO_3^-] / [\sum HNO_3]$\\
+\texttt{dTAdSumHNO3}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum HNO_3]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\     
+\texttt{ni1}       & -                               & ionization fraction $ni_1 = [\rm [HNO_2] / [\rm \sum HNO_2]$\\
+\texttt{ni2}       & -                               & ionization fraction $ni_2 = [\rm [NO_2^-] / [\rm \sum HNO_2]$\\
+\texttt{dTAdSumHNO2}   & -                               & $\rm \frac{\partial [TA]}{[\partial \sum HNO_2]}$\\
+                   &                                  & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\         
+\texttt{dTAdH}       & -                               & $\rm \frac{\partial [TA]}{[\partial [H^+]}$: buffer factor\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ...)$\\        
+\texttt{dTAdKdKdS}   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial S}$\\
+            &                                 &  with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\        
+\texttt{dTAdKdKdT}   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial T}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\     
+\texttt{dTAdKdKdp}   & -                               & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial p}$\\
+            &                                 &  with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\ 
+\texttt{dTAdKdKdSumH2SO4} & -                          & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial [\sum H_2SO_4]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\ 
+\texttt{dTAdKdKdSumHF} & -                             & $\rm \sum_i \frac{\partial [TA]}{\partial K^*_i} \frac{\partial K^*_i}{\partial [\sum HF]}$\\
+            &                                 & with $\rm [TA] = f([H^+], [\sum CO_2], ..., K^*_i)$\\    \hline
+\end{longtable}
+\end{footnotesize}
+
+For elements that are calculated according to certain literature references, those references are given in appendix \ref{app: references}.
+
+\section{Using \aq}
+
+\subsection{Basic features}
+
+\subsubsection{calling the ``K'' functions directly}
+The elements \texttt{K\_CO2, K\_HCO3, K\_BOH3, K\_W, K\_HSO4, K\_HF, K\_NH4, K\_H2S, K\_H3PO4, K\_H2PO4, K\_HPO4, K\_SiOH4, K\_SiOOH3, K0\_CO2, K0\_O2, Ksp\_aragonite,} and \\
+\texttt{Ksp\_calcite} can be calculated directly, witout creating an object of class \textit{aquaenv}. This is done via functions that bear the same name as those elements
+
+<<CallingKFuncsDirectly, fig=FALSE, echo=TRUE>>=
+K_CO2(15,30)
+K0_CO2(15,30)
+Ksp_calcite(15,30,100)
+@ 
+
+
+\subsubsection{Minimal \textit{aquaenv} definition}
+Minimally, an object of class \textit{aquaenv} can be defined with just a temperature and salinity value
+
+<<MinimalAquaenv, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(S=30, t=15)
+ae$K_CO2
+@
+
+Optionally, a the pressure (here the gauge pressure) can be given. As in the above case, the returned object of class \textit{aquaenv} then contains
+a standard set of elements as shown by the \texttt{names} command.
+
+<<AquaenvWithDepth, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(S=30, t=15, p=10)
+ae$Ksp_calcite
+names(ae)
+@ 
+
+The pressure can also be given via the total pressure or the water depth. The atmospheric pressure can be given as well (e.g. for the case of a mountain lake). 
+Furthermore, if the depth is given, the latitude can be specified (default is 0 degrees).
+
+<<AquaenvPressures, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(S=30, t=15, p=10)
+ae$p
+ae$P
+ae <- aquaenv(S=30, t=15, P=10)
+ae$p
+ae$P
+ae <- aquaenv(S=30, t=15, P=10, Pa=0.5)
+ae$p
+ae$P
+ae <- aquaenv(S=30, t=15, d=100)
+ae$p
+ae$P
+ae <- aquaenv(S=30, t=15, d=100, lat=51)
+ae$p
+ae$P
+@ 
+
+
+A minimal set of elements in an object of class \textit{aquaenv} can be obtained by setting the flag \texttt{skeleton} to \texttt{TRUE}
+
+<<SkeletonAquaenv, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(S=30, t=15, p=10, skeleton=TRUE)
+names(ae)
+
+@ 
+
+
+
+\subsubsection{Defining the complete \textit{aquaenv} system in different ways}
+If enough information is given to define a complete speciation, i.e. either one of the pairs
+SumCO2 and pH, SumCO2 and TA, SumCO2 and CO2, or SumCO2 and fCO2, 
+a full \textit{aquaenv} system can be defined.
+
+
+<<CompleteAquaenvSystem, fig=FALSE, echo=TRUE>>=
+S      <- 30
+t      <- 15
+p      <- 10
+SumCO2 <- 0.0020
+pH     <- 8
+TA     <- 0.002142233
+fCO2   <- 0.0005272996
+CO2    <- 2.031241e-05
+
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH)
+ae$TA
+
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA)
+ae$pH
+
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2)
+ae$pH
+
+names(ae)
+
+@ 
+
+As seen above, a full speciation is calculated along with the pH or total alkalinity respectively. If only pH or total alkalinity is needed, 
+the calculation of the full speciation can be toggled off. Furthermore, the flag \texttt{skeleton} also works for a full system.
+
+<<SpeciationSkeletonAquaenv, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, speciation=FALSE)
+names(ae)
+
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, speciation=FALSE, skeleton=TRUE)
+names(ae)
+
+@ 
+
+Furtermore all the quantities needed for the explicit pH modelling approaches as given in \cite{Hofmann2008} and \cite{Hofmann2008c} can be calculated by 
+setting the flag \texttt{dsa} to \texttt{TRUE}. The revelle factor can be calculated using the flag \texttt{revelle}.
+
+<<DSAAquaenv, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, fCO2=fCO2, dsa=TRUE, revelle=TRUE)
+ae$dTAdH
+ae$revelle
+@ 
+
+If an ambivalent situation is created because the user enters too much information, an error message is displayed
+
+\begin{scriptsize}
+<<ErrorMessagesAquaenv, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, CO2=CO2, fCO2=fCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, TA=TA)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, CO2=CO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, fCO2=fCO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, CO2=CO2)
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, fCO2=fCO2)
+@ 
+\end{scriptsize}
+
+
+
+\subsubsection{Calculating $\rm [\sum CO_2]$} 
+
+
+$\rm [\sum CO_2]$ can be calculated by giving a constant pair of either pH and CO2, pH and fCO2, pH and TA, TA and CO2, or TA and fCO2  
+
+<<SumCO2Calculating, fig=FALSE, echo=TRUE>>=
+fCO2   <- 0.0006943363
+CO2    <- 2.674693e-05
+pH     <- 7.884892
+TA     <- 0.0021
+
+S <- 30
+t <- 15
+p <- 10
+
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, CO2=CO2)
+ae$SumCO2
+
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, fCO2=fCO2)
+ae$SumCO2
+
+ae <- aquaenv(S, t, p, SumCO2=NULL, pH=pH, TA=TA)
+ae$SumCO2
+
+ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, CO2=CO2)
+ae$SumCO2
+
+ae <- aquaenv(S, t, p, SumCO2=NULL, TA=TA, fCO2=fCO2)
+ae$SumCO2
+@ 
+
+
+
+\subsubsection{Cloning an object of class \textit{aquaenv}}
+
+ It is possible to clone an obect of class \textit{aquaenv}, either 1 to 1 or with different pH, TA, or K\_CO2
+
+<<CloningAquaenv, fig=FALSE, echo=TRUE>>=
+S      <- 30
+t      <- 15
+SumCO2 <- 0.0020
+TA     <- 0.00214
+
+ae <- aquaenv(S, t, SumCO2=SumCO2, TA=TA)
+ae$pH
+
+ae1 <- aquaenv(ae=ae)
+ae1$pH
+
+pH  <- 9
+ae2 <- aquaenv(ae=ae, pH=pH)
+ae2$TA
+
+TA  <- 0.002
+ae3 <- aquaenv(ae=ae, TA=TA)
+ae3$pH
+
+K_CO2 <- 1e-6
+ae4 <- aquaenv(ae=ae, k_co2=K_CO2)
+ae4$pH
+@ 
+
+Note that K\_CO2 as an input variable is in lower cases!
+
+
+\subsubsection{Preparing input variables}
+Input variables for the function \texttt{aquaenv} need to be in mol/kg-solution and on the free pH scale. 
+Data in other concentration units or pH scales can be converted using the function \texttt{convert}.
+
+<<PreparingInput, fig=FALSE, echo=TRUE>>=
+S <- 10
+t <- 15
+
+pH_NBS      <- 8.142777
+SumCO2molar <- 0.002016803
+
+pH_free     <- convert(pH_NBS,      "pHscale", "nbs2free",    S=S, t=t)
+SumCO2molin <- convert(SumCO2molar, "conc",    "molar2molin", S=S, t=t)
+
+ae <- aquaenv(S, t, SumCO2=SumCO2molin, pH=pH_free)
+ae$pH
+ae$SumCO2
+@ 
+
+
+
+\subsubsection{Vectors as input variables}
+One of the input variables for the function \texttt{aquaenv} may be a vector. All the other input variables are then assumed to be constant.
+The elements of the resulting two dimensional object of class \textit{aquaenv} are then vectors containing the elements as a function of the input variable
+for which a vector is given.
+
+<<InputVectors, fig=FALSE, echo=TRUE>>=
+SumCO2 <- 0.0020
+pH     <- 8
+S      <- 30
+t      <- 1:15
+p      <- 10
+
+ae <- aquaenv(S, t, p, SumCO2=SumCO2, pH=pH, revelle=TRUE)
+ae$revelle
+@ 
+
+A two dimensional object of class \textit{aquaenv} can be visualized using the \texttt{plot} function. 
+For convenience of the user, the default setting for the \texttt{plot} function for an object of class \textit{aquaenv} results in a
+new plotting device being opened. Setting the flag \texttt{newdevice} to \texttt{FALSE} prevents that.
+
+<<Plotall, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, xval=t, xlab="t/(deg C)", newdevice=FALSE)
+@ 
+\vspace*{-2cm}
+
+The \texttt{plot} function plots all elements of the respective object of class \textit{aquaenv}. This, however, might not be what the user wants,
+especially if a larger plotting device cannot properly displayed like in the case above. In this case the parameter \texttt{what} can be used.
+Note, however, that the default setting for calling \texttt{plot} with the parameter \texttt{what} is that \texttt{mfrow=c(1,1)}. So
+if one wants to plot several elements, \texttt{mfrow} needs to be set to a suitable value.
+
+<<Selectplot, fig=TRUE, echo=TRUE, width=10, height=2>>=
+plot(ae, xval=t, xlab="t/(deg C)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
+@ 
+
+
+The following chunks  of example code show other possible definitions of objects of class \textit{aquaenv} with vectors as input variables. 
+<<MoreInputVectors1, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- aquaenv(S=20:30, t=15, p=10, SumCO2=SumCO2, pH=pH, dsa=TRUE)
+plot(ae, xval=20:30, xlab="S")
+@ 
+
+<<MoreInputVectors2, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- aquaenv(S=30, t=15, p=seq(1,1000, 100), SumCO2=SumCO2, pH=pH, revelle=TRUE)
+plot(ae, xval=seq(1,1000, 100), xlab="gauge p/bar")
+ae <- aquaenv(S=30, t=15, d=seq(1,10000, 1000), SumCO2=SumCO2, pH=pH, revelle=TRUE)
+plot(ae, xval=seq(1,10000, 1000), xlab="depth/m")
+@ 
+
+<<MoreInputVectors3, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- aquaenv(S=30, t=1:15, p=10, SumCO2=SumCO2, TA=0.0023)
+plot(ae, xval=1:15, xlab="t/(deg C)")
+@ 
+
+<<MoreInputVectors4, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- aquaenv(S=20:30, t=15, p=10, SumCO2=SumCO2, TA=TA)
+plot(ae, xval=20:30, xlab="S")
+@
+
+<<MoreInputVectors5, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- aquaenv(S=30, t=15, d=seq(1,1000, 200), SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
+plot(ae, xval=seq(1,1000, 200), xlab="depth/m")
+@ 
+
+
+Interesting to note is that also, e.g., SumCO2, TA, pH and SumNH4 can be vectors
+
+<<MoreInputVectors6, fig=TRUE, echo=TRUE, width=10, height=2>>=
+ae <- aquaenv(20, 10, SumCO2=seq(0.001,0.002, 0.0001), TA=0.002)
+plot(ae, xval=ae$SumCO2, xlab="SumCO2/(mol/kg-soln)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
+@ 
+
+<<MoreInputVectors7, fig=TRUE, echo=TRUE, width=10, height=2>>=
+ae <- aquaenv(20, 10, SumCO2=0.002, TA=seq(0.001,0.002, 0.0001))
+plot(ae, xval=ae$TA, xlab="TA/(mol/kg-soln)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
+@ 
+
+<<MoreInputVectors8, fig=TRUE, echo=TRUE, width=10, height=2>>=
+ae <- aquaenv(20, 10, SumCO2=0.002, pH=seq(8,8.2,0.001)) 
+plot(ae, xval=ae$pH, xlab="pH (free scale)", what=c("pH", "CO2", "HCO3", "CO3"), newdevice=FALSE, mfrow=c(1,4))
+@ 
+
+<<MoreInputVectors9, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(20, 10, SumCO2=0.002, SumNH4=seq(0.0001, 0.0002, 0.00001), pH=8)
+ae$NH3
+@ 
+
+
+\subsubsection{Calculating $\rm [\sum CO_2]$ from input vectors}
+
+The functionality of calculating SumCO2 can also be used together with vectors as input variables.
+
+<<SumCO2CalcInputVecs1, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(S=30, t=11:15, SumCO2=NULL, pH=pH, CO2=CO2, revelle=TRUE, dsa=TRUE)
+ae$SumCO2
+@ 
+
+Two further examples
+
+<<SumCO2CalcInputVecs2, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- aquaenv(S=20:30, t=15, SumCO2=NULL, pH=pH, fCO2=fCO2)
+plot(ae, xval=20:30, xlab="S")
+@ 
+
+<<SumCO2CalcInputVecs3, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- aquaenv(S=30, t=15, d=seq(1,1000, 100), SumCO2=NULL, pH=pH, TA=TA)
+plot(ae, xval=seq(1,1000, 100), xlab="depth/m")
+@ 
+
+
+
+\subsubsection{Conversion from and to a dataframe}
+Objects of class \textit{aquaenv} can be converted to an \R \textit{data.frame} to further post-process them with standard
+\R means. Similarly, \R \textit{data.frames} can be converted to objects of class \textit{aquaenv} to use the plotting 
+facilities that exist for objects of class \textit{aquaenv}. This can be helpful for plotting output of a dynamic model run, e.g. from \R package \ds,
+and will be shown later in this document.
+
+<<Dataframe, fig=FALSE, echo=TRUE>>=
+aedataframe <- as.data.frame(ae)
+aetest      <- aquaenv(ae=aedataframe, from.data.frame=TRUE)
+@ 
+
+\subsubsection{Converting  elements in an obect of class \textit{aquaenv}}
+
+Elements of an object of class \textit{aquaenv} are calculated in, e.g., the concentration unit mol/kg-solution (molinity).
+The function \texttt{convert} can be used to convert all elements in an object of class \textit{aquaenv} that share a common attribute,
+e.g. the unit.
+
+<<Elementconversion, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(30, 10)
+ae$SumBOH3
+ae <- convert(ae, "mol/kg-soln", "umol/kg-H2O", 1e6/ae$molal2molin, "unit")
+ae$SumBOH3
+@ 
+
+
+\subsubsection{Quantities needed for explicit pH modelling}
+As already mentioned above, the quantities needed for the explicit pH modelling approach (direct substitution approach - DSA) as presented by \cite{Hofmann2008}
+can be calculated with the function \texttt{aquaenv} by setting the flag \texttt{dsa}.
+
+<<DSAQuantities1, fig=FALSE, echo=TRUE>>=
+ae <- aquaenv(S=30, t=15, d=10, SumCO2=0.002, pH=8, dsa=TRUE, revelle=TRUE)
+@ 
+
+This command calculated the buffer factor and the partial derivatives of [TA] with respect to other summed quantities referred to in \cite{Hofmann2008}
+
+<<DSAQuantities2, fig=FALSE, echo=TRUE>>=
+ae$dTAdH
+ae$dTAdSumCO2
+@ 
+
+as well the sums partial derivatives of [TA] with respect to the equilibrium constants ($K^*$'s) multiplied with the partial derivatives of the respective
+equilibrium constant with one of their variables (i.e., S, T, d, SumH2SO4, od SumHF) as introduced in \cite{Hofmann2009}.
+
+<<DSAQuantities3, fig=FALSE, echo=TRUE>>=
+ae$dTAdKdKdS
+ae$dTAdKdKdSumH2SO4
+@ 
+
+Furthermore, the ionization fractions used for the pH dependent fractional stoichiometric pH modelling approach described in \cite{Hofmann2008c} are calculated as well
+
+<<DSAQuantities4, fig=FALSE, echo=TRUE>>=
+ae$c1
+@ 
+
+
+\subsection{The \texttt{plot.aquaenv} function}
+In the previous sections, the \texttt{plot} function has been introduced. What actually is called if the first element of the arguments list of
+\texttt{plot} is an object pf class \textit{aquaenv} is the function \texttt{plot.aquaenv}. 
+This is a multifunctional tool to visualize information contained in an object of class
+\textit{aquaenv}. For the convenience of the users, \texttt{plot.aquaenv} combines the call of standard \R plotting functions and the previous call of the function \texttt{par} 
+to set parameters like \texttt{mfrow}, \texttt{mar}, etc. as well as the opening of a plotting device with a certain size. As already shown above, setting
+the flag \texttt{newdevice} to \texttt{FALSE} suppresses the opening of a new plotting device (this feature is needed here to create a plot that will be
+woven into the \LaTeX$\,$document by Sweave).\\
+
+\noindent
+For example
+<<Plot1, fig=TRUE, echo=TRUE, width=10, height=2>>=
+ae <- aquaenv(20:30, 10)
+plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(10,2), mfrow=c(1,3), newdevice=FALSE)
+@ 
+and
+\setkeys{Gin}{width=.2\textwidth} %width of graphics produced by Sweave
+<<Plot2, fig=TRUE, echo=TRUE, width=2, height=5>>=
+plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(2,10), mfrow=c(3,1), newdevice=FALSE)
+@ 
+\setkeys{Gin}{width=\textwidth} %width of graphics produced by Sweave
+
+Furthermore the parameter \texttt{device} can be specified which allows the user to write the plots to .eps and .pdf files.
+The parameter \texttt{filename} can be used to specify a filename other than the default filename ``aquaenv''.
+
+<<Plot3, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- aquaenv(20:30, 10)
+plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(10,2), mfrow=c(1,3), device="pdf", filename="test")
+plot(ae, xval=20:30, xlab="S", what=c("K_CO2", "K_HCO3", "K_BOH3"), size=c(2,10), mfrow=c(3,1), device="eps", filename="test")
+@ 
+
+These features make the function \texttt{plot.aquaenv} different from standard \R plotting functions.
+However, if the flags \texttt{newdevice} and \texttt{setpar} are set to \texttt{FALSE}, \texttt{plot.aquaenv} behaves like a ``normal'' \R plotting function
+
+<<Plot4, fig=TRUE, echo=TRUE, width=10, height=5>>=
+par(mfrow=c(1,2))
+plot(ae, xval=20:30, xlab="S", what="K_CO2", lwd=3, col="red", newdevice=FALSE, setpar=FALSE)
+plot(ae, xval=20:30, xlab="S", what="K_HCO3", cex=3, type="b", col="blue", newdevice=FALSE, setpar=FALSE)
+@ 
+
+Furthermore, the function \texttt{plot.aquaenv} can be used to create ``cumulative'' plots and ``Bjerrum'' plots. This will be explained in some of the following sections.
+
+
+\subsection{Using objects of class \textit{aquaenv} in dynamic models}
+
+\subsubsection{Ordinary dynamic models}
+
+It is convenient to use objects of class \textit{aquaenv} in a dynamic model, e.g. solved using the \R package \ds.
+This can be illustrated with an example. (For information about how to set up a dynamic model with \ds, consult the documentation of \ds).\\
+
+\noindent
+A list of parameters is specified
+\begin{scriptsize}
+<<OrdDynModParamList, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+parameters <- list(             
+       S          = 25    , # psu       
+       t_min     = 5     , # degrees C
+       t_max     = 25    , # degrees C
+                  
+       k          = 0.4       , # 1/d	        proportionality factor for air-water exchange
+       rOx        = 0.0000003 , # mol-N/(kg*d)  maximal rate of oxic mineralisation
+       rNitri     = 0.0000002 , # mol-N/(kg*d)  maximal rate of nitrification 
+       rPP        = 0.000006  , # mol-N/(kg*d)  maximal rate of primary production
+                   
+       ksDINPP    = 0.000001  , # mol-N/kg
+       ksNH4PP    = 0.000001  , # mol-N/kg
+                   
+       D          = 0.1       , #   1/d         (dispersive) transport coefficient
+                   
+       O2_io      = 0.000296  , # mol/kg-soln 
+       NO3_io     = 0.000035  , # mol/kg-soln 
+       SumNH4_io  = 0.000008  , # mol/kg-soln 
+       SumCO2_io  = 0.002320  , # mol/kg-soln 
+       TA_io      = 0.002435  , # mol/kg-soln 
+                   
+       C_Nratio   = 8         , # mol C/mol N     C:N ratio of organic matter
+                   
+       a           = 30       , # timestep from which PP begins     
+       b           = 50       , # timestep where PP shuts off again
+                   
+       modeltime   = 100        # duration of the model
+                   )
+@ 
+\end{scriptsize}
+
+A model function is defined which will be executed every timestep of the numerical integration. An object of class \textit{aquaenv}
+is created in each timestep, some of its elements are used to calculated kinetic rate expressions and the whole object is returned as output.
+
+\begin{scriptsize}
+<<OrdDynModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+boxmodel <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {
+          t <- c(seq(t_min, t_max, (t_max-t_min)/(modeltime/2)), 
+                 seq(t_max, t_min, -(t_max-t_min)/(modeltime/2)))[[round(timestep)+1]]
+          
+          ae <- aquaenv(S=S, t=t, SumCO2=SumCO2, SumNH4=SumNH4, TA=TA)
+                                    
+          ECO2    <- k * (ae$CO2_sat - ae$CO2)            
+          EO2     <- k * (ae$O2_sat  - O2)             
+         
+          TO2     <- D*(O2_io     - O2)
+          TNO3    <- D*(NO3_io    - NO3)
+          TSumNH4 <- D*(SumNH4_io - SumNH4)
+          TTA     <- D*(TA_io     - TA)
+          TSumCO2 <- D*(SumCO2_io - SumCO2)
+          
+          RNit      <- rNitri 
+
+          ROx       <- rOx 
+          ROxCarbon <- ROx * C_Nratio
+
+          pNH4PP <- 0
+          RPP <- 0
+          
+          if ((timestep > a) && (timestep < b))
+            {
+              RPP    <- rPP * ((SumNH4+NO3)/(ksDINPP + (SumNH4+NO3)))
+              pNH4PP <- 1 - (ksNH4PP/(ksNH4PP + SumNH4))
+            }
+          else
+            {
+              RPP <- 0
+            }
+          RPPCarbon <- RPP * C_Nratio
+          
+          dO2     <- TO2     + EO2 - ROxCarbon - 2*RNit  + (2-2*pNH4PP)*RPP + RPPCarbon
+          dNO3    <- TNO3    + RNit -(1-pNH4PP)*RPP
+
+          dSumCO2 <- TSumCO2 + ECO2 + ROxCarbon - RPPCarbon
+          dSumNH4 <- TSumNH4 + ROx  - RNit - pNH4PP*RPP
+                    
+          dTA     <- TTA     + ROx - 2*RNit -(2*pNH4PP-1)*RPP 
+
+          ratesofchanges <- c(dO2, dNO3, dSumNH4, dSumCO2, dTA)
+          transport      <- c(TO2=TO2, TNO3=TNO3, TSumNH4=TSumNH4, TTA=TTA, TSumCO2=TSumCO2)
+          airseaexchange <- c(ECO2=ECO2, EO2=EO2)
+          
+          return(list(ratesofchanges, list(transport, airseaexchange, ae)))
+        }
+        )
+}
+@ 
+\end{scriptsize}
+
+The model is solved. 
+
+\begin{scriptsize}
+<<OrdDynModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+with (as.list(parameters),
+      {
+        initialstate <<- c(O2=O2_io, NO3=NO3_io, SumNH4=SumNH4_io, SumCO2=SumCO2_io, TA=TA_io)
+        times        <<- c(0:modeltime)
+        output       <<- as.data.frame(vode(initialstate,times,boxmodel,parameters, hmax=1))[-1,]        
+      })
+@ 
+\end{scriptsize}
+
+and the output can be plotted in the same way as a two dimensional object of class \textit{aquaenv} by converting it 
+to an object of class \textit{aquaenv} using the \texttt{from.data.frame} flag of the function \texttt{aquaenv}.
+(Please note that due to runtime constraints of the vignette for this package, this model is not run during construction of the vignette 
+and, therefore, no resulting plot of the following code chunk is included. The user can generate the plot by extracting and executing the relevant code-chunks.)
+
+<<OrdDynModePlotting, echo=TRUE, eval=FALSE>>=
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(11,10), newdevice=FALSE) 
+@ 
+
+
+
+
+\subsubsection{Models using the explicit pH modelling approach}
+
+\paragraph{In one single model} $\;$\\
+
+Since an object of class \textit{aquaenv} can contain all quantities necessary to employ the explicit pH modelling approaches as introduced by 
+\cite{Hofmann2008, Hofmann2009, Hofmann2008c}, they can be readily used in an explicit pH model.\\
+
+\noindent
+As an example, we give a model that calculates the pH in the ``classical'' way in every timestep using \texttt{aquaenv}, also employs the explicit pH modelling 
+approach (direct substitution approach - DSA) given in \cite{Hofmann2008} and additionally employs fractional stoichiometry as given in \cite{Hofmann2008c}.
+The pH evolution is thus calculated in three different ways which allows comparing the three values for consistency.\\
+
+\noindent
+Again, a list of parameters is defined
+\begin{scriptsize}
+<<SinglePHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+parameters <- list(             
+     S          = 25    , # psu       
+     t          = 15    , # degrees C
+                   
+     k          = 0.4       , # 1/d	    proportionality factor for air-water exchange
+     rOx        = 0.0000003 , # mol-N/(kg*d)  maximal rate of oxic mineralisation
+     rNitri     = 0.0000002 , # mol-N/(kg*d)  maximal rate of nitrification 
+     rPP        = 0.0000006 , # mol-N/(kg*d)  maximal rate of primary production
+                   
+     ksSumNH4   = 0.000001  , # mol-N/kg
+                  
+     D          = 0.1       , #   1/d            (dispersive) transport coefficient
+                   
+     O2_io      = 0.000296  , # mol/kg-soln 
+     NO3_io     = 0.000035  , # mol/kg-soln 
+     SumNH4_io  = 0.000008  , # mol/kg-soln 
+     SumCO2_io  = 0.002320  , # mol/kg-soln 
+     TA_io      = 0.002435  , # mol/kg-soln 
+                   
+     C_Nratio   = 8       , # mol C/mol N     C:N ratio of organic matter
+                  
+     a          = 30       , # timestep from which PP begins     
+     b          = 50       , # timestep where PP shuts off again
+                   
+     modeltime  = 100        # duration of the model
+                   )
+@ 
+\end{scriptsize}
+
+And a model function is defined. Again, an object of class \textit{aquaenv} is created in each timestep and respective elements are used.
+
+\begin{scriptsize}
+<<SinglePHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+boxmodel <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {  
+          # the "classical" implicit pH calculation method is applied in aquaenv
+          ae <- aquaenv(S=S, t=t, SumCO2=SumCO2, SumNH4=SumNH4, TA=TA, dsa=TRUE)
+                                    
+          ECO2    <- k * (ae$CO2_sat - ae$CO2)            
+          EO2     <- k * (ae$O2_sat  - O2)                    
+        
+          RNit      <- rNitri 
+          ROx       <- rOx 
+        
+          if ((timestep > a) && (timestep < b))
+            {
+              RPP <- rPP * (SumNH4/(ksSumNH4 + SumNH4))
+            }
+          else
+            {
+              RPP <- 0
+            }
+          
+          dO2     <- EO2 - C_Nratio*ROx - 2*RNit + C_Nratio*RPP
+          dNO3    <- RNit
+          
+          dSumCO2 <- ECO2 + C_Nratio*ROx - C_Nratio*RPP
+          dSumNH4 <- ROx  - RNit - RPP
+
+          dTA     <- ROx - 2*RNit - RPP
+          
+          # The DSA pH
+          dH    <- (dTA - (dSumCO2*ae$dTAdSumCO2 + dSumNH4*ae$dTAdSumNH4))/ae$dTAdH
+          DSApH <- -log10(H)
+
+          # The DSA pH using pH dependent fractional stoichiometry (= using partitioning coefficients)
+          rhoHECO2 <- ae$c2 + 2*ae$c3
+          rhoHRNit <- 1 + ae$n1
+          rhoHROx  <- C_Nratio * (ae$c2 + 2*ae$c3) - ae$n1
+          rhoHRPP  <- -(C_Nratio * (ae$c2 + 2*ae$c3)) + ae$n1
+          
+          dH_ECO2  <- rhoHECO2*ECO2/(-ae$dTAdH)
+          dH_RNit  <- rhoHRNit*RNit/(-ae$dTAdH)
+          dH_ROx   <- rhoHROx*ROx  /(-ae$dTAdH)
+          dH_RPP   <- rhoHRPP*RPP  /(-ae$dTAdH)
+
+          dH_stoich   <- dH_ECO2 + dH_RNit + dH_ROx + dH_RPP
+          DSAstoichpH <- -log10(H_stoich)       
+
+          ratesofchanges <- c(dO2, dNO3, dSumNH4, dSumCO2, dTA, dH, dH_stoich)
+          processrates   <- c(ECO2=ECO2, EO2=EO2, RNit=RNit, ROx=ROx, RPP=RPP)
+          DSA            <- c(DSApH=DSApH, rhoHECO2=rhoHECO2, rhoHRNit=rhoHRNit, rhoHROx=rhoHROx,
+                              rhoHRPP=rhoHRPP, dH_ECO2=dH_ECO2, dH_RNit=dH_RNit, dH_ROx=dH_ROx, 
+                              dH_RPP=dH_RPP, DSAstoichpH=DSAstoichpH)
+          
+          return(list(ratesofchanges, list(processrates, DSA, ae)))
+        }
+        )
+}
+@ 
+\end{scriptsize}
+
+The model is solved
+\begin{scriptsize}
+<<SinglPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+with (as.list(parameters),
+      {
+        H_init       <<- 10^(-(aquaenv(S=S, t=t, SumCO2=SumCO2_io, SumNH4=SumNH4_io, TA=TA_io, 
+                                       speciation=FALSE)$pH))
+        initialstate <<- c(O2=O2_io, NO3=NO3_io, SumNH4=SumNH4_io, SumCO2=SumCO2_io, TA=TA_io, H=H_init, 
+                           H_stoich=H_init)
+        times        <<- c(0:modeltime)
+        output       <<- as.data.frame(vode(initialstate, times, boxmodel, parameters, hmax=1))[-1,]        
+      })
+@ 
+\end{scriptsize}
+
+and output can be plotted. Again using \texttt{plot.aquaenv}. Note that here the parameter \texttt{what} is used.
+
+<<SinglePHModePlotting1, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what <- c("SumCO2", "TA", "SumNH4", "NO3", "ECO2", "EO2", "RNit", "ROx", "RPP", "dTAdH", "dTAdSumCO2", "dTAdSumNH4", "c1", "c2", "c3", "n1", "n2",
+          "rhoHECO2", "rhoHRNit", "rhoHROx", "rhoHRPP", "dH_ECO2", "dH_RNit", "dH_ROx", "dH_RPP",
+          "pH", "DSApH", "DSAstoichpH")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, what=what,  xlab="time/d", mfrow=c(6,5), size=c(20,13), newdevice=FALSE) 
+@ 
+
+Here, the cumulative plotting functionality of  \texttt{plot.aquaenv} can be employed as well to visualize the influences of the different kinetically
+modelled processes on $\rm [H^+]$.
+<<SinglepHModPlotting2, fig=TRUE, echo=TRUE, width=10, height=5>>=
+what <- c("dH_ECO2", "dH_RNit", "dH_ROx", "dH_RPP")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, what=what, xlab="time/d", size=c(7,5), ylab="mol-H/(kg-soln*d)", legendposition="bottomright", cumulative=TRUE, newdevice=FALSE) 
+@  
+
+
+Finally, the pH values calculated with the three different methods can be plotted in one single graph to see that they are identical, i.e. the three 
+methods of pH calculation are consistent with each other
+
+<<SinplePHModConsistencyCheck, fig=TRUE, echo=TRUE, width=10, height=5>>=
+ylim <- range(output$DSApH, output$DSAstoichpH, output$pH)
+plot(output$pH, ylim=ylim, type="l", xlab="time/d", ylab="pH (free scale)")
+par(new=TRUE)
+plot(output$DSApH, ylim=ylim, type="l", col="red", xlab="", ylab="")
+par(new=TRUE)
+plot(output$DSAstoichpH, ylim=ylim, type="l", col="blue", xlab="", ylab="")
+@
+
+
+\paragraph{In three separate models} $\;$\\
+
+
+\subparagraph{The implicit pH modelling approach}$\,$\\
+           
+A list of parameters
+\begin{scriptsize}
+<<ImplicitPHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+parameters <- list(             
+    t           = 15        , # degrees C
+    S           = 35        , # psu       
+
+    SumCO2_t0   = 0.002     , # mol/kg-soln  (comparable to Wang2005)
+    TA_t0       = 0.0022    , # mol/kg-soln  (comparable to Millero1998)
+
+    kc          = 0.5       , # 1/d	         proportionality factor for air-water exchange
+    kp          = 0.000001  , # mol/(kg-soln*d)	 max rate of calcium carbonate precipitation
+    n           = 2.0       , # -                 exponent for kinetic rate law of precipitation
+                                      
+    modeltime   = 20        , # d              duration of the model
+    outputsteps = 100         #                number of outputsteps
+                   )
+@ 
+\end{scriptsize}
+
+The model function
+\begin{scriptsize}
+<<ImplicitPHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+boxmodel <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {        
+          ae    <- aquaenv(S=S, t=t, SumCO2=SumCO2, TA=TA, SumSiOH4=0, 
+                           SumBOH3=0, SumH2SO4=0, SumHF=0)      
+          
+          Rc    <- kc * ((ae$CO2_sat) - (ae$CO2)) 
+          Rp    <- kp * (1-ae$omega_calcite)^n               
+
+          dSumCO2 <- Rc - Rp
+          dTA     <- -2*Rp
+          
+          ratesofchanges <- c(dSumCO2, dTA)
+          
+          processrates   <- c(Rc=Rc, Rp=Rp)
+          
+          return(list(ratesofchanges, list(processrates, ae)))
+        }
+        )
+}
+@ 
+\end{scriptsize}
+
+
+Solving the model
+\begin{scriptsize}
+<<ImplicitPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+with (as.list(parameters),
+      {
+        initialstate <<- c(SumCO2=SumCO2_t0, TA=TA_t0)
+        times        <<- seq(0,modeltime,(modeltime/outputsteps))       
+        output       <<- as.data.frame(vode(initialstate,times,boxmodel,parameters, hmax=1))
+      })
+@ 
+\end{scriptsize}
+
+Visualizing the output.
+(Please note that due to runtime constraints of the vignette for this package, this model is not run during construction of the vignette 
+and, therefore, no resulting plot of the following code chunk is included. The user can generate the plot by extracting and executing the relevant code-chunks.)
+
+<<ImplicitPHModPlotting, echo=TRUE, eval=FALSE>>=
+what <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="", mfrow=c(2,3), size=c(12,5), what=what, newdevice=FALSE) 
+@ 
+
+
+
+\subparagraph{The explicit pH modelling approach}$\,$\\
+
+
+A list of parameters       
+\begin{scriptsize}
+<<ExplicitPHModParams, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+parameters <- list(             
+    S           = 35        , # psu       
+    t           = 15        , # degrees C
+
+    SumCO2_t0   = 0.002     , # mol/kg-soln  (comparable to Wang2005)
+    TA_t0       = 0.0022    , # mol/kg-soln  (comparable to Millero1998)
+
+    kc          = 0.5       , # 1/d	         proportionality factor for air-water exchange
+    kp          = 0.000001  , # mol/(kg-soln*d)	 max rate of calcium carbonate precipitation
+    n           = 2.0       , # -                 exponent for kinetic rate law of precipitation
+                                      
+    modeltime   = 20        , # d              duration of the model
+    outputsteps = 100         #                number of outputsteps
+                   )
+@ 
+\end{scriptsize}
+
+The model function
+\begin{scriptsize}
+<<ExplicitPHModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+boxmodel <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {        
+          ae    <- aquaenv(S=S, t=t, SumCO2=SumCO2, pH=-log10(H), SumSiOH4=0, 
+                           SumBOH3=0, SumH2SO4=0, SumHF=0, dsa=TRUE)
+                   
+          Rc    <- kc * ((ae$CO2_sat) - (ae$CO2)) 
+          Rp    <- kp * (1-ae$omega_calcite)^n               
+
+          dSumCO2 <- Rc - Rp
+
+          dHRc    <- (      -(ae$dTAdSumCO2*Rc   ))/ae$dTAdH
+          dHRp    <- (-2*Rp -(ae$dTAdSumCO2*(-Rp)))/ae$dTAdH
+          dH      <- dHRc + dHRp
+          
+          ratesofchanges <- c(dSumCO2, dH)
+          
+          processrates   <- c(Rc=Rc, Rp=Rp)
+          outputvars     <- c(dHRc=dHRc, dHRp=dHRp)
+          
+          return(list(ratesofchanges, list(processrates, outputvars, ae)))
+        }
+        )
+}
+@ 
+\end{scriptsize}
+
+Solving the model
+\begin{scriptsize}
+<<ExplicitPHModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+with (as.list(parameters),
+      {
+        aetmp <- aquaenv(S=S, t=t, SumCO2=SumCO2_t0, TA=TA_t0, SumSiOH4=0, SumBOH3=0, SumH2SO4=0, SumHF=0)
+        H_t0  <- 10^(-aetmp$pH)
+        
+        initialstate <<- c(SumCO2=SumCO2_t0, H=H_t0)
+        times        <<- seq(0,modeltime,(modeltime/outputsteps))       
+        output       <<- as.data.frame(vode(initialstate,times,boxmodel,parameters, hmax=1))
+      })
+@ 
+\end{scriptsize}
+
+Visualizing the output.
+(Please note that due to runtime constraints of the vignette for this package, this model is not run during construction of the vignette 
+and, therefore, no resulting plot of the following two code chunks is included. The user can generate the plot by extracting and executing the relevant code-chunks.)
+
+<<ExplicitPHModPlotting1, echo=TRUE, eval=FALSE>>=
+what   <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH", "dHRc", "dHRp")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(3,3), size=c(15,10), what=what, newdevice=FALSE) 
+@ 
+
+Cumulatively plotting the influences of the two processes on the pH
+<<ExplicitPHModPlotting2, echo=TRUE, eval=FALSE>>=
+what <- c("dHRc", "dHRp")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", what=what, ylab="mol-H/(kg-soln*d)", legendposition="topright", cumulative=TRUE, newdevice=FALSE) 
+@ 
+
+
+
+\subparagraph{The fractional stoichiometric approach} $\;$\\
+
+           
+A list of parameters
+\begin{scriptsize}
+<<FracStoichModParams, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+parameters <- list(             
+     S           = 35        , # psu       
+     t           = 15        , # degrees C
+
+     SumCO2_t0   = 0.002     , # mol/kg-soln  (comparable to Wang2005)
+     TA_t0       = 0.0022    , # mol/kg-soln  (comparable to Millero1998)
+
+     kc          = 0.5       , # 1/d	         proportionality factor for air-water exchange
+     kp          = 0.000001  , # mol/(kg-soln*d)	 max rate of calcium carbonate precipitation
+     n           = 2.0       , # -                 exponent for kinetic rate law of precipitation
+                                      
+     modeltime   = 20        , # d              duration of the model
+     outputsteps = 100         #                number of outputsteps
+                   )
+@
+\end{scriptsize}
+
+The model function
+\begin{scriptsize}
+<<FracStoichModFunction, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+boxmodel <- function(timestep, currentstate, parameters)
+{
+  with (
+        as.list(c(currentstate,parameters)),
+        {        
+          ae    <- aquaenv(S=S, t=t, SumCO2=SumCO2, pH=-log10(H), SumSiOH4=0, 
+                           SumBOH3=0, SumH2SO4=0, SumHF=0, dsa=TRUE)        
+         
+          Rc    <- kc * ((ae$CO2_sat) - (ae$CO2)) 
+          Rp    <- kp * (1-ae$omega_calcite)^n               
+
+          dSumCO2 <- Rc - Rp
+
+          rhoc    <- ae$c2 + 2*ae$c3
+          rhop    <- 2*ae$c1 + ae$c2
+          
+          dHRc    <- rhoc*Rc/(-ae$dTAdH)
+          dHRp    <- rhop*Rp/(-ae$dTAdH)
+          dH      <- dHRc + dHRp
+          
+          ratesofchanges <- c(dSumCO2, dH)
+          
+          processrates   <- c(Rc=Rc, Rp=Rp)
+          outputvars     <- c(dHRc=dHRc, dHRp=dHRp, rhoc=rhoc, rhop=rhop)
+          
+          return(list(ratesofchanges, list(processrates, outputvars, ae)))
+        }
+        )
+}
+@
+\end{scriptsize}
+
+Solving the model
+\begin{scriptsize}
+<<FracStoichModSolution, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+with (as.list(parameters),
+      {
+        aetmp <- aquaenv(S=S, t=t, SumCO2=SumCO2_t0, TA=TA_t0, SumSiOH4=0, 
+                         SumBOH3=0, SumH2SO4=0, SumHF=0)
+        H_t0  <- 10^(-aetmp$pH)
+        
+        initialstate <<- c(SumCO2=SumCO2_t0, H=H_t0)
+        times        <<- seq(0,modeltime,(modeltime/outputsteps))       
+        output       <<- as.data.frame(vode(initialstate,times,boxmodel,parameters, hmax=1))
+      })
+@
+\end{scriptsize}
+
+Visualizing the output.
+(Please note that due to runtime constraints of the vignette for this package, this model is not run during construction of the vignette 
+and, therefore, no resulting plot of the following code chunk is included. The user can generate the plot by extracting and executing the relevant code-chunks.)
+
+<<FracStoichModPlotting, echo=TRUE, eval=FALSE>>=
+what   <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH", "dHRc", "dHRp", "rhoc", "rhop")
+plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time, xlab="time/d", mfrow=c(3,4), size=c(15,10), what=what, newdevice=FALSE) 
+@ 
+
+
+\subsection{Titration simulation: the function \texttt{titration}}
+
+With the function \texttt{titration} \aq$\,$ provides a powerful tool to simulate titrations. A two dimensional object of class
+\textit{aquaenv} will be created where the second dimension is the amount of titrant added.
+For this purpose, three extra elements are added to the \textit{aquaenv} object that will be created:\\
+
+\noindent
+\begin{tabular}{llp{.6\textwidth}} \hline
+\textbf{element}    & \textbf{unit}       & \textbf{explanation}\\
+delta\_conc\_titrant  & mol/kg-solution   & the offset in concentration of the titrant that is caused by adding the titrant to the sample\\
+delta\_mass\_titrant  & kg                & the amount of mass of titrant solution added\\ 
+delta\_moles\_titrant & mol               & the amount of moles of titrant added\\
+\end{tabular}\\
+
+\noindent
+Each one of this elements is a suitable \texttt{xval} for plotting an \textit{aquaenv} object generated by \texttt{titration}.
+
+\subsubsection{Titration with HCl}
+The standard titration type is titration with hydrochloric acid (HCl). A simple example will illustrate this best.\\
+
+\noindent
+An object of class \textit{aquaenv} needs to be created to define the initial conditions of the titration. That is
+temperature, salinity, depth, the concentrations of all summed quantities and the initial pH (or [TA]).
+
+<<HClTit1, fig=FALSE, echo=TRUE>>=
+ae_init <- aquaenv(S=35, t=15, SumCO2=0.0035, SumNH4=0.00002, pH=11.3)
+@ 
+
+Then \texttt{titration} can be run to create the object describing the simulated titration.
+In this example the titrant is HCl of the relatively low concentration of 0.01 mol/kg-solution.
+The sample solution amounts to 10 g. To sweep a considerable pH range quite a lot of sample needs to be 
+added: 20 g. This means the salinity of the solution in the titration vessel will change due to dilution with the titrant solution.
+For this reason, the salinity of the titrant solution needs to be given via the parameter \texttt{S\_titrant}.
+However, we assume the titrant does not contain borate, sulfate or fluoride, that is why we do not set the 
+flag \texttt{seawater\_titrant} to \texttt{TRUE}.
+
+<<HClTit2, fig=FALSE, echo=TRUE>>=
+ae <- titration(ae_init, mass_sample=0.01, mass_titrant=0.02, conc_titrant=0.01, S_titrant=0.5, steps=100)
+@ 
+
+To get a quick overview, all elements of the obtained \textit{aquaenv} object can be plotted
+
+<<HClTit2, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", mfrow=c(10,10), newdevice=FALSE)
+@ 
+
+Then, a selection of elements can be plotted as a function of the added titrant mass, 
+<<HClTit3, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "fCO2")
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4), newdevice=FALSE)
+@ 
+titrant concentration offset, or the moles of added titrant
+<<HClTit4, fig=FALSE, echo=TRUE, eval=FALSE>>=
+plot(ae, xval=ae$delta_conc_titrant, xlab="[HCl] offset added [mol/kg-soln]", what=what, size=c(14,10), mfrow=c(4,4))
+plot(ae, xval=ae$delta_moles_titrant, xlab="HCl added [mol]", what=what, size=c(14,10), mfrow=c(4,4))
+@ 
+
+However, it is also possible to plot this selection of elements against othe variables, e.g., the calculated free scale pH
+<<HClTit5, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=c(12,8), mfrow=c(4,4), newdevice=FALSE)
+@ 
+
+As mentioned earlier, the function \texttt{plot.aquaenv} offers the possibility of creating bjerrum plots from objects obtained with \texttt{titration}.
+The simplest way to do that is (remember the \texttt{newdevice=FALSE} is just needed to produce plots that are nicely woven into this vignette)
+<<HClTit6, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, bjerrum=TRUE, newdevice=FALSE)
+@ 
+
+Or just select a few elements
+<<HClTit7, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what  <- c("CO2", "HCO3", "CO3")
+plot(ae, what=what, bjerrum=TRUE, newdevice=FALSE)
+@ 
+
+Again, the plotting style can be customized
+<<HClTit8, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, what=what, bjerrum=TRUE, lwd=4, palette=c("cyan", "magenta", "yellow"), bg="gray", legendinset=0.1, legendposition="topleft", newdevice=FALSE)
+@ 
+
+However, generally Bjerrum plots are done on the log scale. This can be accomplished using the flag \texttt{log}
+<<HClTit9, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, newdevice=FALSE)
+@ 
+
+Furthermore, we can zoom in to the region of most interest to marine scientists
+<<HClTit10, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]), newdevice=FALSE)
+@ 
+
+
+
+
+\subsubsection{Titration with NaOH}
+
+Similar to the titration with HCl, also a titration with NaOH can be simulated
+(Please note that due to runtime constraints of the vignette for this package, this titration simulation is not run during construction of the vignette 
+and, therefore, no resulting plots of the following code chunks is included. The user can generate the plots by extracting and executing the relevant code-chunks.)
+
+<<NaOHTit1, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- titration(aquaenv(S=35, t=15, SumCO2=0.0035, SumNH4=0.00002, pH=2), mass_sample=0.01, mass_titrant=0.02, conc_titrant=0.01, S_titrant=0.5, steps=50, type="NaOH")
+@ 
+Plottinge everything
+<<NaOHTit2, fig=FALSE, echo=TRUE, eval=FALSE>>=
+plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", mfrow=c(10,10))
+@ 
+
+Plotting selectively
+<<NaOHTit3, fig=FALSE, echo=TRUE, eval=FALSE>>=
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "fCO2")
+plot(ae, xval=ae$delta_mass_titrant, xlab="NaOH solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4))
+plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=c(12,8), mfrow=c(4,4))
+@ 
+
+Bjerrum plots
+<<NaOHTit4, echo=TRUE, eval=FALSE>>=
+what  <- c("CO2", "HCO3", "CO3")
+plot(ae, what=what, bjerrum=TRUE, newdevice=FALSE)
+@ 
+
+<<NaOHTit5, echo=TRUE, eval=FALSE>>=
+what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]), newdevice=FALSE)
+@ 
+
+
+\subsubsection{Titration with a titrant with high concentrations and a large sample volume - classical Bjerrum plots}
+The Bjerrum plots created in the previous two sections do not really look like the classical textbook ones.
+This is because we simulated a titration with a small sample volume and a titrant with low concentrations. 
+As a result the total concentrations like, e.g., total carbonate decreased due to dilution. 
+In simulating a titration with a rather large volume and a titrant with high concentrations the volume and salinity corrections do not matter
+any more and graphs known from textbooks \citep[e.g.][]{Zeebe2001} are produced.
+
+<<TextbookTit1, fig=FALSE, echo=TRUE>>=
+ae <- titration(aquaenv(S=35, t=15, SumCO2=0.0035, SumNH4=0.00002, pH=11.3), mass_sample=100, mass_titrant=0.5, conc_titrant=3, S_titrant=0.5, steps=100)
+@ 
+
+Plotting everything
+<<TextbookTit2, fig=FALSE, echo=TRUE, eval=FALSE>>=
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", mfrow=c(10,10))
+@ 
+
+Plotting selectively and with different elements for \texttt{xval}
+<<TextbookTit3, fig=FALSE, echo=TRUE, eval=FALSE>>=
+what  <- c("TA", "pH", "CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F", "fCO2")
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what=what, size=c(12,8), mfrow=c(4,4))
+plot(ae, xval=ae$pH, xlab="free scale pH", what=what, size=c(12,8), mfrow=c(4,4))
+plot(ae, xval=ae$delta_conc_titrant, xlab="[HCl] offset added [mol/kg-soln]", what=what, size=c(12,8), mfrow=c(4,4))
+plot(ae, xval=ae$delta_moles_titrant, xlab="HCl added [mol]", what=what, size=c(12,8), mfrow=c(4,4))
+@ 
+
+
+
+Creating different kinds of Bjerrum plots
+<<TextbookTit4, fig=FALSE, echo=TRUE, eval=FALSE>>=
+plot(ae, bjerrum=TRUE)
+what  <- c("CO2", "HCO3", "CO3")
+plot(ae, what=what, bjerrum=TRUE)
+plot(ae, what=what, bjerrum=TRUE, lwd=4, palette=c("cyan", "magenta", "yellow"), bg="gray", legendinset=0.1, legendposition="topleft")
+what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
+plot(ae, what=what, bjerrum=TRUE, log=TRUE)
+@
+
+and the classical textbook one
+<<TextbookTit5, fig=TRUE, echo=TRUE, width=13, height=10>>=
+what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]), newdevice=FALSE)
+@ 
+
+
+
+
+\subsection{Calculating information from titration curves: the function \texttt{TAfit}}
+
+\subsubsection{A little theory}
+While titrating a sample of natural seawater with HCl there one sees two clear equivalence points \citep{Dickson1981}
+The second equivalence point is the equivalence point of total alkalinity and the difference beween the second and the first
+equivalence point signifies the total amount of $\sum \rm CO_2$ of the sample \cite{Hansson1973}.\\
+
+\noindent
+This can be illustrated with \aq$\,$. The respective titration curve can be plotted, together with its first and second derivative.
+Furthermore, the equivalence points can be marked with vertical lines (Please note that for a titrant concentration of 0.01 mol/kg-solution
+and 0.01 kg of sample, the value of the concentration (in mol/kg-solution) of total alkalinity and total carbonate equals the value of the total 
+amount (in mol)).
+
+<<TAfit1, fig=TRUE, echo=TRUE, width=13, height=10>>=
+ae_init <- aquaenv(S=35, t=15, SumCO2=0.0035, SumNH4=0.00002, pH=11.3)
+ae <- titration(ae_init, mass_sample=0.01, mass_titrant=0.02, conc_titrant=0.01, S_titrant=0.5, steps=100)
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what="pH", xlim=c(0,0.015), newdevice=FALSE)
+par(new=TRUE)
+plot(ae$delta_mass_titrant[1:100], diff(ae$pH), type="l", col="red", xlim=c(0,0.015), ylab="", xlab="", yaxt="n")
+par(new=TRUE)
+plot(ae$delta_mass_titrant[2:100], diff(diff(ae$pH)), type="l", col="blue", xlim=c(0,0.015), ylab="", xlab="", yaxt="n")
+abline(h=0, col="blue")
+abline(v=ae$TA[[1]])            
+abline(v=ae$TA[[1]] - ae$SumCO2[[1]]) 
+@
+Following classical chemical textbooks \citep[e.g.][]{Skoog1982}, one can determine [TA] and $\rm [\sum CO_2]$ of a sample
+by graphically determining those equivalence points. However, there is no mechanistic understanding of the contents of the solution involved in doing so.\\
+
+\noindent
+Other methods, called ``Gran evaluations''\citep{Gran1952, Hansson1973, Dickson1981, Haraldsson1997, Anderson1999},
+try to linearize the mechanistic model of what is going on in the solution during titration. 
+They define the so called linear ``Gran functions''  and try to find their roots to determine the equivalence points.
+We will illustrate that by plotting the Gran functions  F0 (blue) and F2 (-F1, green)  and again mark the equivalence points with vertical lines.
+The y=zero line for the Gran functions is indicated by a horizontal line
+
+<<TAfit2, fig=TRUE, echo=TRUE, width=13, height=10>>=
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what="pH", xlim=c(0,0.015), newdevice=FALSE)
+prot1 <- c()
+for (i in 1:length(ae$pH))
+  {
+    prot1 <- c(prot1, (10^-(ae$pH[[i]])+ae$HSO4[[i]]+ae$HF[[i]]+ae$CO2[[i]]-ae$CO3[[i]]-ae$BOH4[[i]]-ae$OH[[i]]))
+  }
+par(new=TRUE)
+plot(ae$delta_mass_titrant, prot1, type="l", col="blue", xlim=c(0,0.015), ylab="", xlab="", yaxt="n", ylim=c(-0.015,0.015))
+prot2 <- c()
+for (i in 1:length(ae$pH))
+  {
+    prot2 <- c(prot2, (10^-(ae$pH[[i]])+ae$HSO4[[i]]+ae$HF[[i]]-ae$HCO3[[i]]-2*ae$CO3[[i]]-ae$BOH4[[i]]-ae$OH[[i]]))
+  }
+par(new=TRUE)
+plot(ae$delta_mass_titrant, prot2, type="l", col="green", xlim=c(0,0.015), ylab="", xlab="", yaxt="n", ylim=c(-0.015,0.015))
+abline(v=ae$TA[[1]])            
+abline(v=ae$TA[[1]] - ae$SumCO2[[1]]) 
+abline(h=0)
+@ 
+
+One can see that the Gran functions actually are not linear. This is due to volume and salinity change effects during the titration.
+This can be overcome by either employing ``modified Gran functions'' \citep[see][]{Haraldsson1997} that correct for the volume changes or by using 
+a titration with a titrant with high concentrations and a large sample volume (Please note that here the value of the concentration of total
+alkalinity and total carbonate does not equal their total amount and need to be converted with the factor 100/3)
+
+
+<<TAfit3, fig=TRUE, echo=TRUE, width=13, height=10>>=
+ae <- titration(aquaenv(S=35, t=15, SumCO2=0.0035, SumNH4=0.00002, pH=11.3), mass_sample=100, mass_titrant=0.5, conc_titrant=3, S_titrant=0.5, steps=100)
+plot(ae, xval=ae$delta_mass_titrant, xlab="HCl solution added [kg]", what="pH", xlim=c(0,0.5), newdevice=FALSE)
+prot1 <- c()
+for (i in 1:length(ae$pH))
+  {
+    prot1 <- c(prot1, (10^-(ae$pH[[i]])+ae$HSO4[[i]]+ae$HF[[i]]+ae$CO2[[i]]-ae$CO3[[i]]-ae$BOH4[[i]]-ae$OH[[i]]))
+  }
+par(new=TRUE)
+plot(ae$delta_mass_titrant, prot1, type="l", col="blue", xlim=c(0,0.5), ylab="", xlab="", yaxt="n", ylim=c(-0.015,0.015))
+prot2 <- c()
+for (i in 1:length(ae$pH))
+  {
+    prot2 <- c(prot2, (10^-(ae$pH[[i]])+ae$HSO4[[i]]+ae$HF[[i]]-ae$HCO3[[i]]-2*ae$CO3[[i]]-ae$BOH4[[i]]-ae$OH[[i]]))
+  }
+par(new=TRUE)
+plot(ae$delta_mass_titrant, prot2, type="l", col="green", xlim=c(0,0.5), ylab="", xlab="", yaxt="n", ylim=c(-0.015,0.015))
+abline(v=(ae$TA[[1]]*100/3))            
+abline(v=((ae$TA[[1]] - ae$SumCO2[[1]])*100/3)) 
+abline(h=0)
+@ 
+
+
+Another proposed method of determining [TA] and $\rm [\sum CO_2]$ is to not only determine the two equivalence points, but to
+fit the whole titration curve with a theoretical titration curve based on a mechanistic model 
+of what is going on in the solution during the titration \citep{Dickson1981, DOE1994, Anderson1999}. 
+The function \texttt{titration} of \aq$\,$ provides exactly such a theoretical titration curve and the function \texttt{TAfit} makes use of this fact to
+determine [TA] and $\rm [\sum CO_2]$ of a sample by non linear curve fitting. 
+
+
+\subsubsection{Determining [TA] and $\rm [\sum CO_2]$ by non linear curve fitting}
+
+\paragraph{Proof of concept}$\,$\\
+First, a proof of concept will show that the function \texttt{TAfit} is implemented consistently.
+Some "data" can be generated with the \texttt{titration} function.
+
+<<TAfit4, fig=FALSE, echo=TRUE>>=
+initial_ae <- aquaenv(S=35, t=15, SumCO2=0.002, TA=0.0022)
+ae <- titration(initial_ae, mass_sample=0.01, mass_titrant=0.003, conc_titrant=0.01, S_titrant=0.5, steps=20)
+@ 
+Now, the input data for the \texttt{TAfit} routine can be generated: a table with the added mass of the titrant and the resulting free scale pH
+<<TAfit5, fig=FALSE, echo=TRUE>>=
+titcurve <- cbind(ae$delta_mass_titrant, ae$pH)
+@ 
+Note that For the \texttt{TAfit} all total quantities except SumCO2 (SumNH4, SumH2S, SumH3PO4, SumSiOH4, SumHNO3, SumHNO2, SumBOH3, SumH2SO4, SumHF)
+need to be known. However, the latter three can be calculated from salinity as it is done in this example. 
+<<TAfit6, fig=FALSE, echo=TRUE>>=
+fit1 <- TAfit(initial_ae, titcurve, conc_titrant=0.01, mass_sample=0.01, S_titrant=0.5)
+fit1
+@ 
+Thus, we see that \texttt{TAfit} calculates the correct SumCO2 and TA values.\\
+
+\noindent
+Trying the \cite{Lueker2000} (K\_CO2 and K\_HCO3) and \cite{Perez1987} (K\_HF) values.
+(Please note that due to runtime constraints of the vignette for this package, this calculation is not run during construction of the vignette. 
+ The user can perform the calculation by extracting and executing the relevant code-chunks.)
+
+<<TAfit6a, fig=FALSE, echo=TRUE, keep.source=TRUE, eval=FALSE>>=
+initial_ae_ <- aquaenv(S=35, t=15, SumCO2=0.002, TA=0.0022,
+                       k1k2="lueker", khf="perez")
+ae_         <- titration(initial_ae_, mass_sample=0.01, mass_titrant=0.003, 
+                         conc_titrant=0.01,
+                         S_titrant=0.5, steps=20, k1k2="lueker", khf="perez")
+titcurve_   <- cbind(ae_$delta_mass_titrant, ae_$pH)
+fit1_       <- TAfit(initial_ae_, titcurve_, conc_titrant=0.01, mass_sample=0.01,
+                     S_titrant=0.5, k1k2="lueker", khf="perez", verbose=TRUE)
+fit1_	      
+@ 
+
+\noindent
+\texttt{TAfit} can also take E (V) values as input variables, so we generate E values using E0=0.4 V and the Nernst equation.
+(But before that, we calculate a titration with a titrant with the same salinity as seawater such that S does not change during the titration.
+otherwise we would need to calculate the S profile for the titration extra to use it to convert to the total scale in the following step.)
+However, to do so we first need to convert our pH curve to the seawater pH scale. According to \cite[p.7, ch.4, sop.3]{DOE1994} and \cite{Dickson2007}, the Nernst equation relates E to 
+the total proton concentration.
+<<TAfit7, fig=FALSE, echo=TRUE, eval=FALSE>>=
+ae <- titration(initial_ae, mass_sample=0.01, mass_titrant=0.003, conc_titrant=0.01,
+                steps=20, seawater_titrant=TRUE)
+titcurve    <- cbind(ae$delta_mass_titrant, ae$pH)
+tottitcurve <- cbind(ae$pH, convert(ae$pH, "pHscale", "free2tot", S=35, t=15))
+Etitcurve   <- cbind(ae$delta_mass_titrant, (0.4 - ((PhysChemConst$R/10)*initial_ae$T/PhysChemConst$F)*log(10^-tottitcurve[,2]))) 
+@ 
+Again, \texttt{TAfit} can be executed, this time also calculating E0. Note that the flag \texttt{verbose=TRUE} causes
+\texttt{TAfit} to show the progress of the fitting procedure in a plot window.
+(Please note that due to runtime constraints of the vignette for this package, this calculation is not run during construction of the vignette. 
+ The user can perform the calculation by extracting and executing the relevant code-chunks.)
+<<TAfit8, fig=FALSE, echo=TRUE, eval=FALSE>>=
+fit2 <- TAfit(initial_ae, Etitcurve, conc_titrant=0.01, mass_sample=0.01, Evals=TRUE, verbose=TRUE, seawater_titrant=TRUE)
+fit2     
+@   
+
+Furthermore, \texttt{TAfit} can fit K\_CO2 as well, however, one single value for the whole titration curve is fitted, i.e. there is no correction for K\_CO2 changes due to changing S due to mixing with the titrant
+<<TAfit9, fig=FALSE, echo=TRUE>>=
+fit3 <- TAfit(initial_ae, titcurve, conc_titrant=0.01, mass_sample=0.01, S_titrant=0.5, K_CO2fit=TRUE)
+fit3
+initial_ae$K_CO2
+@ 
+
+One can see that the fitted value for K\_CO2 is not the same as the value in the initial \textit{aquaenv} object, which is the "correct" value. That is, because during data creation K\_CO2 changed along the course of the titration
+due to changes in salinity. Assuming that the titrant has the same salinity as the sample (and is made up of natural seawater, i.e. containing SumBOH4, SumH2SO4 and SumHF as functions of S),
+ then the "correct" K\_CO2 should be fitted. This can be accomplished in \texttt{TAfit} by not giving the argument \texttt{S\_titrant} (i.e. assuming the titrant has the 
+same salinity as the sample) and 
+setting the flag \texttt{seawater\_titrant} to \texttt{TRUE}
+
+<<TAfit10, fig=FALSE, echo=TRUE>>=
+ae       <- titration(initial_ae, mass_sample=0.01, mass_titrant=0.003, conc_titrant=0.01, steps=20, seawater_titrant=TRUE)
+titcurve <- cbind(ae$delta_mass_titrant, ae$pH)
+fit4 <- TAfit(initial_ae, titcurve, conc_titrant=0.01, mass_sample=0.01, K_CO2fit=TRUE, seawater_titrant=TRUE)
+fit4
+@ 
+
+Furthermore, TA, SumCO2, K\_CO2 and E0 can be fitted at the same time.
+(Please note that due to runtime constraints of the vignette for this package, this calculation is not run during construction of the vignette. 
+ The user can perform the calculation by extracting and executing the relevant code-chunks.)
+<<TAfit11, fig=FALSE, echo=TRUE, eval=FALSE>>=
+Etitcurve <- cbind(titcurve[,1], (0.4 - ((PhysChemConst$R/10)*initial_ae$T/PhysChemConst$F)*log(10^-titcurve[,2])))
+fit5 <- TAfit(initial_ae, Etitcurve, conc_titrant=0.01, mass_sample=0.01, K_CO2fit=TRUE, seawater_titrant=TRUE, Evals=TRUE)
+fit5
+@ 
+
+Sometimes, the obtained titration curve is not equally spaced on the x axis. \texttt{TAfit} can deal with such curves if the flag
+\texttt{equalspaced} is set to \texttt{FALSE}. (Please note that due to runtime constraints of the vignette for this package, this calculation is not run during construction of the vignette. 
+ The user can perform the calculation by extracting and executing the relevant code-chunks.)
+<<TAfit12, fig=FALSE, echo=TRUE, eval=FALSE>>=
+neqsptitcurve <- rbind(titcurve[1:9,], titcurve[11:20,])
+fit6 <- TAfit(initial_ae, neqsptitcurve, conc_titrant=0.01, mass_sample=0.01, seawater_titrant=TRUE, equalspaced=FALSE, verbose=TRUE, debug=TRUE)
+fit6
+@ 
+
+Finally, some "noise" is added to the generated data
+<<TAfit13, fig=FALSE, echo=TRUE>>=
+noisetitcurve <- titcurve * rnorm(length(titcurve), mean=1, sd=0.01) #one percent error possible
+fit7 <- TAfit(initial_ae, noisetitcurve, conc_titrant=0.01, mass_sample=0.01, seawater_titrant=TRUE, verbose=FALSE, debug=TRUE)
+fit7
+@ 
+
+The flag \texttt{verbose=TRUE} (default is \texttt{FALSE}) prompts to show the traject of the fitting procedure in a plot window. However, each new fit is plotted over the first one 
+and Sweave includes only the first plot in each code chunk in the resulting \LaTeX file. Therefore, we use the flag \texttt{debug=TRUE} to 
+visualize the final fit
+
+<<TAfit14, fig=TRUE, echo=TRUE>>=
+ylim=range(noisetitcurve[,2], calc)
+xlim=range(tit$delta_mass_titrant, noisetitcurve[,1])
+plot(noisetitcurve[,1], noisetitcurve[,2], xlim=xlim, ylim=ylim, type="l", xlab="delta mass titrant", ylab="pH (free scale)")
+par(new=TRUE)
+plot(tit$delta_mass_titrant, calc, xlim=xlim, ylim=ylim, type="l", col="red", xlab="", ylab="")
+@ 
+
+
+\paragraph{Test with generated data from literature}$\,$\\
+
+\cite{Dickson1981} provided a synthetic dataset to test total alkalinity fitting programs. This dataset is included in \aq$\,$ as
+\texttt{sample\_dickson1981}.
+Following quantities are given
+
+<<TAfit15, fig=FALSE, echo=TRUE>>=
+conc_titrant <- 0.3     # mol/kg-soln
+mass_sample  <- 0.2     # kg
+S_titrant    <- 14.835  # is aequivalent to the ionic strength of 0.3 mol/kg-soln 
+SumBOH3  <- 0.00042 # mol/kg-soln
+SumH2SO4 <- 0.02824 # mol/kg-soln
+SumHF    <- 0.00007 # mol/kg-soln
+@ 
+
+Note that all concentrations are in mol/kg-solution and the mass of the sample is in kg. Note further that the salinity of the titrant has been 
+calculated from its ionic strenght of 0.3 mol/kg-soln.\\
+
+\noindent
+In the original dataset as represented in \texttt{sample\_dickson1981}, the mass of titrant is given in g which needs to be converted to kg
+<<TAfit16, fig=FALSE, echo=TRUE>>=
+sam <- cbind(sample_dickson1981[,1]/1000, sample_dickson1981[,2]) # convert mass of titrant from g to kg
+@ 
+Then an attempt to recalculate the [TA] and $\rm [\sum CO_2]$ values given in \cite{Dickson1981} ([TA]=0.00245 mol/kg-soln and $\rm [\sum CO_2]$ 0.00220 mol/kg-soln)
+can be done
+<<TAfit17, fig=FALSE, echo=TRUE>>=
+dicksonfit <- TAfit(aquaenv(S=35, t=25, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF), sam, conc_titrant, mass_sample, S_titrant=S_titrant, debug=TRUE)
+dicksonfit
+@ 
+This shows the fit is not accurate. Why is that so?
+
+\subparagraph{Does the salinity correction (\texttt{S\_titrant}) matter?}$\;$\\
+
+\noindent
+Let us calculate a theoretical titration without salinity correction
+<<TAfit18, fig=FALSE, echo=TRUE>>=
+dicksontitration1 <- titration(aquaenv(S=35, t=25, SumCO2=0.00220, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=0.00245),
+                              mass_sample=mass_sample, mass_titrant=0.0025, conc_titrant=conc_titrant, steps=50, type="HCl")
+@ 
+and one with salinity correction
+<<TAfit19, fig=FALSE, echo=TRUE>>=
+dicksontitration2 <- titration(aquaenv(S=35, t=25, SumCO2=0.00220, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=0.00245),
+                              mass_sample=mass_sample, mass_titrant=0.0025, conc_titrant=conc_titrant, S_titrant=S_titrant, steps=50, type="HCl")          
+@ 
+Now the difference between both curves (in red and blue) and the ``Dickson'' curve (in black) can be visualized
+<<TAfit20, fig=TRUE, echo=TRUE>>=
+plot(dicksontitration1, xval=dicksontitration1$delta_mass_titrant, what="pH", xlim=c(0,0.0025), ylim=c(3,8.2), newdevice=FALSE, col="red", xlab="delta mass titrant") 
+par(new=TRUE)
+plot(dicksontitration2, xval=dicksontitration2$delta_mass_titrant, what="pH", xlim=c(0,0.0025), ylim=c(3,8.2), newdevice=FALSE, col="blue", xlab="") 
+par(new=TRUE)
+plot(sam[,1], sam[,2], type="l", xlim=c(0,0.0025), ylim=c(3,8.2), xlab="", ylab="")
+@ 
+
+That means, the salinity correction makes no significant difference (the red and the blue curve cannot be discerned), because the relation between the total amount of sample and the added amount of titrant is very large:
+salinity only drops from 35 to 34.75105.\\
+
+\noindent
+But there is an offset between the "Dickson" curve and our curve
+<<TAfit21, fig=TRUE, echo=TRUE>>=
+plot(dicksontitration2$pH - sam[,2])
+@ 
+
+
+\subparagraph{Does fitting K\_CO2 as well improve the fit?}$\;$\\
+<<TAfit22, fig=FALSE, echo=TRUE>>=
+dicksonfit2 <- TAfit(aquaenv(S=35, t=25, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF), sam, conc_titrant, mass_sample, S_titrant=S_titrant, debug=TRUE, K_CO2fit=TRUE)
+dicksonfit2
+@ 
+Yes it does, but it is not optimal yet.\\
+
+\noindent
+There still remains one major difference between the calculations carried out in \cite{Dickson1981} and the calculations in \aq$\,$:
+\cite{Dickson1981} uses fixed values for the equilibrium constants and does not calculate them as functions of temperature and salinity.
+Furthermore, the values that are used in \cite{Dickson1981} are not exactly the same as are obtained in \aq$\,$ for the same salinity and 
+temperature.\\
+
+Let us calculate a theoretical titration curve employing exactly the same equilibrium constant values as used in \cite{Dickson1981} and plot the
+result together with the ``Dickson'' curve
+<<TAfit23, fig=TRUE, echo=TRUE>>=
+dicksontitration3 <- titration(aquaenv(S=35, t=25, SumCO2=0.00220, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=0.00245, k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2)),
+                              mass_sample=mass_sample, mass_titrant=0.0025, conc_titrant=conc_titrant,  steps=50, type="HCl", S_titrant=S_titrant,
+                              k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2))          
+
+plot(dicksontitration3, xval=dicksontitration3$delta_mass_titrant, what="pH", xlim=c(0,0.0025), ylim=c(3,8.2), newdevice=FALSE, col="blue", xlab="delta mass titrant") 
+par(new=TRUE)
+plot(sam[,1], sam[,2], type="l", xlim=c(0,0.0025), ylim=c(3,8.2), xlab="", ylab="")
+@ 
+Plotting the differences between both curves reveals that they are the same down to 1 umol/kg-soln.
+
+<<TAfit24, fig=TRUE, echo=TRUE>>=
+plot(dicksontitration3$pH - sam[,2])
+@ 
+
+Calculating [TA] and $\rm [\sum CO_2]$ using \texttt{TAfit} and exactly the same equilibrium constant values as used in \cite{Dickson1981}
+<<TAfit25, fig=FALSE, echo=TRUE>>=
+dicksonfit3 <- TAfit(aquaenv(S=35, t=25, SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2)),
+                     sam, conc_titrant, mass_sample, S_titrant=S_titrant, debug=TRUE,
+                     k_w=4.32e-14, k_co2=1e-6, k_hco3=8.20e-10, k_boh3=1.78e-9, k_hso4=(1/1.23e1), k_hf=(1/4.08e2))
+dicksonfit3
+@ 
+reveals that now exactly the same values are calculated as are given in \cite{Dickson1981}.
+
+
+
+
+
+\section{Extending \aq}
+
+It is very simple for the user to create own functions that use \aq$\,$ and extend its functionality.
+We will demonstrate that by creating simple analogons for the \aq$\,$ functions \texttt{titration} and \texttt{TAfit}.\\
+
+\noindent
+The function \texttt{simpletitration} will take the following arguments\\
+\begin{tabular}{lp{.7\textwidth}}
+\texttt{aquaenv} & an object of class \textit{aquaenv}: minimal definition, contains all information about the system: S, t, p, total concentrations of nutrients etc \\
+\texttt{volume}  & the volume of the (theoretical) titration vessel in l \\
+\texttt{amount}  & the amount of titrant added in mol\\
+\texttt{steps}   & the amount of steps the amount of titrant is added in \\
+\texttt{type}    & the type of titrant: either "HCl" or "NaOH"\\
+\end{tabular}
+
+The function is defined as
+\begin{scriptsize}
+<<extend1, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+simpletitration <- function(aquaenv,                # an object of class aquaenv: minimal definition, 
+                                                    # contains all information about the system: 
+                                                    # T, S, d, total concentrations of nutrients etc 
+                            volume,                 # the volume of the (theoretical) titration vessel in l 
+                            amount,                 # the amount of titrant added in mol
+                            steps,                  # the amount of steps the amount of titrant is added in 
+                            type)                   # the type of titrant: either "HCl" or "NaOH"
+  {
+    directionTAchange   <- switch(type, HCl  = -1, NaOH = +1)
+    TAconcchangeperstep <- convert(((amount/steps)/volume), "conc", "molar2molin", aquaenv$t, aquaenv$S)
+
+    aquaenvtemp <- aquaenv
+    
+    for (i in 1:steps)
+      {
+        TA          <- aquaenvtemp$TA + (directionTAchange * TAconcchangeperstep)
+        aquaenvtemp <- aquaenv(ae=aquaenvtemp, TA=TA)
+        aquaenv     <- merge(aquaenv, aquaenvtemp)
+      }
+
+    aquaenv[["DeltaCTitrant"]] <- convert((amount/volume)/steps*(1:(steps+1)), 
+                                          "conc", "molar2molin", aquaenv$t, aquaenv$S)
+    return(aquaenv)  # object of class aquaenv which contains a titration simulation
+  }
+@ 
+\end{scriptsize}
+
+and can be used to create a bjerrum plot 
+<<extend2, fig=TRUE, echo=TRUE>>=
+ae <- simpletitration(aquaenv(S=35, t=15, SumCO2=0.003500, SumNH4=0.000020, pH=11.3), volume=100, amount=1.5, steps=100, type="HCl")
+what  <- c("CO2", "HCO3", "CO3", "BOH3", "BOH4", "OH", "NH4", "NH3", "H2SO4", "HSO4", "SO4", "HF", "F")
+plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1), legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]), newdevice=FALSE)
+@ 
+
+The function \texttt{simpletitration} in turn can be used to create a simple analogon to \texttt{TAfit} with the arguments\\
+\begin{tabular}{lp{.7\textwidth}}
+\texttt{ae} & an object of class \textit{aquaenv}: minimal definition, contains all information about the system: S, t, p, total concentrations of nutrients etc \\
+\texttt{pHmeasurements} & a table containing the titration curve: basically a series of pH values (pH on free proton scale)\\
+\texttt{volume} & the volume of the titration vessel\\
+\texttt{amount} & the total amount of the titrant added\\
+\texttt{TAguess}=0.0025 & a first guess for [TA] and [SumCO2] to be used as initial values for the optimization procedure\\
+\texttt{type}="HCl"& the type of titrant: either "HCl" or "NaOH"\\
+\end{tabular}\\
+
+\noindent
+defined as
+
+\begin{scriptsize}
+<<extend3, fig=FALSE, echo=TRUE, keep.source=TRUE>>=
+simpleTAfit <- function(ae,                   # an object of class aquaenv: minimal definition, 
+                                              # contains all information about the system: 
+                                              # T, S, d, total concentrations of nutrients etc 
+                        pHmeasurements,       # a table containing the titration curve: 
+                                              # basically a series of pH values (pH on free proton scale)
+                        volume,               # the volume of the titration vessel
+                        amount,               # the total amount of the titrant added
+                        TAguess=0.0025,       # a first guess for [TA] and [SumCO2] to be used as 
+                                              # initial values for the optimization procedure
+                        type="HCl")           # the type of titrant: either "HCl" or "NaOH"
+  {
+    ae$Na <- NULL   # make sure ae gets cloned as "skeleton": cloneaquaenv determines "skeleton" 
+                    # TRUE or FALSE from the presence of a value for Na
+    residuals <- function(state)
+      {
+        ae$SumCO2  <- state[[1]]
+        pHcalc     <- simpletitration(aquaenv(ae=ae, TA=state[[2]]), volume=volume, 
+                                      amount=amount, steps=(length(pHmeasurements)-1), type=type)$pH
+        residuals <- pHmeasurements-pHcalc
+       
+        return(residuals)
+      }
+
+    require(minpack.lm)
+    out <- nls.lm(fn=residuals, par=c(TAguess, TAguess))  #guess for TA is also used as guess for SumCO2
+  
+    result                    <- list(out$par[[2]], out$par[[1]], out$deviance)
+    attr(result[[1]], "unit") <- "mol/kg-soln"
+    attr(result[[2]], "unit") <- "mol/kg-soln"
+    names(result)             <- c("TA", "SumCO2", "sumofsquares")
+    return(result)  # a list of three values 
+                    # ([TA] in mol/kg-solution, [SumCO2] in mol/kg-solution, sum of the squared residuals)
+  }
+@ 
+\end{scriptsize}
+
+The function \texttt{simpleTAfit} can be used to calculate TA and SumCO2
+
+<<extend4, fig=FALSE, echo=TRUE>>=
+pHmeasurements <- ae$pH
+fit <- simpleTAfit(aquaenv(S=35, t=15, SumNH4=0.00002), pHmeasurements, volume=100, amount=1.5)
+fit
+@ 
+
+
+<<CleaningUp, fig=FALSE, echo=FALSE>>=
+graphics.off()
+@ 
+
+
+\appendix
+
+\section{Abbreviations for references used throughout the code and in the helpfiles}
+\begin{tabular}{ll}
+Atkins1996       & \cite{Atkins1996} \\
+Boudreau1996     & \cite{Boudreau1996}\\
+DOE1994          & \cite{DOE1994}\\
+Dickson1979a     & \cite{Dickson1979a}\\
+Dickson1981      & \cite{Dickson1981}\\
+Dickson1984      & \cite{Dickson1984}\\
+Dickson1987      & \cite{Dickson1987}\\
+Dickson1990      & \cite{Dickson1990}\\
+Dickson2007      & \cite{Dickson2007}\\
+Emerson2008      & \cite{Emerson2008}\\
+Feistel2008      & \cite{Feistel2008}\\
+Fofonoff1983     & \cite{Fofonoff1983}\\
+Follows2006      & \cite{Follows2006}\\
+Hofmann2008      & \cite{Hofmann2008}\\
+Khoo1977         & \cite{Khoo1977}\\
+Lewis1998        & \cite{Lewis1998}\\
+Lueker2000       & \cite{Lueker2000}\\
+Millero1981      & \cite{Millero1981}\\
+Millero1988      & \cite{Millero1988}\\
+Millero1995      & \cite{Millero1995}\\
+Millero1995a     & \cite{Millero1995a}\\
+Millero2006      & \cite{Millero2006}\\
+Mucci1983        & \cite{Mucci1983}\\
+Perez1987a       & \cite{Perez1987a}\\
+Riordan2005      & \cite{Riordan2005}\\
+Roy1993b         & \cite{Roy1993b}\\
+Sundquist1979    & \cite{Sundquist1979}\\
+Weiss1970        & \cite{Weiss1970}\\
+Weiss1974        & \cite{Weiss1974}\\
+Wischmeyer2003   & \cite{Wischmeyer2003}\\
+Zeebe2001        & \cite{Zeebe2001}\\
+\end{tabular}
+
+\clearpage
+
+\section{References for the elements of an object of class \textit{aquaenv}} \label{app: references}
+\begin{footnotesize}
+\begin{longtable}{p{.15\textwidth}|p{.9\textwidth}}
+\textbf{element}& \textbf{references} \\ \hline 
+\texttt{p}, \texttt{P}, \texttt{Pa}, \texttt{p} & The relation between pressure and depth given in \cite{Fofonoff1983} is used. The standard value for 
+atmospheric pressure \texttt{Pa} at sea level as well as the definition of total pressure and gauge pressure is taken from \cite{Feistel2008}.\\
+\texttt{Cl}          & \citet[ chapter 5, p. 11]{DOE1994}, and \citet[p. 100, footnote 3]{Zeebe2001}\\
+\texttt{I}           & \citet[chapter 5, p. 13, 15]{DOE1994},  \citet[ p.12]{Zeebe2001}, and \citet[ p.257]{Roy1993b}. 
+Note that the approximation I/(mol/kg-solution) $\approx$ 0.0199201 \; \texttt{S} is given in \citet[  p. 428.]{Millero1982}.
+This relationship converted into mol/kg-$\rm H_2O$ and the last digits adjusted (from 0.0199201 to 0.019924) results in the formula used here.\\
+density     & \citet{Millero1981} and \citet[chapter 5, p. 6f]{DOE1994}.\\
+\texttt{Br}, \texttt{ClConc}, \texttt{Na}, \texttt{Mg}, \texttt{Ca}, \texttt{K}, \texttt{Sr} & \citet[ chapter 5, p.11]{DOE1994}\\    
+\texttt{molal2molin} & \citet[ p.257]{Roy1993b}, and  \citet[chapter 5, p. 15]{DOE1994}\\
+\texttt{free2tot}, \texttt{tot2free}  & \citet[p.2302]{Dickson1984}, \citet[ chapter 4, p.16]{DOE1994}, \citet[p.57, 261]{Zeebe2001}\\
+\texttt{free2sws}, \texttt{tot2sws}, \texttt{sws2free}, \texttt{sws2tot} &  \citet[p.2303]{Dickson1984}, \citet[ p.57]{Zeebe2001}\\
+\texttt{K0\_CO2}     & \citet{Weiss1974}, \citet[chapter 5, p. 13]{DOE1994} (here it is stated that the unit is mol/(kg-solution*atm)), \citet[ p.663]{Millero1995}, \citet[ p.257]{Zeebe2001}\\
+\texttt{K0\_O2}      & derived from  a formula for the oxygen saturation concentration in ml-$\rm O_2$/kg-solution by \citet{Weiss1970} using the first virial coefficient
+of oxygen \citep[][p. 41, 1029]{Atkins1996} and the atmospheric oxygen fugacity \citep{Williams2004}\\
+\texttt{K\_W}       & \citet[p.670]{Millero1995} (\textbf{original reference}, but slightly different formula for seawater pH), \citet[chapter 5, p. 18]{DOE1994} (NOT the original reference! \citet{DOE1994} cites in an update from 1997 \citet{Millero1995}! 
+However the version of the formula used here is the one converted to total pH scale given in \citet{DOE1994}), and \citet[p. 258]{Zeebe2001}. Constant type (stoichiometric), 
+pH scale (total, converted to free here) , and 
+concentration unit (mol/kg-solution squared): \citet[chapter 5, p. 12,18]{DOE1994}, pH scale also in \citet[p. 258]{Zeebe2001}.\\
+\texttt{K\_HSO4}     & \citet[chapter 5 page 13]{DOE1994}, \citet[p. 260]{Zeebe2001}, \citet{Dickson1990a} (original reference). Constant type (stoichiometric), pH scale (free) , and 
+concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \citet[chapter 5, p. 13]{DOE1994}. Note that it is also possible to use the constant according to \cite{Khoo1977}, as cited in, e.g.,  \cite{Roy1993b}, \cite{Millero1995}, and \cite{Lewis1998}. In \cite{Lewis1998} it is stated that the constant resulting from this equation is in mol/kg-H$_2$O and on the free pH scale.\\
+\texttt{K\_HF}       & \citet[p. 91]{Dickson1979} (original reference), \citet[c. 5, p. 15]{DOE1994}, \citet[p. 257]{Roy1993b}, \citet[p. 1783]{Dickson1987}, \citet[p. 664]{Millero1995}, \citet[p. 260]{Zeebe2001} 
+(converted to molinty and total scale).  Constant type (stoichiometric), pH scale (free) , and 
+concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \citet[chapter 5, p. 15, 16]{DOE1994}. In \textsf{AquaEnv}, it is also possible to use the constant according to \cite{Perez1987a}. \\
+\texttt{K\_CO2}, \texttt{K\_HCO3}  & \citet[p. 254]{Roy1993b} (original reference), \citet[chapter 5, p.14]{DOE1994} (in a version converted to mol/kg-$\rm H_2O$), \citet[p. 664]{Millero1995}, \citet[p. 255]{Zeebe2001}.
+Constant type (stoichiometric) and  concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here): \citet[chapter 5, p. 14, 15]{DOE1994}, pH scale (total, converted to free here): 
+In \citet[chapter 5, p. 12]{DOE1994} the total scale is stated for the formula for high salinities and thus can be inferred for the formula for low salinities. 
+The scale is also indirectly stated for both formulations in the original reference \citet{Roy1993b}. Note that in \citet{Roy1993b} a function for fresh water (based on \cite{Millero1979} which in turn is on a temperature relationship from \cite{Harned1943} and \cite{Harned1941} respectively) and a function for seawater is derived. In \citet{Millero1995} it is stated that for S$<$5 the fresh water formula (based on \cite{Millero1979}) should be used and for S$>=$5 the seawater formula derived in \citet{Roy1993b}. However, both formulations do not always 
+intersect at \texttt{S}=5. The true intersection with respect to salinity \texttt{S} is a function of temperature \texttt{t}. Here, we first calculate this intersection by
+numerical root finding and then decide which formulation to use. This practise results in a continuous function with respect to \texttt{S}. (Note that there is a typesetting error in \citet{Roy1993b}: one of the numerical values for the function for $\rm K^*_{CO_2}$ is given as 310.48919, but correct is 2310.48919. However, in \citet{Millero1995} this value is stated correctly.) In \textsf{AquaEnv}, it is also possible to use the constants according to \cite{Lueker2000} and \cite{Millero2006}.\\
+\texttt{K\_BOH3}     & \citet[p. 763]{Dickson1990} (original, but mol/kg-$\rm H_2O$ version), \citet[ch. 5, p. 14]{DOE1994}, \citet[p. 262]{Zeebe2001}, \citet[p.669]{Millero1995} (mol/kg-$\rm H_2O$ version) , agrees with data in \citet{Roy1993a}.
+Constant type (stoichiometric) and  concentration unit (mol/kg-solution): \citet[chapter 5, p. 14]{DOE1994}, pH scale (total): \citet[chapter 5, p. 12]{DOE1994} and \citet[p.263]{Zeebe2001}. \\
+\texttt{K\_NH4}      & \citet{Millero1995a} (original reference), \citet[p.671]{Millero1995}. Constant type (stoichiometric) and concentration unit (mol/kg-solution): \citet[p.671]{Millero1995}, pH scale (seawater, converted to free here):  
+\citet{Lewis1998} (in corrections of \citet{Millero1995}).\\
+\texttt{K\_H2S}      & \citet{Millero1988} (original reference), \citet[p.671]{Millero1995}. Constant type (stoichiometric) and concentration unit (mol/kg-solution): \citet[p.671]{Millero1995}, pH scale (seawater, converted to free here):  
+\citet{Lewis1998} (in corrections of \citet{Millero1995}).\\
+\texttt{K\_H3PO4}, \texttt{K\_H2PO4}, \texttt{K\_HPO4} & \citet[p.670]{Millero1995} (original reference, but formula for seawater scale pH), \citet[ch. 5, p 16,17]{DOE1994}, agrees with data in \citet{Dickson1979a}.
+ Constant type (stoichiometric), concentration unit (mol/kg-solution), and pH scale (total, converted to free here): \citet[chapter 5, p. 12, 16, 17]{DOE1994}.\\
+\texttt{K\_SiOH4}    & \citet{Millero1988} (original reference), \citet[chapter 5, p 17]{DOE1994}, \citet[p.671]{Millero1995} (formula for seawater scale pH)
+ Constant type (stoichiometric), concentration unit (mol/kg-$\rm H_2O$ converted to mol/kg-solution here by omitting the conversion summand ln(1-0.001005 S)), and pH scale (total, converted to free here): \citet[chapter 5, p. 12, 17]{DOE1994}.\\
+\texttt{K\_SiOOH3}   & \citet{Wischmeyer2003} (original reference), corrected due to personal communication with Dieter Wolf-Gladrow (one of the authors). The corrected version can be obtained from either Dieter Wolf-Gladrow or Andreas F Hofmann 
+(a.hofmann@nioo.knaw.nl).  Constant type (stoichiometric), concentration unit (mol/kg-solution), and pH scale (total, converted to free here): \citet{Wischmeyer2003}.\\
+\texttt{K\_HNO2}     & Constant value, not a function of temperature and salinity! Obtained as a hybrid pk value (featuring the activity of the proton but the concentration of other species (see \citet{Zeebe2001} for a treatment of different types of
+equilibrium constants) in molar concentration (mol/l) on the NBS pH scale \citep{Durst1975} from \citet{Riordan2005}. Used as an approximation for the stoichiometric $\rm K^*_{\rm HNO_2}$ in mol/kg-solution on the free proton pH scale here.\\
+\texttt{K\_H2SO4}    & Constant value, not a function of temperature and salinity! Obtained as a standard pK value from \citet[p. 1045]{Atkins1996}. Used as an approximation for the stoichiometric $\rm K^*_{\rm H_2SO_4}$ in mol/kg-solution on the free proton pH scale here.\\
+\texttt{K\_HS}       & Constant value, not a function of temperature and salinity! Obtained as a standard pK value from \citet[p. 1045]{Atkins1996}. Used as an approximation for the stoichiometric $\rm K^*_{\rm Hs^-}$ in mol/kg-solution on the free proton pH scale here.\\
+\texttt{Ksp\_calcite}, \texttt{Ksp\_aragonite}  & \citet{Mucci1983} (original reference), \citet{Boudreau1996}. Note that in there are errors in \citet{Boudreau1996}: $b_0$ for calcite is not 0.7712 but 0.77712 and $b_1$ for 
+aragonite is not 0.001727 but 0.0017276.\\
+\texttt{pH}  & As given in \citet{Dickson1984}, p. 2303 (use of "m") and \citet{Dickson1979a}, p. 91f all concentrations appearing in the definition 
+of the total and the seawater pH scale are \textbf{molal} (mol/kg-$\rm H_2O$) concentrations. But in \citet{Roy1993b}, p. 257  and in \citet{DOE1994}, 
+chapter 4, SOP 6, p. 1 it is stated, that concentrations for the seawater and total pH scale are in mol/kg-solution.
+To be consistent with \citet{DOE1994} \textbf{molin} concentrations (mol/kg-solution) are chosen for calculating the pH.\\
+\texttt{revelle}     & \citet[p.73]{Zeebe2001}\\   
+\texttt{dTAdH},  \texttt{dTAdSumCO2}, \texttt{dTAdSumBOH3}, \texttt{dTAdSumH2SO4}, \texttt{dTAdSumHF},  \texttt{dTAdSumH3PO4}, \texttt{dTAdSumSumSiOH4}, \texttt{dTAdSumH2S}, \texttt{dTAdSumNH4}, \texttt{dTAdSumHNO3},  \texttt{dTAdSumHNO2}   & \citet{Hofmann2008}\\
+\texttt{c1}, \texttt{c2}, \texttt{c3},  \texttt{b1}, \texttt{b2}, \texttt{so1}, \texttt{so2}, \texttt{so3}, \texttt{f1}, \texttt{f2}, \texttt{p1}, \texttt{p2}, \texttt{p3}, \texttt{p4} 
+\texttt{si1}, \texttt{si2}, \texttt{si3}, \texttt{s1}, \texttt{s2}, \texttt{s3}, \texttt{n1}, \texttt{n2}, \texttt{na1}, \texttt{na2}, \texttt{ni1}, \texttt{ni2}
+  & \citet{Skoog1982}, \citet{Stumm1996}, \citet{Hofmann2008c}\\
+\texttt{dTAdKdKdS}, \texttt{dTAdKdKdT}, \texttt{dTAdKdKdp}, \texttt{dTAdKdKdSumH2SO4}, \texttt{dTAdKdKdSumHF}
+& \citet{Hofmann2009}\\ \hline
+\end{longtable}
+\end{footnotesize}
+\noindent
+The values for \texttt{K\_W},\texttt{K\_HSO4}, \texttt{K\_HF}, \texttt{K\_CO2}, \texttt{K\_HCO3}, \texttt{K\_BOH3},  \texttt{K\_NH4},  \texttt{K\_H2S},  \texttt{K\_H3PO4}, \texttt{K\_H2PO4}, \texttt{K\_HPO4}, \texttt{K\_SiOH4}, \texttt{K\_SiOOH3},  \texttt{Ksp\_calcite}, \texttt{Ksp\_aragonite} obtained as functions of 
+salinity \texttt{S} and temperature \texttt{t} from the above references are pressure corrected using the gauge pressure \texttt{p} according to \citet{Millero1995} 
+with corrections by \citet{Lewis1998}.\\
+
+\noindent
+In general it is to be said that all corrections from \cite{Lewis1998} have been applied.
+
+
+\bibliography{AquaEnv}
+\end{document}

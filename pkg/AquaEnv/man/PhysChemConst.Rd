@@ -15,6 +15,6 @@
 	\item{K_H2SO4}{dissociation constant of H2SO4: assumed on mol/kg-soln and free pH scale, stoichiometric constant (Atkins1996)}
 	\item{K_HS}{dissociation constant of HHS:   assumed on mol/kg-soln and free pH scale, stoichiometric constant (Atkins1996)}
 }
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \keyword{misc}
 

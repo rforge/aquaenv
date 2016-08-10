@@ -6,11 +6,11 @@
         P=Pa, Pa=1.01325, d=0, lat=0,
         SumCO2=0, SumNH4=0, SumH2S=0, SumH3PO4=0,
         SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL,
-        SumH2SO4=NULL,SumHF=NULL, TA=NULL, pH=NULL, fCO2=NULL, CO2=NULL,
+        SumH2SO4=NULL, SumHF=NULL, TA=NULL, pH=NULL, fCO2=NULL, CO2=NULL,
         speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,
-        SumH2SO4_Koffset=0,SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE,
+        SumH2SO4_Koffset=0, SumHF_Koffset=0, revelle = TRUE, skeleton=FALSE,
         k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
-        k_hf=NULL, k1k2="roy", khf="dickson", khso4="dickson", fCO2atm=0.000390, fO2atm=0.20946)}
+        k_hf=NULL, k1k2="lueker", khf="dickson", khso4="dickson", fCO2atm=0.000400, fO2atm=0.20946)}
 \arguments{
   \item{S }{salinity in practical salinity units (i.e. no unit)}
   \item{t }{temperature in degrees centigrade}
@@ -46,7 +46,7 @@
   \item{from.data.frame }{flag: TRUE = the object of class aquaenv is built from the data frame supplied in ae}
   \item{SumH2SO4_Koffset }{only used internally to calculate dTAdKdKdSumH2SO4}
   \item{SumHF_Koffset }{only used internally to calculate dTAdKdKdSumHF}
-  \item{revelle }{flag: TRUE = the revelle factor is calculated}
+  \item{revelle }{redundant argument - present for backward compatibility}
   \item{skeleton }{flag: TRUE = a reduced amount of information is calculated yielding a smaller object of type aquaenv}
   \item{k_w}{a fixed K\_W can be specified}
   \item{k_co2}{a fixed K\_CO2 can be specified; used for TA fitting: give a K\_CO2 and NOT calculate it from T and S: i.e. K\_CO2 can be fitted in the routine as well}
@@ -54,14 +54,14 @@
   \item{k_boh3}{a fixed K\_BOH3 can be specified}
   \item{k_hso4}{a fixed K\_HSO4 can be specified}
   \item{k_hf}{a fixed K\_HF can be specified}
-  \item{k1k2}{either "roy" (default, Roy1993a), "lueker" (Lueker2000),
+  \item{k1k2}{either "lueker" (default, Lueker2000), "roy" (Roy1993a), 
     or "millero" (Millero2006) for K\_CO2 and K\_HCO3.}
   \item{khf}{either "dickson" (default, Dickson1979a) or "perez"
     (Perez1987a) for K\_HF}
   \item{khso4}{either "dickson" (default, Dickson1990) or "khoo" (Khoo1977) for
     K\_HSO4}
   \item{fCO2atm}{atmospheric fugacity of CO2 in atm, default =
-    0.000390 atm}
+    0.000400 atm}
   \item{fO2atm}{atmospheric fugacity of O2 in atm, default =
     0.20946 atm}
 }
@@ -283,6 +283,6 @@ plot(ae, xval=p, xlab="gauge pressure/bar", newdevice=FALSE)
               "dTAdKdKdd"        "dTAdKdKdSumH2SO4" "dTAdKdKdSumHF"   
 		or a subset of this set. Please consult the vignette of AquaEnv for more details
 	      }
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \keyword{misc}
 

@@ -108,5 +108,5 @@ plot(ae, what=what, bjerrum=TRUE, log=TRUE)
 plot(ae, what=what, bjerrum=TRUE, log=TRUE, ylim=c(-6,-1),
      legendinset=0, lwd=3, palette=c(1,3,4,5,6,colors()[seq(100,250,6)]))
 }}
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \keyword{misc}

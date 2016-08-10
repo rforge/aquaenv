@@ -19,7 +19,7 @@ K_HSO4(35, 15)
 K_HSO4(35, 15, 10)
 plot(K_HSO4(35, 1:25), xlab="temperature / degC")
 }
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \references{"dickson": Dickson1990, DOE1994, Zeebe2001;
             "khoo":    Khoo1977, Roy1993, Millero1995}
 \keyword{misc}

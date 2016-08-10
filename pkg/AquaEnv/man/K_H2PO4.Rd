@@ -22,7 +22,7 @@ K_H2PO4(35, 15, 10)
 K_H2PO4(S=35, t=15, p=10, SumH2SO4=0.03)
 plot(K_H2PO4(35, 1:25), xlab="temperature / degC")
 }
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \references{Millero1995 (original, SWS pH version), DOE1994 (in a later revision cites Millero1995)}
 \keyword{misc}
 

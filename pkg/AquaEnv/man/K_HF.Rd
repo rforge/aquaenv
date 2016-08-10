@@ -24,7 +24,7 @@ K_HF(35, 15)
 K_HF(35, 15, 10)
 plot(K_HF(35, 1:25), xlab="temperature / degC")
 }
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \references{khf = "dickson": Dickson1979a, Dickson1987, Roy1993b, DOE1994, Millero1995,
   Zeebe2001;
 khf = "perez": Perez1987}

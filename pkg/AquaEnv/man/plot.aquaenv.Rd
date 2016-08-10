@@ -219,7 +219,7 @@ plot(aquaenv(ae=output, from.data.frame=TRUE), xval=output$time,
      xlab="time/d", what=what, ylab="mol-H/(kg-soln*d)",
      legendposition="topright", cumulative=TRUE) 
 }}
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \keyword{misc}
 
 

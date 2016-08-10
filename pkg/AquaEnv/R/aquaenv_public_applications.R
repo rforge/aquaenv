@@ -67,7 +67,7 @@ titration <- function(aquaenv,                # an object of type aquaenv: minim
 
                aquaenvtemp <- aquaenv(S=S, t=t[[i]], p=p[[i]], SumCO2=SumCO2, SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2,
                                       SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=TA,
-                                      speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), revelle=(!is.null(aquaenv$revelle)), dsa=(!is.null(aquaenv$dTAdH)),
+                                      speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), dsa=(!is.null(aquaenv$dTAdH)),
                                       k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf, k1k2=k1k2, khf=khf)
 
                aquaenvtemp[["mass"]] <- newmass

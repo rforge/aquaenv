@@ -14,7 +14,7 @@
 K0_CO2(35, 15)
 plot(K0_CO2(35, 1:25), xlab="temperature / degC")
 }
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \references{Weiss1974, DOE1994, Millero1995, Zeebe2001}
 \keyword{misc}
 

@@ -28,8 +28,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                     ae=NULL,
                     from.data.frame=FALSE,
                     SumH2SO4_Koffset=0,
-                    SumHF_Koffset=0,
-                    revelle=FALSE,
+                    SumHF_Koffset=0, revelle = TRUE,
                     skeleton=FALSE,
                     k_w=NULL,
                     k_co2=NULL,
@@ -37,10 +36,10 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                     k_boh3=NULL,
                     k_hso4=NULL,
                     k_hf=NULL,
-                    k1k2="roy",
+                    k1k2="lueker",
                     khf="dickson",
                     khso4="dickson",
-                    fCO2atm=0.000390,
+                    fCO2atm=0.000400,
                     fO2atm=0.20946)
   { 
     if (from.data.frame)
@@ -405,12 +404,6 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                         aquaenv[["omega_aragonite"]]             <<- aquaenv[["Ca"]]*aquaenv[["CO3"]]/aquaenv[["Ksp_aragonite"]]
                         attributes(aquaenv[["omega_aragonite"]]) <<- NULL
                       })
-
-                if (revelle)
-                  {
-                    aquaenv[["revelle"]]             <- revelle(aquaenv)
-                    attributes(aquaenv[["revelle"]]) <- NULL
-                  }
               }
             if (dsa)
               {
@@ -559,4 +552,378 @@ as.data.frame.aquaenv <- function(x, ...)
   }
 
 
-
+#######################################################################
+# Function BufferFactors for calculating the buffer factors describing 
+# the sensitivity of pH and concentrations of acid-base species to a 
+# change in ocean chemistry
+#######################################################################
+BufferFactors <- function(ae = NULL, parameters = NA, 
+                          species = c("SumCO2"), k_w = NULL, 
+                          k_co2 = NULL, k_hco3 = NULL, k_boh3 = NULL, 
+                          k_hso4 = NULL, k_hf = NULL, k1k2 = "lueker", 
+                          khf = "dickson", khso4 = "dickson")
+{
+  # Test if object of class aquaenv is given as input
+  # If it is, test its class, then take its values
+  if(!is.null(ae)) {
+    if((class(ae)=="aquaenv")==FALSE) {
+      print(paste("Error! Object 'ae' is not of class 'aquaenv"))
+      return(NULL) } else {
+        # Provided parameters overwrite aquaenv input
+        if(is.na(parameters["DIC"])) {
+          parameters["DIC"] <- ae$SumCO2}
+        if(is.na(parameters["TotNH3"])) {
+          parameters["TotNH3"] <- ae$SumNH4}
+        if(is.na(parameters["TotP"])) {
+          parameters["TotP"] <- ae$SumH3PO4}
+        if(is.na(parameters["TotNO3"])) {
+          parameters["TotNO3"] <- ae$SumHNO3}
+        if(is.na(parameters["TotNO2"])) {
+          parameters["TotNO2"] <- ae$SumHNO2}
+        if(is.na(parameters["TotS"])) {
+          parameters["TotS"] <- ae$SumH3PO4}
+        if(is.na(parameters["TotSi"])) {
+          parameters["TotSi"] <- ae$SumSiOH4}
+        if(is.na(parameters["TB"])) {
+          parameters["TB"] <- ae$SumBOH3}
+        if(is.na(parameters["TotF"])) {
+          parameters["TotF"] <- ae$SumHF}
+        if(is.na(parameters["TotSO4"])) {
+          parameters["TotSO4"] <- ae$SumH2SO4}
+        if(is.na(parameters["sal"])) {
+          parameters["sal"] <- ae$S}
+        if(is.na(parameters["temp"])) {
+          parameters["temp"] <- ae$t}
+        if(is.na(parameters["pres"])) {
+          parameters["pres"] <- ae$p}
+        if(is.na(parameters["Alk"])) {
+          parameters["Alk"] <- ae$TA}
+      }
+  } else {
+    # Assign default values if one or more parameters are absent
+    # Default values are from Table 4 of Hagens and Middelburg (2016)
+    if(is.na(parameters["DIC"])) {
+      parameters["DIC"] <- 1e-6*2017.14} # mol/kg-soln
+    if(is.na(parameters["TotNH3"])) {parameters["TotNH3"] <- 
+      convert(1e-6*0.3, "conc", "molar2molin", S = 34.617, 
+              t = 18.252, p = 0.1*1.008)} # mol/kg-soln
+    if(is.na(parameters["TotP"])) {parameters["TotP"] <- 
+      convert(1e-6*0.530, "conc", "molar2molin", S = 34.617, 
+              t = 18.252, p = 0.1*1.008)} # mol/kg-soln
+    if(is.na(parameters["TotNO3"])) {parameters["TotNO3"] <-
+      convert(1e-6*5.207, "conc", "molar2molin", S = 34.617, 
+              t = 18.252, p = 0.1*1.008)} # mol/kg-soln
+    if(is.na(parameters["TotNO2"])) {parameters["TotNO2"] <- 
+      convert(1e-6*0.1, "conc", "molar2molin", S = 34.617, 
+              t = 18.252, p = 0.1*1.008)} # mol/kg-soln
+    if(is.na(parameters["TotS"])) {parameters["TotS"] <- 
+      convert(1e-9*2.35, "conc", "molar2molin", S = 34.617, 
+              t = 18.252, p = 0.1*1.008)} # mol/kg-soln
+    if(is.na(parameters["TotSi"])) {parameters["TotSi"] <- 
+      convert(1e-6*7.466, "conc", "molar2molin", S = 34.617, 
+              t = 18.252, p = 0.1*1.008)} # mol/kg-soln
+    if(is.na(parameters["TB"])) {
+      parameters["TB"] <- 1e-6*428.4} # mol/kg-soln
+    if(is.na(parameters["TotF"])) {
+      parameters["TotF"] <- 1e-6*67.579} # mol/kg-soln
+    if(is.na(parameters["TotSO4"])) {
+      parameters["TotSO4"] <- 0.02793} # mol/kg-soln
+    if(is.na(parameters["sal"])) {
+      parameters["sal"] <- 34.617} # -
+    if(is.na(parameters["temp"])) {
+      parameters["temp"] <- 18.252} # degrees Celsius
+    if(is.na(parameters["pres"])) {
+      parameters["pres"] <- 0.1*1.008} # bar
+    if(is.na(parameters["Alk"])) {
+      parameters["Alk"] <- 1e-6*2304.91} # mol/kg-soln
+  }
+  
+  with(as.list(parameters),
+{
+  
+  # Calculation of speciation
+  ae   <- aquaenv(S=sal, t=temp, p=pres, TA=Alk, SumCO2=DIC, SumBOH3 = 
+                  TB, SumNH4 = TotNH3, SumH3PO4 = TotP, SumHNO3 = 
+                  TotNO3, SumHNO2 = TotNO2, SumH2S = TotS, SumSiOH4 = 
+                  TotSi, SumH2SO4 = TotSO4, SumHF = TotF, speciation = 
+                  TRUE, dsa = TRUE, k_w = k_w, k_co2 = k_co2, 
+                  k_hco3 = k_hco3, k_boh3 = k_boh3, k_hso4 = k_hso4,
+                  k_hf = k_hf, k1k2 = k1k2, khf = khf, khso4 = khso4)
+         
+  with(as.list(ae), 
+{
+  # General definitions and creation of output vectors
+  H <- 10^(-pH)
+  
+  dTA.dH <- dtotX.dH <- dTA.dX <- dtotX.dX <- dTA.dpH <- dtotX.dpH <- 
+    dH.dTA <- dX.dTA <- dX.dtotX <- dpH.dTA <- 
+    rep(NA, length.out = length(species))
+  dH.dtotX <- dpH.dtotX <- rep(NA, length.out = length(species) + 5) 
+  
+  # Assign names to output vectors
+  names(dTA.dH) <- names(dtotX.dH) <- names(dTA.dX) <- 
+    names(dtotX.dX) <- names(dTA.dpH) <- names(dtotX.dpH) <-
+    names(dH.dTA) <- names(dX.dTA) <- names(dX.dtotX) <-
+    names(dpH.dTA) <- species
+  names(dH.dtotX) <- names(dpH.dtotX) <-
+    c(species,"sal", "temp", "pres", "SumH2SO4_scaleconv",
+      "SumHF_scaleconv")
+                
+  # Define function for calculating TA.X
+  TA.species <- function(X.name)
+  {
+    if(X.name == "CO2" || X.name == "HCO3" || X.name == "CO3" || 
+       X.name == "SumCO2") {HCO3 + 2*CO3} else
+      if(X.name == "NH3" || X.name == "NH4" || X.name == "SumNH4") {
+          NH3} else
+        if(X.name == "H2PO4" || X.name == "H3PO4" || 
+           X.name == "HPO4" || X.name == "PO4" || 
+           X.name == "SumH3PO4") {-H3PO4 + HPO4 + 2*PO4} else
+          if(X.name == "NO3" || X.name == "HNO3" || 
+             X.name == "SumHNO3") {-HNO3} else
+            if(X.name == "NO2" || X.name == "HNO2" || 
+               X.name == "SumHNO2") {-HNO2} else
+              if(X.name == "H2S" || X.name == "HS" || 
+                 X.name == "S2min" || X.name == "SumH2S") {
+                 HS + 2*S2min} else
+                if(X.name == "SiOH4" || X.name == "SiOOH3" || 
+                   X.name == "SiO2OH2" || X.name == "SumSiOH4") {
+                   SiOOH3 + 2*SiO2OH2} else
+                  if(X.name == "BOH3" || X.name == "BOH4" || 
+                     X.name == "SumBOH3") {BOH4} else
+                   if(X.name == "F" || X.name == "HF" || 
+                      X.name == "SumHF") {-HF} else
+                    if(X.name == "SO4" || X.name == "H2SO4" || 
+                       X.name == "HSO4" || X.name == "SumH2SO4") {
+                       -2*H2SO4 - HSO4} else
+                      NULL
+  }
+                
+  # Define function for determining n
+  n.function <- function(X.name)
+  {
+    if(X.name == "CO2" || X.name == "BOH3" || X.name == "NH4" || 
+       X.name == "H2PO4" || X.name == "NO3" || X.name == "NO2" ||
+       X.name == "H2S" || X.name == "SiOH4" || X.name == "F" || 
+       X.name == "SO4" || X.name == "SumCO2" || X.name == "SumBOH3" || 
+       X.name == "SumNH4" || X.name == "SumH3PO4" || 
+       X.name == "SumHNO3" || X.name == "SumHNO2" ||
+       X.name == "SumH2S" || X.name == "SumSiOH4" || 
+       X.name == "SumHF" || X.name == "SumH2SO4") {n <- 0} else
+                     
+      if(X.name == "HCO3" || X.name == "NH3" || 
+         X.name == "HPO4" || X.name == "HS" ||
+         X.name == "SiOOH3" || X.name == "BOH4") {n <- 1} else
+                          
+        if(X.name == "CO3" || X.name == "PO4" || X.name == "S2min" || 
+           X.name == "SiO2OH2") {n <- 2} else
+                               
+          if(X.name == "H3PO4" || X.name == "HNO3" || 
+             X.name == "HNO2" || X.name == "HF" || X.name == "HSO4") {
+             n <- -1} else
+                                   
+            if(X.name == "H2SO4") {n <- -2} else 
+                                       
+             NULL
+  }
+                
+  # Define function for calculating dTAdH  
+  dTAdH.function <- function(X.name)
+  {
+    n <- n.function(X.name)
+    TA.X <- TA.species(X.name)
+    if(parameters["DIC"]!=0) {
+      if(X.name == "CO2" || X.name == "HCO3" || X.name == "CO3" || 
+         X.name == "SumCO2") {
+        dTAdH.CO2 <- (-1/H)*(-n*TA.X + HCO3 + 4*CO3)}  else {
+          dTAdH.CO2 <- (-1/H)*(HCO3*(c1-c3) + 2*CO3*(2*c1+c2))}
+    } else dTAdH.CO2 <- 0
+    if(parameters["TotNH3"]!=0) {
+      if(X.name == "NH3" || X.name == "NH4" || X.name == "SumNH4") {
+        dTAdH.NH4 <- (-1/H)*(-n*TA.X + NH3)} else {
+          dTAdH.NH4 <- (-1/H)*(NH3*n1)}
+    } else dTAdH.NH4 <- 0
+    if(parameters["TotP"]!=0) {
+      if(X.name == "H2PO4" || X.name == "H3PO4" || X.name == "HPO4" || 
+         X.name == "PO4" || X.name == "SumH3PO4") {
+        dTAdH.H2PO4 <- (-1/H)*(-n*TA.X + H3PO4 + HPO4 + 4*PO4)}  else {
+          dTAdH.H2PO4 <- (-1/H)*(-H3PO4*(-p2-2*p3-3*p4) + 
+                             HPO4*(2*p1+p2-p4) + 2*PO4*(3*p1+2*p2+p3))}
+    } else dTAdH.H2PO4 <- 0
+    if(parameters["TotNO3"]!=0) {
+      if(X.name == "NO3" || X.name == "HNO3" || X.name == "SumHNO3") {
+        dTAdH.NO3 <- (-1/H)*(-n*TA.X + HNO3)} else {
+          dTAdH.NO3 <- (-1/H)*(-HNO3*na2)}
+    } else dTAdH.NO3 <- 0
+    if(parameters["TotNO2"]!=0) {
+      if(X.name == "NO2" || X.name == "HNO2" || X.name == "SumHNO2") {
+        dTAdH.NO2 <- (-1/H)*(-n*TA.X + HNO2)} else {
+          dTAdH.NO2 <- (-1/H)*(-HNO2*ni2)}
+    } else dTAdH.NO2 <- 0
+    if(parameters["TotS"]!=0) {
+      if(X.name == "H2S" || X.name == "HS" || X.name == "S2min" || 
+         X.name == "SumH2S") {
+        dTAdH.H2S <- (-1/H)*(-n*TA.X + HS + 4*S2min)}  else {
+          dTAdH.H2S <- (-1/H)*(HS*(s1-s3) + 2*S2min*(2*s1+s2))} 
+    } else dTAdH.H2S <- 0
+    if(parameters["TotSi"]!=0) {
+      if(X.name == "SiOH4" || X.name == "SiOOH3" || 
+         X.name == "SiO2OH2" || X.name == "SumSiOH4") {
+        dTAdH.SiOH4 <- (-1/H)*(-n*TA.X + SiOOH3 + 4*SiO2OH2)} else {
+          dTAdH.SiOH4 <- (-1/H)*(SiOOH3*(si1-si3) + 
+                                   2*SiO2OH2*(2*si1+si2))} 
+    } else dTAdH.SiOH4 <- 0
+    if(parameters["TB"]!=0) {
+      if(X.name == "BOH3" || X.name == "BOH4" || X.name == "SumBOH3") {
+        dTAdH.BOH3 <- (-1/H)*(-n*TA.X + BOH4)} else {
+          dTAdH.BOH3 <-(-1/H)*(BOH4*b1)}
+    } else dTAdH.BOH3 <- 0
+    if(parameters["TotF"]!=0) {
+      if(X.name == "F" || X.name == "HF" || X.name == "SumHF") {
+        dTAdH.F <- (-1/H)*(-n*TA.X + HF)} else {
+          dTAdH.F <- (-1/H)*(-HF*f2)}
+    } else dTAdH.F <- 0  
+    if(parameters["TotSO4"]!=0) {
+      if(X.name == "SO4" || X.name == "H2SO4" || X.name == "HSO4" || 
+         X.name == "SumH2SO4") {
+        dTAdH.SO4 <- (-1/H)*(-n*TA.X + 4*H2SO4 + HSO4)} else {
+          dTAdH.SO4 <- (-1/H)*(-2*H2SO4*(-so2-2*so3) - HSO4*(so1-so3))}
+    } else dTAdH.SO4 <- 0  
+    dTAdH.H <- (-1/H)*(OH+H)       # Internal enhancement of buffering
+    return(dTAdH.CO2 + dTAdH.NH4 + dTAdH.H2PO4 + dTAdH.NO3 + 
+           dTAdH.NO2 + dTAdH.H2S + dTAdH.SiOH4 + dTAdH.BOH3 + dTAdH.F + 
+           dTAdH.SO4 + dTAdH.H)
+  }
+                
+  # Define function for determining totX
+  totX.function <- function(X.name)
+  {
+    if(X.name == "CO2" || X.name == "HCO3" || X.name == "CO3" || 
+       X.name == "SumCO2") {SumCO2} else
+      if(X.name == "NH3" || X.name == "NH4" || X.name == "SumNH4") {
+         SumNH4} else
+        if(X.name == "H2PO4" || X.name == "H3PO4" || 
+           X.name == "HPO4" || X.name == "PO4" || 
+           X.name == "SumH3PO4") {SumH3PO4} else
+          if(X.name == "NO3" || X.name == "HNO3" || 
+             X.name == "SumHNO3") {SumHNO3} else
+            if(X.name == "NO2" || X.name == "HNO2" || 
+               X.name == "SumHNO2") {SumHNO2} else
+              if(X.name == "H2S" || X.name == "HS" || 
+                 X.name == "S2min" || X.name == "SumH2S") {SumH2S} else
+                if(X.name == "SiOH4" || X.name == "SiOOH3" || 
+                   X.name == "SiO2OH2" || X.name == "SumSiOH4") {
+                   SumSiOH4} else
+                  if(X.name == "BOH3" || X.name == "BOH4" || 
+                     X.name == "SumBOH3") {SumBOH3} else
+                    if(X.name == "F" || X.name == "HF" || 
+                       X.name == "SumHF") {SumHF} else
+                      if(X.name == "SO4" || X.name == "H2SO4" || 
+                         X.name == "HSO4" || X.name == "SumH2SO4") {
+                         SumH2SO4} else
+                        NULL
+  }
+  
+  # Define a function to calculate the Revelle factor 
+  Revelle_func <- function(species)
+  {
+    X.name   <- "CO2"
+    X        <- get(X.name)
+    n        <- n.function(X.name)
+    TA.X     <- TA.species(X.name)
+    totX     <- totX.function(X.name)
+    
+    dTA.dH   <- dTAdH.function(X.name)
+    dX.dtotX <- X * H * dTA.dH / (TA.X^2 + (H*dTA.dH - n*TA.X)*totX)
+    RF <- as.numeric(ae$SumCO2 / ae$CO2 * dX.dtotX)
+    
+    return(RF)
+  }
+                
+  # Loop that calculates output species per variable
+  for (i in 1:length(species))
+  {
+      
+    # In case a change in the total concentration is specified, 
+    # change X to the reference species for TA
+    X.name <- species[i]
+                
+      if(X.name == "SumCO2") X <- get("CO2") else                      
+        if(X.name == "SumNH4") X <- get("NH4") else                     
+          if(X.name == "SumH3PO4") X <- get("H2PO4") else                 
+            if(X.name == "SumHNO3") X <- get("NO3") else                
+              if(X.name == "SumHNO2") X <- get("NO2") else              
+                if(X.name == "SumH2S") X <- get("H2S") else             
+                  if(X.name == "SumSiOH4") X <- get("SiOH4") else       
+                    if(X.name == "SumBOH3") X <- get("BOH3") else        
+                      if(X.name == "SumHF") X <- get("F") else        
+                        if(X.name == "SumH2SO4") X <- get("SO4") else
+                          X <- get(species[i])
+                                    
+    n              <- n.function(X.name)
+    TA.X           <- TA.species(X.name)
+    totX           <- totX.function(X.name)
+                                    
+    # Calculation of first half of factors
+    dTA.dH[i]      <- dTAdH.function(X.name)
+    dtotX.dH[i]    <- (n*totX - TA.X) / H
+    dTA.dX[i]      <- TA.X / X
+    dtotX.dX[i]    <- totX / X
+                                  
+    # Transformation from dH to dpH where necessary
+    dH.dpH         <- -log(10)*H
+                                    
+    dTA.dpH[i]     <- dH.dpH * dTA.dH[i]
+    dtotX.dpH[i]   <- dH.dpH * dtotX.dH[i]
+                                    
+    # Calculation of second half of factors
+    dH.dTA[i]      <- totX*H  / (TA.X^2 + (H*dTA.dH[i] - n*TA.X)*totX)
+    dH.dtotX[i]    <- -TA.X*H / (TA.X^2 + (H*dTA.dH[i] - n*TA.X)*totX)
+    dX.dTA[i]      <- -X * (n*totX - TA.X)  / (TA.X^2 + (H*dTA.dH[i] - 
+                                                         n*TA.X)*totX)
+    dX.dtotX[i]    <- X * H * dTA.dH[i] / (TA.X^2 + (H*dTA.dH[i] - 
+                                                     n*TA.X)*totX)
+                                    
+    # Transformation from dH to dpH where necessary
+    dpH.dH         <- 1/(-log(10)*H)
+                                    
+    dpH.dTA[i]     <- dpH.dH * dH.dTA[i]
+    dpH.dtotX[i]   <- dpH.dH * dH.dtotX[i]
+                                
+  }   
+                
+  # Calculate the Revelle factor
+  RF <- Revelle_func(species)
+                
+  # Define the sensitivities with respect to temperature, salinity and 
+  # pressure (dH/dT, dH/dS, dH/dp, dH/dSumH2SO4, dH/dSumHF)
+                
+  # changes in dissocation constants associated with sal changes
+  dH.dtotX[1+length(species)] <- (dTAdKdKdS) / (-dTAdH)
+  # changes in dissocation constants associated with temp changes
+  dH.dtotX[2+length(species)] <- (dTAdKdKdT) / (-dTAdH)
+  # changes in dissocation constants associated with pres changes
+  dH.dtotX[3+length(species)] <- (dTAdKdKdp) / (-dTAdH)
+  # changes in dissocation constants associated with TotSO4 changes
+  dH.dtotX[4+length(species)] <- (dTAdKdKdSumH2SO4) / (-dTAdH)
+  # changes in dissocation constants associated with TotF changes
+  dH.dtotX[5+length(species)] <- (dTAdKdKdSumHF) / (-dTAdH)			
+                
+  # Transform the above sensitivities from dH to dpH
+  dpH.dtotX[1+length(species)] <- dpH.dH * dH.dtotX[1+length(species)]   
+  dpH.dtotX[2+length(species)] <- dpH.dH * dH.dtotX[2+length(species)]
+  dpH.dtotX[3+length(species)] <- dpH.dH * dH.dtotX[3+length(species)]
+  dpH.dtotX[4+length(species)] <- dpH.dH * dH.dtotX[4+length(species)] 				
+  dpH.dtotX[5+length(species)] <- dpH.dH * dH.dtotX[5+length(species)] 
+                
+  # Return statement
+  return(list(ae = ae, dTA.dH = dTA.dH, dtotX.dH = dtotX.dH, 
+              dTA.dX = dTA.dX, dtotX.dX = dtotX.dX, dTA.dpH = dTA.dpH, 
+              dtotX.dpH = dtotX.dpH, dH.dTA = dH.dTA, 
+              dH.dtotX = dH.dtotX, dX.dTA = dX.dTA, 
+              dX.dtotX = dX.dtotX, dpH.dTA = dpH.dTA, 
+              dpH.dtotX = dpH.dtotX, beta.H = as.numeric(dTAdH), 
+              RF = RF))
+  })
+})
+}

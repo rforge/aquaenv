@@ -16,7 +16,7 @@
 watdepth(100)
 plot(watdepth(1:100))
 }
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \references{Fofonoff1983}
 \keyword{misc}
 

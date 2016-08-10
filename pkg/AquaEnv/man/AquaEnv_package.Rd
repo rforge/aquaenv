@@ -30,17 +30,19 @@ AquaEnv is an integrated development toolbox for aquatic
   \tabular{ll}{
     Package: \tab AquaEnv\cr
     Type: \tab Package\cr
-    Version: \tab 0.7\cr
-    Date: \tab 2009-01-21\cr
+    Version: \tab 1.1\cr
+    Date: \tab 2016-05-18\cr
     License: \tab GNU Public License 2 or above\cr
   }
 }
 \author{
-  Andreas Hofmann (Maintainer)
+  Karline Soetaert (Maintainer), Andreas F. Hofmann, Mathilde Hagens 
 }
-%\references{
-%% to be filled out when our paper is published
-%}
+\references{
+Hagens M. and J.J. Middelburg, 2016 Generalised expressions for the response of pH to changes in ocean chemistry. \emph{Geochimica et Cosmochimica Acta, in press}.
+
+Hofmann A. F., K. Soetaert,  J.J. Middelburg, F. J. R. Meysman, 2010 AquaEnv: An Aquatic Acid-Base Modelling Environment in R. \emph{Aquatic Geochemistry} \bold{16}: 507-546.
+}
 \examples{
 \dontrun{
 ## show examples (see respective help pages for details)

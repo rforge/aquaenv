@@ -28,6 +28,6 @@
   \emph{K\_HF} \tab 1/4.08e2 \tab mol/kg-soln \cr
              } 
 }
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \keyword{misc}
 

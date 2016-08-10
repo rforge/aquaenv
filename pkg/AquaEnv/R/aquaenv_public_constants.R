@@ -21,8 +21,7 @@ Technicals <- list(
                    unirootinterval = c(1e-18, 1),  # the interval (in terms of [H+]) for pH calculation using the standard R function uniroot
                    uniroottol      = 1e-20,        # the interval (in terms of [H+]) for pH calculation using the standard R function uniroot
 
-                   epsilon_fraction = 0.1,         # fraction of disturbance for the numerical calculation of derivatives of TA with respect to changes in the dissociation constants
-                   revelle_fraction = 1e-5         # fraction of disturbance for the numerical calculation of the revelle factor
+                   epsilon_fraction = 0.1          # fraction of disturbance for the numerical calculation of derivatives of TA with respect to changes in the dissociation constants
                    )
                
 

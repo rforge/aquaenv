@@ -296,7 +296,7 @@ plot(tit$delta_mass_titrant, calc, xlim=c(0,0.0025), ylim=c(3,8.2),
      type="l", col="red")
 
 }}
-\author{Andreas F. Hofmann (a.hofmann@nioo.knaw.nl)}
+\author{Andreas F. Hofmann. Maintained by Karline Soetaert (Karline.Soetaert@nioz.nl).}
 \keyword{misc}
 
 
