@@ -5,8 +5,9 @@ Title: Integrated Development Toolbox for Aquatic Chemical
 Author: Andreas F. Hofmann, Karline Soetaert, Filip J.R. Meysman, 
         Mathilde Hagens
 Maintainer: Karline Soetaert <Karline.Soetaert@nioz.nl>
-Depends: R (>= 2.15.0), deSolve
-Imports: graphics, grDevices, stats, minpack.lm
+Depends: R (>= 2.15.0) 
+Imports: graphics, grDevices, stats
+Suggests: minpack.lm, deSolve
 Description: Toolbox for the experimental aquatic chemist, focused on 
         acidification and CO2 air-water exchange. It contains all elements to
         model the pH, the related CO2 air-water exchange, and

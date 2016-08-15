@@ -1,4 +1,3 @@
-import(minpack.lm, deSolve)
 import(grDevices, stats)
 importFrom(stats, approx)
 importFrom(graphics, plot, par, legend, polygon)
