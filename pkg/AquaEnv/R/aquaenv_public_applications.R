@@ -14,7 +14,7 @@ titration <- function(aquaenv,                # an object of type aquaenv: minim
                       k_boh3=NULL,            # a fixed K_BOH3 can be specified
                       k_hso4=NULL,            # a fixed K_HSO4 can be specified
                       k_hf=NULL,              # a fixed K_HF can be specified
-                      k1k2="roy",             # either "roy" (default, Roy1993a) or "lueker" (Lueker2000, calculated with seacarb) for K\_CO2 and K\_HCO3
+                      k1k2="lueker",          # either "lueker" (default, Lueker2000) or "roy" (Roy1993a) or for K\_CO2 and K\_HCO3
                       khf="dickson")          # either "dickson" (default, Dickson1979a) or "perez" (Perez1987a, calculated with seacarb) for K\_HF}
   {
     concstep <- function(conc, oldmass, newmass)
@@ -67,7 +67,7 @@ titration <- function(aquaenv,                # an object of type aquaenv: minim
 
                aquaenvtemp <- aquaenv(S=S, t=t[[i]], p=p[[i]], SumCO2=SumCO2, SumNH4=SumNH4, SumH2S=SumH2S, SumH3PO4=SumH3PO4, SumSiOH4=SumSiOH4, SumHNO3=SumHNO3, SumHNO2=SumHNO2,
                                       SumBOH3=SumBOH3, SumH2SO4=SumH2SO4, SumHF=SumHF, TA=TA,
-                                      speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), dsa=(!is.null(aquaenv$dTAdH)),
+                                      speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), revelle=(!is.null(aquaenv$revelle)), dsa=(!is.null(aquaenv$dTAdH)),
                                       k_w=k_w, k_co2=k_co2, k_hco3=k_hco3, k_boh3=k_boh3, k_hso4=k_hso4, k_hf=k_hf, k1k2=k1k2, khf=khf)
 
                aquaenvtemp[["mass"]] <- newmass

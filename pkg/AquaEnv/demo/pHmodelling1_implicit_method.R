@@ -1,5 +1,5 @@
 par(ask=TRUE)
-
+require(deSolve)
 
 what   <- c("SumCO2", "TA", "Rc", "Rp", "omega_calcite", "pH")
 mfrow  <- c(2,3)

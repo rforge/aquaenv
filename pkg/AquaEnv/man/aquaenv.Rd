@@ -8,9 +8,10 @@
         SumSiOH4=0, SumHNO3=0, SumHNO2=0, SumBOH3=NULL,
         SumH2SO4=NULL, SumHF=NULL, TA=NULL, pH=NULL, fCO2=NULL, CO2=NULL,
         speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,
-        SumH2SO4_Koffset=0, SumHF_Koffset=0, revelle = TRUE, skeleton=FALSE,
+        SumH2SO4_Koffset=0, SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE,
         k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
-        k_hf=NULL, k1k2="lueker", khf="dickson", khso4="dickson", fCO2atm=0.000400, fO2atm=0.20946)}
+        k_hf=NULL, k1k2="lueker", khf="dickson", khso4="dickson", 
+        fCO2atm=0.000400, fO2atm=0.20946)}
 \arguments{
   \item{S }{salinity in practical salinity units (i.e. no unit)}
   \item{t }{temperature in degrees centigrade}
@@ -46,7 +47,7 @@
   \item{from.data.frame }{flag: TRUE = the object of class aquaenv is built from the data frame supplied in ae}
   \item{SumH2SO4_Koffset }{only used internally to calculate dTAdKdKdSumH2SO4}
   \item{SumHF_Koffset }{only used internally to calculate dTAdKdKdSumHF}
-  \item{revelle }{redundant argument - present for backward compatibility}
+  \item{revelle }{flag: TRUE = the revelle factor is numerically calculated. We do however strongly encourage to use the analytical calculation from BufferFactors$RF}
   \item{skeleton }{flag: TRUE = a reduced amount of information is calculated yielding a smaller object of type aquaenv}
   \item{k_w}{a fixed K\_W can be specified}
   \item{k_co2}{a fixed K\_CO2 can be specified; used for TA fitting: give a K\_CO2 and NOT calculate it from T and S: i.e. K\_CO2 can be fitted in the routine as well}

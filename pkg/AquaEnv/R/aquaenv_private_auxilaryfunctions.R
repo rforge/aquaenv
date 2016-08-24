@@ -72,7 +72,7 @@ merge.aquaenv <- function(x,           # object of class aquaenv: this is where 
 
 
 # PRIVATE function:
-# clones an object of class aquaenv: it is possible to supply a new value for either TA or pH; the switches speciation, skeleton, and dsa are obtained from the object to be cloned
+# clones an object of class aquaenv: it is possible to supply a new value for either TA or pH; the switches speciation, skeleton, revelle, and dsa are obtained from the object to be cloned
 cloneaquaenv <- function(aquaenv,             # object of class aquaenv
                          TA=NULL,             # optional new value for TA
                          pH=NULL,             # optional new value for pH
@@ -88,7 +88,7 @@ cloneaquaenv <- function(aquaenv,             # object of class aquaenv
     res <- aquaenv(S=aquaenv$S, t=aquaenv$t, p=aquaenv$p, SumCO2=aquaenv$SumCO2, SumNH4=aquaenv$SumNH4, SumH2S=aquaenv$SumH2S,SumH3PO4=aquaenv$SumH3PO4,
                    SumSiOH4=aquaenv$SumSiOH4, SumHNO3=aquaenv$SumHNO3, SumHNO2=aquaenv$SumHNO2, SumBOH3=aquaenv$SumBOH3, SumH2SO4=aquaenv$SumH2SO4,
                    SumHF=aquaenv$SumHF, pH=pH, TA=TA,
-                   speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), dsa=(!is.null(aquaenv$dTAdH)), k1k2=k1k2, khf=khf, khso4=khso4)
+                   speciation=(!is.null(aquaenv$HCO3)), skeleton=(is.null(aquaenv$Na)), revelle=(!is.null(aquaenv$revelle)), dsa=(!is.null(aquaenv$dTAdH)), k1k2=k1k2, khf=khf, khso4=khso4)
     if (!is.null(k_co2))
       {
         res$K_CO2                   <- rep(k_co2,length(res))

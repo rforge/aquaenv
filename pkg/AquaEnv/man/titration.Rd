@@ -5,7 +5,7 @@
 \usage{titration(aquaenv, mass_sample, mass_titrant, conc_titrant,
           S_titrant=NULL, steps, type="HCl", seawater_titrant=FALSE,
           k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
-          k_hf=NULL, k1k2="roy", khf="dickson")}
+          k_hf=NULL, k1k2="lueker", khf="dickson")}
 \arguments{
   \item{aquaenv }{an object of type aquaenv: minimal definition, contains all information about the system: T, S, d, total concentrations of nutrients etc (Note that it is possible to give values for SumBOH4, SumHSO4, and SumHF in the sample other than the ones calculated from salinity)}
   \item{mass_sample}{the mass of the sample solution in kg}
@@ -27,7 +27,7 @@
   \item{k_boh3}{a fixed K\_BOH3 can be specified}
   \item{k_hso4}{a fixed K\_HSO4 can be specified}
   \item{k_hf}{a fixed K\_HF can be specified}
-  \item{k1k2}{either "roy" (default, Roy1993a) or "lueker" (Lueker2000) for K\_CO2 and K\_HCO3.}
+  \item{k1k2}{either "lueker" (default, Lueker2000) or "roy" (Roy1993a) for K\_CO2 and K\_HCO3.}
   \item{khf}{either "dickson" (default, Dickson1979a) or "perez" (Perez1987a) for K\_HF}
 }
 \value{

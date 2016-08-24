@@ -28,7 +28,8 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                     ae=NULL,
                     from.data.frame=FALSE,
                     SumH2SO4_Koffset=0,
-                    SumHF_Koffset=0, revelle = TRUE,
+                    SumHF_Koffset=0,
+                    revelle=FALSE,
                     skeleton=FALSE,
                     k_w=NULL,
                     k_co2=NULL,
@@ -404,8 +405,14 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                         aquaenv[["omega_aragonite"]]             <<- aquaenv[["Ca"]]*aquaenv[["CO3"]]/aquaenv[["Ksp_aragonite"]]
                         attributes(aquaenv[["omega_aragonite"]]) <<- NULL
                       })
-              }
-            if (dsa)
+            
+                if (revelle)
+                {
+                  aquaenv[["revelle"]]             <- revelle(aquaenv)
+                  attributes(aquaenv[["revelle"]]) <- NULL
+                }
+        }
+        if (dsa)
               {
                 with (aquaenv,
                       {

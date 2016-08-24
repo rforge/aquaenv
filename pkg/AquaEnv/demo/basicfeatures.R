@@ -187,7 +187,7 @@ TA <- 0.0023
 
 S  <- 30
 t  <- 1:15
-d  <- gauge_p(10)
+p  <- gauge_p(10)
 ae <- aquaenv(S, t, p, SumCO2=SumCO2, TA=TA, revelle=TRUE, dsa=TRUE)
 plot(ae, xval=t, xlab="T/(deg C)", newdevice=FALSE)
 
