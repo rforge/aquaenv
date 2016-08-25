@@ -1032,7 +1032,8 @@ plot(aquaenv(ae=as.data.frame(output), from.data.frame=TRUE),
 Finally, the pH values calculated with the three different methods can be plotted in one single graph to see that they are identical, i.e. the three methods of pH calculation are consistent with each other
 
 <<SinplePHModConsistencyCheck, fig=TRUE, echo=TRUE, width=10, height=5>>=
-matplot(output, which = c("pH", "DSApH", "DSAstoichpH"))
+matplot(output[, "time"], 
+  output[, c("pH", "DSApH", "DSAstoichpH")], type = "l", lty = 1, lwd = 2)
 @
 
 
