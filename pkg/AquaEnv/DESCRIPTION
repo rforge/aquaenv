@@ -15,12 +15,8 @@ Description: Toolbox for the experimental aquatic chemist, focused on
         estuarine or freshwater system. It contains a suite of tools for 
         sensitivity analysis, visualisation, modelling of chemical batches, 
         and can be used to build dynamic models of aquatic systems. 
-        As from version 1.1, it also contains functions to calculate 
-        the buffer factors. The package is described in two publications:       
-        The original publication of the package 
-        (http://www.springerlink.com/content/l4747417w0k50463/) and the
-        publication describing the expressions implemented in the
-        function BufferFactors (http://dx.doi.org/10.1016/j.gca.2016.04.012.)
+        As from version 1.0-4, it also contains functions to calculate 
+        the buffer factors. 
 License: GPL (>= 2)
 LazyData: yes
 Repository: CRAN
