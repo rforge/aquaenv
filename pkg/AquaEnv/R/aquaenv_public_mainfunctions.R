@@ -37,7 +37,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                     k_boh3=NULL,
                     k_hso4=NULL,
                     k_hf=NULL,
-                    k1k2="lueker",
+                    k1k2="roy",
                     khf="dickson",
                     khso4="dickson",
                     fCO2atm=0.000400,
@@ -588,7 +588,7 @@ BufferFactors <- function(ae = NULL, parameters = NA,
         if(is.na(parameters["TotNO2"])) {
           parameters["TotNO2"] <- ae$SumHNO2}
         if(is.na(parameters["TotS"])) {
-          parameters["TotS"] <- ae$SumH3PO4}
+          parameters["TotS"] <- ae$SumH2S}
         if(is.na(parameters["TotSi"])) {
           parameters["TotSi"] <- ae$SumSiOH4}
         if(is.na(parameters["TB"])) {

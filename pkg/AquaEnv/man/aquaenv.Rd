@@ -10,7 +10,7 @@
         speciation=TRUE, dsa=FALSE, ae=NULL, from.data.frame=FALSE,
         SumH2SO4_Koffset=0, SumHF_Koffset=0, revelle=FALSE, skeleton=FALSE,
         k_w=NULL, k_co2=NULL, k_hco3=NULL, k_boh3=NULL, k_hso4=NULL,
-        k_hf=NULL, k1k2="lueker", khf="dickson", khso4="dickson", 
+        k_hf=NULL, k1k2="roy", khf="dickson", khso4="dickson", 
         fCO2atm=0.000400, fO2atm=0.20946)}
 \arguments{
   \item{S }{salinity in practical salinity units (i.e. no unit)}
