@@ -4,7 +4,7 @@
 
 convert <- function(x, ...)
   {
-    if ((!is.null(attr(x, "class"))) && (attr(x, "class") == "aquaenv"))
+    if ((!is.null(attr(x, "class"))) && (inherits(x, "aquaenv")))
       {
         return(convert.aquaenv(x, ...))
       }
@@ -573,7 +573,7 @@ BufferFactors <- function(ae = NULL, parameters = NA,
   # Test if object of class aquaenv is given as input
   # If it is, test its class, then take its values
   if(!is.null(ae)) {
-    if((class(ae)=="aquaenv")==FALSE) {
+    if((inherits(ae, "aquaenv")) ==FALSE) {
       print(paste("Error! Object 'ae' is not of class 'aquaenv"))
       return(NULL) } else {
         # Provided parameters overwrite aquaenv input
