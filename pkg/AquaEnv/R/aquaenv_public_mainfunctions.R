@@ -377,7 +377,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                         
                         aquaenv[["SiOH4"]]  <<- H2Abi (SumSiOH4, K_SiOH4, K_SiOOH3,        H) ; attr(aquaenv[["SiOH4"]], "unit")   <<- "mol/kg-soln"
                         aquaenv[["SiOOH3"]] <<- HAbi  (SumSiOH4, K_SiOH4, K_SiOOH3,        H) ; attr(aquaenv[["SiOOH3"]], "unit")  <<- "mol/kg-soln"
-                        aquaenv[["SiO2OH2"]]<<-  Abi  (SumSiOH4, K_SiOH4, K_SiOOH3,        H) ; attr(aquaenv[["SiO2OH2"]], "unit") <<- "mol/kg-soln"
+                        aquaenv[["SiO2OH2"]]<<- Abi   (SumSiOH4, K_SiOH4, K_SiOOH3,        H) ; attr(aquaenv[["SiO2OH2"]], "unit") <<- "mol/kg-soln"
                         
                         aquaenv[["H2S"]]    <<- H2Abi (SumH2S,   K_H2S,   K_HS,            H) ; attr(aquaenv[["H2S"]], "unit")     <<- "mol/kg-soln"
                         aquaenv[["HS"]]     <<- HAbi  (SumH2S,   K_H2S,   K_HS,            H) ; attr(aquaenv[["HS"]], "unit")      <<- "mol/kg-soln"
@@ -445,7 +445,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                             aquaenv[["si1"]] <<- SiOH4  /SumSiOH4 ; attributes(aquaenv[["si1"]]) <<- NULL
                             aquaenv[["si2"]] <<- SiOOH3 /SumSiOH4 ; attributes(aquaenv[["si2"]]) <<- NULL
                             aquaenv[["si3"]] <<- SiO2OH2/SumSiOH4 ; attributes(aquaenv[["si3"]]) <<- NULL
-                            aquaenv[["dTAdSumSumSiOH4"]] <<- aquaenv[["si2"]]
+                            aquaenv[["dTAdSumSumSiOH4"]] <<- aquaenv[["si2"]] + 2*aquaenv[["si3"]]
                             attr(aquaenv[["dTAdSumSumSiOH4"]], "unit") <<- "(mol-TA/kg-soln)/(mol-SumSiOH4/kg-soln)"
                           }
                         if(!((length(SumH2S)==1) && (SumH2S==0)))
@@ -468,7 +468,7 @@ aquaenv <- function(S, t, p=pmax((P-Pa), gauge_p(d, lat, Pa)), P=Pa, Pa=1.01325,
                             aquaenv[["so1"]] <<- H2SO4/SumH2SO4   ; attributes(aquaenv[["so1"]])  <<- NULL
                             aquaenv[["so2"]] <<- HSO4 /SumH2SO4   ; attributes(aquaenv[["so2"]])  <<- NULL
                             aquaenv[["so3"]] <<- SO4  /SumH2SO4   ; attributes(aquaenv[["so3"]])  <<- NULL
-                            aquaenv[["dTAdSumH2SO4"]] <<- -aquaenv[["so2"]]
+                            aquaenv[["dTAdSumH2SO4"]] <<- -2*aquaenv[["so1"]] - aquaenv[["so2"]]
                             attr(aquaenv[["dTAdSumH2SO4"]], "unit") <<- "(mol-TA/kg-soln)/(mol-SumH2SO4/kg-soln)"
                           }
                         if(!((length(SumHF)==1) && (SumHF==0)))

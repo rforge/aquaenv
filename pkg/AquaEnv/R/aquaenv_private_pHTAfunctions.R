@@ -75,15 +75,20 @@ calcTAMinor <- function(aquaenv,              # object of class aquaenv
             OH     <- K_W  / H
             HPO4   <- HAtri (SumH3PO4, K_H3PO4, K_H2PO4,  K_HPO4, H)
             PO4    <- Atri  (SumH3PO4, K_H3PO4, K_H2PO4,  K_HPO4, H)
-            SiOOH3 <- HAbi  (SumSiOH4, K_SiOH4, K_SiOOH3,         H) 
+            SiOOH3 <- HAbi  (SumSiOH4, K_SiOH4, K_SiOOH3,         H)
+            SiO2OH2 <- Abi  (SumSiOH4, K_SiOH4, K_SiOOH3,         H)   # Mathilde: ADDED November2019          
             HS     <- HAbi  (SumH2S,   K_H2S,   K_HS,             H)
             S2min  <- Abi   (SumH2S,   K_H2S,   K_HS,             H)
             NH3    <- Auni  (SumNH4,   K_NH4,                     H)
             HSO4   <- HAbi  (SumH2SO4, K_H2SO4, K_HSO4,           H)
+            H2SO4  <- H2Abi  (SumH2SO4, K_H2SO4, K_HSO4,          H)   # Mathilde: added
             HF     <- HAuni (SumHF,    K_HF,                      H)
+            HNO3   <- HAuni (SumHNO3,  K_HNO3,                    H)   # KARLINE: ADDED HNO3, HNO2
+            HNO2   <- HAuni (SumHNO2,  K_HNO2,                    H)
             H3PO4  <- H3Atri(SumH3PO4, K_H3PO4, K_H2PO4, K_HPO4,  H)
 
-            return(BOH4 + OH + HPO4 + 2*PO4 + SiOOH3 + HS + 2*S2min + NH3 - H - HSO4 - HF - H3PO4)  # calculated minor contributions to [TA]
+            return(BOH4 + OH + HPO4 + 2*PO4 + SiOOH3 + 2*SiO2OH2 + HS + 2*S2min 
+                   + NH3 - H - HSO4 - 2*H2SO4 - HF - HNO3 - HNO2 - H3PO4)  # calculated minor contributions to [TA]
           })
   }
 
