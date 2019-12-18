@@ -580,8 +580,35 @@ K_SiOOH3 <- function(S, t, p=0, SumH2SO4=NULL, SumHF=NULL, khf="dickson", khso4=
     return(eval(att(K_SiOOH3)))
   }
 ######################################################################################
+# CONSTANTS
 
+K_HNO3 <- function(...){
+  K_HNO3 <- PhysChemConst$K_HNO3
+  attr(K_HNO3, "unit")     <- "(mol/kg-soln)^2"
+  attr(K_HNO3, "pH scale") <- "free" 
+  K_HNO3
+}
 
+K_HNO2 <- function(...){
+  K_HNO2 <- PhysChemConst$K_HNO2
+  attr(K_HNO2, "unit")     <- "(mol/kg-soln)^2"
+  attr(K_HNO2, "pH scale") <- "free" 
+  K_HNO2
+}
+
+K_H2SO4 <- function(...){
+  K_H2SO4 <- PhysChemConst$K_H2SO4
+  attr(K_H2SO4, "unit")     <- "(mol/kg-soln)^2"
+  attr(K_H2SO4, "pH scale") <- "free" 
+  K_H2SO4
+}
+
+K_HS <- function(...){
+  K_HS <- PhysChemConst$K_HS
+  attr(K_HS, "unit")     <- "(mol/kg-soln)^2"
+  attr(K_HS, "pH scale") <- "free" 
+  K_HS
+}
 
 ######################################################################################
 # solubility products
